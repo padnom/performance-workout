@@ -1,0 +1,40 @@
+@page "/"
+
+<PageTitle>Programmes · Performance</PageTitle>
+<p class="eyebrow">TON ESPACE D’ENTRAÎNEMENT</p>
+<div class="page-heading">
+    <div>
+        <h1>Programmes</h1>
+        <p class="muted">Reprends ta progression, séance après séance.</p>
+    </div>
+    <span class="avatar">P</span>
+</div>
+
+<section class="hero-card">
+    <div class="hero-copy">
+        <span class="hero-kicker">PRÊT À Y ALLER ?</span>
+        <h2>Ta prochaine séance<br />commence ici.</h2>
+        <p>Choisis un programme. La séance ne démarre qu’après confirmation.</p>
+        <button class="primary-button" @onclick="() => showStart = !showStart">Voir mes programmes <span>→</span></button>
+    </div>
+    <div class="hero-orbit" aria-hidden="true"><span>✦</span></div>
+</section>
+
+@if (showStart)
+{
+    <div class="notice" role="status">Le catalogue de programmes et le démarrage explicite de séance seront branchés lors de la migration des données.</div>
+}
+
+<div class="section-heading">
+    <div><p class="eyebrow">BIBLIOTHÈQUE</p><h2>Programmes récents</h2></div>
+    <span class="count">0</span>
+</div>
+<section class="panel empty-state">
+    <div class="empty-icon">＋</div>
+    <h3>La bibliothèque sera bientôt là</h3>
+    <p class="muted">Cette base native est prête à accueillir tes programmes sans toucher aux historiques de l’application actuelle.</p>
+</section>
+
+@code {
+    private bool showStart;
+}

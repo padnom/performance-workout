@@ -1,0 +1,113 @@
+@page "/exercices"
+@page "/progres"
+@page "/historique"
+@page "/reglages"
+@using Microsoft.AspNetCore.Components
+@using Performance.Application
+@inject NavigationManager Navigation
+@inject ImportPerformanceBackupUseCase ImportBackup
+@inject ExportPerformanceBackupUseCase ExportBackup
+@inject LoadPerformanceDataUseCase LoadData
+@inject SavePerformanceDataUseCase SaveData
+
+<PageTitle>@Title · Performance</PageTitle>
+<p class="eyebrow">PERFORMANCE</p>
+<h1>@Title</h1>
+<p class="muted intro">@Description</p>
+
+<section class="panel placeholder-panel">
+    <span class="placeholder-symbol">@Symbol</span>
+    <h2>@Title</h2>
+    <p class="muted">La structure de navigation est en place. Cette section sera migrée avec les données locales existantes.</p>
+    @if (CurrentPath == "/historique")
+    {
+        <div class="data-safety"><strong>Priorité à tes données</strong><span>Aucun historique n’est supprimé ni modifié pendant la création de cette nouvelle application.</span></div>
+    }
+    @if (CurrentPath == "/reglages")
+    {
+        <div class="data-safety">
+            <strong>Migration depuis l’application web</strong>
+            <span>Exporte une sauvegarde complète depuis la PWA, puis sélectionne le fichier JSON ici.</span>
+        </div>
+        <div class="settings-actions">
+            <button class="primary-button" @onclick="ImportReactBackupAsync">Importer une sauvegarde</button>
+            <button class="secondary-button" @onclick="ShareBackupAsync">Exporter les données MAUI</button>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(statusMessage))
+        {
+            <p class="notice" role="status">@statusMessage</p>
+        }
+    }
+</section>
+
+@code {
+    private string CurrentPath => new Uri(Navigation.Uri).AbsolutePath;
+
+    private string Title => CurrentPath switch
+    {
+        "/exercices" => "Exercices",
+        "/progres" => "Progrès",
+        "/historique" => "Historique",
+        "/reglages" => "Réglages",
+        _ => "Espace"
+    };
+
+    private string Description => CurrentPath switch
+    {
+        "/exercices" => "Ton catalogue, tes variantes de salle et tes repères.",
+        "/progres" => "Un aperçu clair de ton entraînement et de ta régularité.",
+        "/historique" => "Retrouve tes séances terminées et tes performances.",
+        "/reglages" => "Sauvegarde locale, préférences et données de l’application.",
+        _ => ""
+    };
+
+    private string Symbol => CurrentPath switch
+    {
+        "/exercices" => "◉", "/progres" => "↗", "/historique" => "◷", _ => "⚙"
+    };
+
+    private string? statusMessage;
+
+    private async Task ImportReactBackupAsync()
+    {
+        try
+        {
+            var file = await Microsoft.Maui.Storage.FilePicker.Default.PickAsync(new()
+            {
+                PickerTitle = "Choisir une sauvegarde Performance"
+            });
+            if (file is null) return;
+            await using var stream = await file.OpenReadAsync();
+            using var reader = new StreamReader(stream);
+            var imported = ImportBackup.Execute(await reader.ReadToEndAsync());
+            await SaveData.ExecuteAsync(imported);
+            statusMessage = $"Import terminé : {imported.History.Count} séance(s) et {imported.Exercises.Count} exercice(s) personnalisé(s).";
+        }
+        catch (Exception exception)
+        {
+            statusMessage = $"Import impossible : {exception.Message}";
+        }
+    }
+
+    private async Task ShareBackupAsync()
+    {
+        try
+        {
+            var data = await LoadData.ExecuteAsync();
+            var path = Path.Combine(
+                Microsoft.Maui.Storage.FileSystem.CacheDirectory,
+                $"performance-backup-{DateTime.UtcNow:yyyy-MM-dd}.json");
+            await File.WriteAllTextAsync(path, ExportBackup.Execute(data));
+            await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(new()
+            {
+                Title = "Sauvegarde Performance",
+                File = new Microsoft.Maui.ApplicationModel.DataTransfer.ShareFile(path)
+            });
+            statusMessage = "Sauvegarde prête à être partagée.";
+        }
+        catch (Exception exception)
+        {
+            statusMessage = $"Export impossible : {exception.Message}";
+        }
+    }
+}
