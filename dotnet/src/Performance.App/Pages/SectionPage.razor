@@ -98,7 +98,8 @@
                 Microsoft.Maui.Storage.FileSystem.CacheDirectory,
                 $"performance-backup-{DateTime.UtcNow:yyyy-MM-dd}.json");
             await File.WriteAllTextAsync(path, ExportBackup.Execute(data));
-            await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(new()
+            await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(
+                new Microsoft.Maui.ApplicationModel.DataTransfer.ShareFileRequest
             {
                 Title = "Sauvegarde Performance",
                 File = new Microsoft.Maui.ApplicationModel.DataTransfer.ShareFile(path)
