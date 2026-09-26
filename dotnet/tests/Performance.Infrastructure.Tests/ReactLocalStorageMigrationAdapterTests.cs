@@ -31,7 +31,7 @@ public sealed class ReactLocalStorageMigrationAdapterTests
         var exported = adapter.Export(data);
         Assert.Equal("keep-me", exported["future-app-key"]);
         using var exportedLog = JsonDocument.Parse(exported[ReactLocalStorageMigrationAdapter.LogsKey]);
-        Assert.True(exportedLog.RootElement[0]["entries"].TryGetProperty("rope-1@@One Air", out _));
+        Assert.True(exportedLog.RootElement[0].GetProperty("entries").TryGetProperty("rope-1@@One Air", out _));
     }
 
     [Fact]
