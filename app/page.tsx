@@ -3169,12 +3169,33 @@ export default function Home() {
               <div className="settings-actions">
                 <button
                   onClick={() => {
-                    const b = new Blob([JSON.stringify(logs, null, 2)], {
+                    const backup = {
+                        schemaVersion: 2,
+                        exportedAt: new Date().toISOString(),
+                        logs,
+                        customExercises,
+                        hiddenExerciseIds,
+                        weekPlan,
+                        settings: { theme, workoutGym, oneAir },
+                        activeWorkout: active
+                          ? {
+                              active,
+                              draft,
+                              started,
+                              restDurations,
+                              restEnd,
+                              restExerciseId,
+                              workoutGym,
+                              exerciseGyms,
+                            }
+                          : null,
+                      },
+                      b = new Blob([JSON.stringify(backup, null, 2)], {
                         type: "application/json",
                       }),
                       a = document.createElement("a");
                     a.href = URL.createObjectURL(b);
-                    a.download = `mes-performances-${new Date().toISOString().slice(0, 10)}.json`;
+                    a.download = `performance-backup-${new Date().toISOString().slice(0, 10)}.json`;
                     a.click();
                     setToast("Sauvegarde téléchargée");
                   }}
@@ -3191,8 +3212,38 @@ export default function Home() {
                       if (!f) return;
                       try {
                         const d = JSON.parse(await f.text());
-                        if (!Array.isArray(d)) throw Error();
-                        setLogs(d);
+                        if (Array.isArray(d)) {
+                          setLogs(d);
+                        } else if (
+                          d?.schemaVersion >= 2 &&
+                          Array.isArray(d.logs)
+                        ) {
+                          setLogs(d.logs);
+                          if (Array.isArray(d.customExercises))
+                            setCustomExercises(d.customExercises);
+                          if (Array.isArray(d.hiddenExerciseIds))
+                            setHiddenExerciseIds(d.hiddenExerciseIds);
+                          if (Array.isArray(d.weekPlan)) setWeekPlan(d.weekPlan);
+                          if (d.settings?.theme) setTheme(d.settings.theme);
+                          if (d.settings?.workoutGym)
+                            setWorkoutGym(d.settings.workoutGym);
+                          if (typeof d.settings?.oneAir === "boolean")
+                            setOneAir(d.settings.oneAir);
+                          if (d.activeWorkout?.active && d.activeWorkout?.draft) {
+                            const saved = d.activeWorkout;
+                            setActive(saved.active);
+                            setDraft(saved.draft);
+                            setStarted(saved.started || Date.now());
+                            setRestDurations(saved.restDurations || {});
+                            setRestEnd(saved.restEnd || null);
+                            setRestExerciseId(saved.restExerciseId || null);
+                            setWorkoutGym(saved.workoutGym || "One Air");
+                            setExerciseGyms(saved.exerciseGyms || {});
+                            setTab("workout");
+                          }
+                        } else {
+                          throw Error();
+                        }
                         setToast("Sauvegarde restaurée ✓");
                       } catch {
                         setToast("Fichier non reconnu");
