@@ -1,0 +1,23 @@
+@inherits LayoutComponentBase
+
+<div class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="/" aria-label="Performance, accueil">
+            <span class="brand-mark">P</span>
+            <span>PERFORMANCE</span>
+        </a>
+        <span class="offline-pill"><span></span> LOCAL</span>
+    </header>
+
+    <main class="content">
+        @Body
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigation principale">
+        <NavLink href="/" Match="NavLinkMatch.All"><span class="nav-icon">▦</span><span>Programmes</span></NavLink>
+        <NavLink href="/exercices"><span class="nav-icon">◉</span><span>Exercices</span></NavLink>
+        <NavLink href="/progres"><span class="nav-icon">↗</span><span>Progrès</span></NavLink>
+        <NavLink href="/historique"><span class="nav-icon">◷</span><span>Historique</span></NavLink>
+        <NavLink href="/reglages"><span class="nav-icon">⚙</span><span>Réglages</span></NavLink>
+    </nav>
+</div>
