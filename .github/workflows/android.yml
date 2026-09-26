@@ -1,0 +1,148 @@
+name: Android debug APK
+
+on:
+  push:
+    paths:
+      - "dotnet/**"
+      - ".github/workflows/android.yml"
+  pull_request:
+    paths:
+      - "dotnet/**"
+      - ".github/workflows/android.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-debug-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build MAUI Android debug APK
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Locate MAUI Android project
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f "dotnet/Performance.sln" ]] && [[ ! -d "dotnet" ]]; then
+            echo "No dotnet/ directory or dotnet/Performance.sln; Android build skipped."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          project=""
+          while IFS= read -r -d '' candidate; do
+            if grep -Eiq '<UseMaui>[[:space:]]*true[[:space:]]*</UseMaui>|net[0-9]+\.[0-9]+-android' "$candidate"; then
+              project="$candidate"
+              break
+            fi
+          done < <(find dotnet -type f -name '*.csproj' -print0 | sort -z)
+
+          if [[ -z "$project" ]]; then
+            echo "No MAUI/Android .csproj found under dotnet/; Android build skipped."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          framework="$(grep -Eo 'net[0-9]+\.[0-9]+-android' "$project" | head -n 1 || true)"
+          framework="${framework:-net10.0-android}"
+          if [[ "$framework" != "net10.0-android" ]]; then
+            echo "Expected net10.0-android, found $framework in $project." >&2
+            exit 1
+          fi
+          echo "Found $project (target $framework)."
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "framework=$framework" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Java 17
+        if: steps.locate.outputs.enabled == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up .NET SDK
+        if: steps.locate.outputs.enabled == 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install MAUI Android workload
+        if: steps.locate.outputs.enabled == 'true'
+        run: dotnet workload install maui-android
+
+      - name: Restore
+        if: steps.locate.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f dotnet/Performance.sln ]]; then
+            dotnet restore dotnet/Performance.sln
+          else
+            dotnet restore "${{ steps.locate.outputs.project }}"
+            while IFS= read -r -d '' test_project; do
+              dotnet restore "$test_project"
+            done < <(find dotnet/tests -type f -name '*.csproj' -print0 2>/dev/null | sort -z || true)
+          fi
+
+      - name: Run xUnit tests
+        if: steps.locate.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t test_projects < <(find dotnet/tests -type f -name '*.csproj' -print 2>/dev/null | sort || true)
+          if [[ "${#test_projects[@]}" -eq 0 ]]; then
+            echo "No xUnit projects found under dotnet/tests/." >&2
+            exit 1
+          fi
+          for test_project in "${test_projects[@]}"; do
+            dotnet test "$test_project" --configuration Debug --no-restore
+          done
+
+      - name: Build debug APK
+        if: steps.locate.outputs.enabled == 'true'
+        run: >-
+          dotnet build "${{ steps.locate.outputs.project }}"
+          --configuration Debug
+          --framework "${{ steps.locate.outputs.framework }}"
+          -p:AndroidPackageFormats=apk
+
+      - name: Collect APK
+        if: steps.locate.outputs.enabled == 'true'
+        shell: bash
+        env:
+          PROJECT_FILE: ${{ steps.locate.outputs.project }}
+          TARGET_FRAMEWORK: ${{ steps.locate.outputs.framework }}
+        run: |
+          set -euo pipefail
+          project_dir="$(dirname "$PROJECT_FILE")"
+          output_dir="$RUNNER_TEMP/android-apk"
+          mkdir -p "$output_dir"
+          found=0
+          while IFS= read -r -d '' apk; do
+            cp "$apk" "$output_dir/$(basename "$apk")"
+            found=1
+          done < <(find "$project_dir/bin/Debug/$TARGET_FRAMEWORK" -type f -name '*.apk' -print0 2>/dev/null || true)
+
+          if [[ "$found" -ne 1 ]]; then
+            echo "Build succeeded but no APK was found under $project_dir/bin/Debug/$TARGET_FRAMEWORK." >&2
+            exit 1
+          fi
+
+      - name: Upload debug APK artifact
+        if: steps.locate.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-android-debug-apk
+          path: ${{ runner.temp }}/android-apk/*.apk
+          if-no-files-found: error
+          retention-days: 7
