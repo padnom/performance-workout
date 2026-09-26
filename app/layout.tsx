@@ -1,0 +1,3 @@
+import type {Metadata} from "next";import "./globals.css";
+export const metadata:Metadata={title:"Performance",description:"Programmes de musculation personnalisables, journal de séances et suivi des performances.",manifest:"/manifest.webmanifest",themeColor:"#101510",appleWebApp:{capable:true,statusBarStyle:"black-translucent",title:"Performance"},icons:{icon:[{url:"/icon-192.png",sizes:"192x192",type:"image/png"},{url:"/icon-512.png",sizes:"512x512",type:"image/png"}],shortcut:"/icon-192.png",apple:"/icon-192.png"}};
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="fr"><body>{children}</body></html>}
