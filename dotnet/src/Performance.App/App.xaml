@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Performance.App.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PageBackground">#101512</Color>
+            <Color x:Key="CardBackground">#1B231E</Color>
+            <Color x:Key="Accent">#B7F36B</Color>
+            <Color x:Key="PrimaryText">#F4F7F2</Color>
+            <Color x:Key="SecondaryText">#9DA99F</Color>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
