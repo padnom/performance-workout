@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Performance.Domain/Performance.Domain.csproj" />
+    <Project Path="src/Performance.Application/Performance.Application.csproj" />
+    <Project Path="src/Performance.Infrastructure/Performance.Infrastructure.csproj" />
+    <Project Path="src/Performance.App/Performance.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/UnitTests/">
+    <Project Path="tests/Performance.Application.UnitTests/Performance.Application.UnitTests.csproj" />
+    <Project Path="tests/Performance.Infrastructure.UnitTests/Performance.Infrastructure.UnitTests.csproj" />
+    <Project Path="tests/Performance.App.UnitTests/Performance.App.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/IntegrationTests/">
+    <Project Path="tests/Performance.Infrastructure.IntegrationTests/Performance.Infrastructure.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

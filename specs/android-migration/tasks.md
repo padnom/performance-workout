@@ -24,6 +24,7 @@
 - [x] #22 T-22 Restore deployed Progress overview, program/muscle bars and exercise chart; test calculations/rendering and deliver Release 1.1.1/code 3.
 - [x] #23 T-23 Pin compact workout/rest controls at the top, replace cumulative tonnage with useful set metrics and verify Android scrolling/keyboard.
 - [x] #24 T-24 Archive the web reference, clean generated files, refresh Android documentation and commit/push the verified current branch.
+- [x] #25 T-25 Structure Performance.slnx, name UnitTests/IntegrationTests explicitly, mirror UI source folders and verify delivery directly on main.
 
 | Acceptance | Implementation | Proof |
 |---|---|---|
@@ -38,12 +39,13 @@
 | AC-11 | T-12 | immediate confirmed-start, reopened-duration and isolated-render component tests; Android display check |
 | AC-12 | T-13 | hidden-RIR and preserved-value component test; four-column Android display check |
 | AC-13 | T-14 | week state/migration/disk tests and UI addition/order/removal/start/failure tests; Android week display and reopening |
-| AC-14 | T-15 | WeeklyPlanPageTests family/category/reset, actual variant exercises, independent plus, next-variant wrap, custom program and failed-write cases; TrainingPageTests confirmation; Android compact editing and detail screenshots |
-| AC-15 | T-16 | DashboardPageTests metrics/window boundaries/goal, navigation content refresh, week duplicates/confirmation, free session, resume/draft preservation, active-week editing, failed start, finish and latest gym; Android Home/Programs/Resume screenshots |
+| AC-14 | T-15 | ProgramsWeekPlanTests family/category/reset, actual variant exercises, independent plus, next-variant wrap, custom program and failed-write cases; ProgramsTests confirmation; Android compact editing and detail screenshots |
+| AC-15 | T-16 | HomeTests metrics/window boundaries/goal, navigation content refresh, week duplicates/confirmation, free session, resume/draft preservation, active-week editing, failed start, finish and latest gym; Android Home/Programs/Resume screenshots |
 | AC-16 | T-17 | WorkoutSessionEditingTests and WorkoutEditingUiTests: replacement/duplicates/gym drafts/resize/create/cancel/failed writes; emulator editor |
-| AC-17 | T-18 | RestNotificationTests and NotificationSettingsTests: opt-in/refusal/re-arm/extension/stale callbacks/claim/background ownership; native Android receipts in progress.md |
+| AC-17 | T-18 | RestNotificationCoordinatorTests and SettingsNotificationTests: opt-in/refusal/re-arm/extension/stale callbacks/claim/background ownership; native Android receipts in progress.md |
 | AC-18 | T-19 | Separate route components, navigation/Back/free-start/collapse component tests; native modal Back and free-start search verified |
 | AC-19 | T-17/20 | WorkoutTransforms, WorkoutHistoryIndex and one repository lock; diagnostics bounded/payload exclusion/export opt-in tests |
 | AC-20 | T-20/21 | Release package/certificate/ABI/AOT/version verifier and emulator launch; CI distribution secrets explicitly pending |
-| AC-21 | T-22 | WorkoutProgressTests, ProgressPageTests and native Android chart/navigation/update receipts in Progress |
-| AC-22 | T-23 | WorkoutParityTests.Workout_ToolbarPrecedesCardsAndRetainsRestActions, DashboardPageTests seven-day set metrics, SessionHistoryTests no volume; native sticky/keyboard measurements |
+| AC-21 | T-22 | WorkoutProgressTests, ProgressTests and native Android chart/navigation/update receipts in Progress |
+| AC-22 | T-23 | WorkoutParityTests.Workout_ToolbarPrecedesCardsAndRetainsRestActions, HomeTests seven-day set metrics, SessionHistoryTests no volume; native sticky/keyboard measurements |
+| Structure | T-25 | Native dotnet sln list: 8 projects; 445 unit/component cases and 3 real-file integration cases passed in Release; existing production project references unchanged |

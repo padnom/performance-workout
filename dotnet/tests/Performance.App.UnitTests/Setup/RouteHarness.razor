@@ -1,0 +1,8 @@
+@namespace Performance.App.UnitTests.Setup
+@using Microsoft.AspNetCore.Components.Routing
+@using Performance.App.Pages
+
+<Router AppAssembly="typeof(Home).Assembly">
+    <Found Context="routeData"><RouteView RouteData="routeData" /></Found>
+    <NotFound><p>Écran introuvable</p></NotFound>
+</Router>

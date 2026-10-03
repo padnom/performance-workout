@@ -37,11 +37,12 @@ Prérequis : SDK .NET 10, workload MAUI Android, JDK 21 et Android SDK avec plat
 Depuis la racine :
 
 ```sh
-dotnet workload restore dotnet/Performance.sln
+dotnet workload restore dotnet/Performance.slnx
 dotnet build dotnet/src/Performance.App/Performance.App.csproj -f net10.0-android
-dotnet test dotnet/tests/Performance.Application.Tests/Performance.Application.Tests.csproj -c Release
-dotnet test dotnet/tests/Performance.Infrastructure.Tests/Performance.Infrastructure.Tests.csproj -c Release
-dotnet test dotnet/tests/Performance.App.Tests/Performance.App.Tests.csproj -c Release
+dotnet test dotnet/tests/Performance.Application.UnitTests/Performance.Application.UnitTests.csproj -c Release
+dotnet test dotnet/tests/Performance.Infrastructure.UnitTests/Performance.Infrastructure.UnitTests.csproj -c Release
+dotnet test dotnet/tests/Performance.Infrastructure.IntegrationTests/Performance.Infrastructure.IntegrationTests.csproj -c Release
+dotnet test dotnet/tests/Performance.App.UnitTests/Performance.App.UnitTests.csproj -c Release
 python3 -m unittest discover -s dotnet/scripts/tests -v
 ```
 

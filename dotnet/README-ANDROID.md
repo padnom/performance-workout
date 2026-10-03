@@ -6,7 +6,7 @@ L’application Android est une **.NET MAUI Blazor Hybrid** en C#. Son interface
 
 ```text
 dotnet/
-  Performance.sln
+  Performance.slnx
   src/
     Performance.Domain/
     Performance.Application/
@@ -14,9 +14,10 @@ dotnet/
     Performance.App/
       Performance.App.csproj
   tests/
-    Performance.Application.Tests/
-    Performance.Infrastructure.Tests/
-    Performance.App.Tests/
+    Performance.Application.UnitTests/
+    Performance.Infrastructure.UnitTests/
+    Performance.Infrastructure.IntegrationTests/
+    Performance.App.UnitTests/
 ```
 
 Le projet `Performance.App` cible `net10.0-android`. Les tests de composants compilent les mêmes pages Razor sans lancer Android ; ils complètent les tests de logique et de persistance.
@@ -27,10 +28,11 @@ Prérequis : SDK .NET 10, workload Android MAUI, JDK (21 recommandé) et Android
 
 ```bash
 dotnet workload install maui-android
-dotnet restore dotnet/Performance.sln
-dotnet test dotnet/tests/Performance.Application.Tests/Performance.Application.Tests.csproj
-dotnet test dotnet/tests/Performance.Infrastructure.Tests/Performance.Infrastructure.Tests.csproj
-dotnet test dotnet/tests/Performance.App.Tests/Performance.App.Tests.csproj
+dotnet restore dotnet/Performance.slnx
+dotnet test dotnet/tests/Performance.Application.UnitTests/Performance.Application.UnitTests.csproj
+dotnet test dotnet/tests/Performance.Infrastructure.UnitTests/Performance.Infrastructure.UnitTests.csproj
+dotnet test dotnet/tests/Performance.Infrastructure.IntegrationTests/Performance.Infrastructure.IntegrationTests.csproj
+dotnet test dotnet/tests/Performance.App.UnitTests/Performance.App.UnitTests.csproj
 dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   --configuration Debug \
   --framework net10.0-android \
