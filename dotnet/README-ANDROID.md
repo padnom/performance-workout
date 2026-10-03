@@ -1,8 +1,8 @@
 # Construire l’APK Android
 
-Ce dépôt contient actuellement l’application web. Le workflow Android devient actif dès qu’un projet .NET MAUI Blazor Hybrid est ajouté sous `dotnet/`. Il prend en charge une solution nommée `dotnet/Performance.sln` et repère le projet MAUI à partir de son fichier `.csproj`.
+L’application Android est une **.NET MAUI Blazor Hybrid** en C#. Son interface, son catalogue et ses données sont embarqués : aucun hébergement web ni serveur n’est nécessaire pour s’entraîner. Les liens externes vers les mouvements nécessitent Internet.
 
-## Structure conseillée
+## Structure
 
 ```text
 dotnet/
@@ -16,36 +16,114 @@ dotnet/
   tests/
     Performance.Application.Tests/
     Performance.Infrastructure.Tests/
+    Performance.App.Tests/
 ```
 
-Le projet MAUI doit cibler `net10.0-android` (ou inclure cette cible dans `<TargetFrameworks>`) et être configuré en Blazor Hybrid, généralement avec `<UseMaui>true</UseMaui>` et une référence à `Microsoft.AspNetCore.Components.WebView.Maui`. Le workflow vérifie explicitement cette cible, cohérente avec le SDK .NET 10 qu’il installe.
+Le projet `Performance.App` cible `net10.0-android`. Les tests de composants compilent les mêmes pages Razor sans lancer Android ; ils complètent les tests de logique et de persistance.
 
 ## Génération locale
 
-Prérequis : SDK .NET 10, workload Android MAUI, JDK 17 et Android SDK. Depuis la racine du dépôt :
+Prérequis : SDK .NET 10, workload Android MAUI, JDK (21 recommandé) et Android SDK avec la plateforme et les build-tools 36. L’application cible les téléphones Android API 23 ou supérieure. Depuis la racine du dépôt :
 
 ```bash
 dotnet workload install maui-android
 dotnet restore dotnet/Performance.sln
-dotnet test dotnet/Performance.sln --configuration Debug
+dotnet test dotnet/tests/Performance.Application.Tests/Performance.Application.Tests.csproj
+dotnet test dotnet/tests/Performance.Infrastructure.Tests/Performance.Infrastructure.Tests.csproj
+dotnet test dotnet/tests/Performance.App.Tests/Performance.App.Tests.csproj
 dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   --configuration Debug \
   --framework net10.0-android \
   -p:AndroidPackageFormats=apk
 ```
 
-L’APK se trouve sous `dotnet/src/Performance.App/bin/Debug/net10.0-android/`. Le nom exact dépend du nom d’assembly et de la version du SDK.
+L’APK installable est `fr.padnom.performance-Signed.apk`, sous `dotnet/src/Performance.App/bin/Debug/net10.0-android/`. Un éventuel réglage MSBuild global peut rediriger ce dossier ; le journal de compilation indique le chemin effectif. Utiliser le fichier signé.
 
-## APK de diagnostic dans GitHub Actions
+`EmbedAssembliesIntoApk=true` est défini dans le projet pour inclure le code C# même en Debug. Sans ce réglage, le Fast Deployment peut produire un APK signé qui plante lors d’une installation manuelle avec `No assemblies found`.
 
-Le workflow `.github/workflows/android.yml` compile l’application en configuration `Debug` et met l’APK à disposition dans l’onglet **Actions → exécution du workflow → Artifacts**. Il est lancé pour les changements sous `dotnet/`, pour le workflow lui-même, et manuellement via **Run workflow**.
+Vérifier le paquet, puis le lancer sur un appareil ou émulateur connecté :
 
-La compilation Debug utilise la clé de débogage Android générée localement par la chaîne de compilation. Aucun secret de signature n’est nécessaire ni lu par ce workflow. L’APK est destiné à l’installation et aux essais, pas à Google Play ni à une diffusion Release. Un futur paquet Release devra utiliser une clé de signature dédiée stockée dans les secrets GitHub, avec un workflow séparé et des protections adaptées.
+```bash
+python3 dotnet/scripts/verify-debug-apk.py chemin/vers/fr.padnom.performance-Signed.apk
+dotnet run --project dotnet/src/Performance.App/Performance.App.csproj \
+  --framework net10.0-android --device emulator-5554
+```
 
-Le dépôt peut rester privé : le workflow demande uniquement `contents: read`, ne publie pas l’APK dans une Release et conserve l’artefact GitHub pendant sept jours. Seules les personnes ayant accès au dépôt peuvent télécharger l’artefact.
+Pour valider une livraison autonome, installer aussi directement le fichier avec `adb install` sur un appareil de test propre. Un lancement par l’IDE peut masquer des assemblies absentes de l’APK en les déployant séparément.
 
-Tant qu’aucun projet MAUI Android n’existe sous `dotnet/`, le workflow affiche un message informatif et termine sans échec. Une fois le `.csproj` ajouté, il choisit celui qui déclare `UseMaui` ou un TFM Android. Le projet doit déclarer littéralement `net10.0-android`, afin que la cible soit détectable de manière fiable en CI.
+## APK optimisé pour installation locale
+
+Pour les essais de navigation sur téléphone, générer un paquet optimisé :
+
+```bash
+dotnet build dotnet/src/Performance.App/Performance.App.csproj \
+  --configuration Release \
+  --framework net10.0-android \
+  -p:AndroidPackageFormats=apk \
+  -p:RunAOTCompilation=true \
+  -p:PublishTrimmed=true \
+  -p:RuntimeIdentifiers=android-arm64%3Bandroid-x64
+```
+
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.1.0, code Android 2**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+
+`verify-debug-apk.py` reste disponible pour le format Debug. Le nouveau contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
+
+```bash
+python3 dotnet/scripts/verify-release-apk.py \
+  dotnet/src/Performance.App/bin/Release/net10.0-android/fr.padnom.performance-Signed.apk \
+  --project dotnet/src/Performance.App/Performance.App.csproj \
+  --build-tools "$ANDROID_HOME/build-tools/36.0.0"
+python3 dotnet/scripts/smoke-android.py \
+  dotnet/src/Performance.App/bin/Release/net10.0-android/fr.padnom.performance-Signed.apk \
+  --output /tmp/performance-android-smoke
+```
+
+Le second contrôle nécessite un émulateur/appareil de test connecté. Il installe avec `adb install -r`, lance directement l’APK, attend le rendu de l’accueil et conserve une capture, l’arbre accessible et les journaux de démarrage. Il n’efface pas les données mais arrête une éventuelle instance en cours ; utiliser un appareil de test. Ce contrôle de lancement ne remplace pas les essais d’une séance complète ni la mesure de fluidité sur téléphone.
+
+## Release dans GitHub Actions
+
+Le workflow `.github/workflows/android.yml` exécute les trois suites .NET en **Release**, les tests des contrôles de livraison, puis construit un APK **Release AOT et trimming** pour les deux architectures. Il vérifie le paquet et le lance sur un émulateur API 36/x86_64. Il se déclenche pour les changements Android, les pull requests, les tags `android-v*` et les exécutions manuelles. Les preuves de lancement sont téléchargeables dans les artefacts.
+
+Le job de vérification utilise un certificat de diagnostic jetable généré sur le runner, y compris pour les pull requests ; il ne lit aucun secret. Son artefact `performance-release-diagnostic-not-an-update` sert aux essais sur une installation de test et **ne permet pas de mettre à jour l’installation de ton téléphone**.
+
+La signature de mise à jour est un job séparé, exécuté après les vérifications uniquement pour un tag `android-v*` ou un lancement manuel avec `distribute=true`. Configurer dans l’environnement GitHub **android-release** les secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` et `ANDROID_KEY_PASSWORD`, provenant du **certificat déjà utilisé pour l’application installée**. Ne pas générer une nouvelle clé pour cette mise à jour. Les mots de passe restent dans l’environnement, le keystore temporaire est supprimé et aucune clé n’est incluse dans les artefacts. Sans ces quatre secrets, le job de distribution échoue explicitement ; la validation de diagnostic reste disponible.
+
+L’artefact `performance-release-update` n’est distribué qu’après vérification de signature, contenu, version et concordance avec l’empreinte publique du certificat actuel (`dotnet/scripts/android-signing-certificate.sha256`). Une clé différente provoque un échec avant diffusion. Ce fichier ne contient aucune clé privée. Le job signe le même paquet optimisé déjà testé ; il ne recompilera pas un paquet différent. Protéger l’environnement et les tags de livraison selon les droits souhaités dans GitHub. Aucune publication GitHub Release ou Google Play n’est effectuée.
+
+Le dépôt peut rester privé : le workflow demande uniquement `contents: read`. Les artefacts de diagnostic/preuves sont conservés sept jours, celui de mise à jour quatorze jours. Seules les personnes ayant accès au dépôt peuvent télécharger les artefacts.
+
+La version est déclarée dans le projet et n’est jamais réécrite automatiquement par une compilation. `verify-version.py` refuse toute régression et impose un code Android supérieur pour une distribution. En vérification ordinaire, une version inchangée est autorisée. Le job de distribution compare au précédent tag `android-v*` ; pour une livraison manuelle, `previous_release_ref` permet de désigner le dernier commit/tag effectivement distribué. Sans tag initial, la référence de début du dépôt correspond à la première version Android 1.0/code 1. Taguer chaque livraison distribuée pour maintenir cette référence ; ne pas réutiliser le code 2 pour la suivante.
+
+Le workflow doit être poussé pour s’exécuter sur GitHub. Les vérifications locales ne prouvent ni l’exécution CI ni la configuration des secrets GitHub.
 
 ## Données utilisateur
 
 Un APK autonome ne dépend pas de l’hébergement du site, mais il ne peut pas lire directement le `localStorage` isolé de la PWA. La version React produit donc une sauvegarde JSON versionnée, acceptée par l’adaptateur de migration MAUI. Il faut exporter ce fichier avant d’abandonner l’ancienne application, puis vérifier la reprise des historiques sur l’APK. Une synchronisation entre appareils nécessitera ensuite un service distant (par exemple ASP.NET Core) ; l’installation locale seule ne la fournit pas.
+
+## Essai sur téléphone
+
+Le lancement après installation propre, `dotnet run` et le redémarrage hors ligne ont été vérifiés sur un émulateur Android API 36. Les essais sur ton téléphone restent nécessaires. Installer l’APK puis vérifier :
+
+1. En mode avion, ouvrir les programmes et démarrer explicitement une séance.
+2. Saisir charge et répétitions ; fermer complètement l’application et la rouvrir pour retrouver la séance. Le formulaire n’affiche plus le RIR, mais les anciennes valeurs restent conservées dans les données.
+3. Changer de salle, saisir d’autres séries puis terminer : vérifier l’historique et les progrès par salle.
+4. Importer la sauvegarde React et confirmer seulement après lecture du récapitulatif.
+5. Exporter une sauvegarde Android, puis la réimporter et vérifier les données.
+6. Vérifier le clavier, le bouton retour, le défilement et le minuteur pendant l’utilisation réelle.
+7. Pendant une séance, saisir les répétitions : vérifier le repos automatique, changer sa durée, utiliser « +30 s », fermer puis rouvrir l’application avant son échéance et vérifier sa reprise.
+8. Ouvrir « Historique de mes séances » pendant la séance, développer les séries puis fermer la fenêtre ; vérifier que la saisie et les records par salle sont conservés.
+9. Comparer les changements d’écran entre Accueil, Programmes, Progrès, Historique et Plus avec l’APK précédent. Plus donne accès à Exercices et Réglages. Aucune mesure de latence sur téléphone n’a encore été effectuée.
+10. Dès la confirmation du démarrage, vérifier la barre compacte « Temps total » sous l’en-tête ; elle doit rester visible dès le premier défilement et avec le clavier ouvert. Le compteur doit reprendre la durée réelle après réouverture. Aucune heure de démarrage n’est affichée.
+11. Dans Programmes, choisir Classiques / Ciblées, une catégorie puis une variante A/B/C/D : le détail de ses exercices s’affiche en dessous. Le bouton « + » de chaque carte ajoute la séance à la semaine, y compris deux fois la même, sans lancer une séance. Vérifier « Programme actif / Ma semaine », déplacer avec ↑ ↓ et retirer une occurrence avec ×, fermer puis rouvrir l’application. « Démarrer » dans le détail demande confirmation ; toucher une séance de la semaine ouvre son aperçu. Les programmes importés personnalisés restent accessibles sous Personnalisés. Pour retrouver la semaine de l’ancienne PWA, importer sa sauvegarde complète depuis Réglages.
+12. Dans Accueil, vérifier les séances et séries des sept derniers jours glissants et les cartes de la semaine dans le même ordre que Programmes. Démarrer une séance, revenir à Accueil puis utiliser « Reprendre la séance » : retrouver les séries et la durée initiale. Fermer et rouvrir l’application ; le lien de reprise reste disponible. Après terminaison, l’accueil met ses statistiques à jour. Les compteurs ne comptent pas le brouillon actif.
+
+La désinstallation efface le stockage privé de l’application : exporter ses données auparavant.
+
+La **Vibration de fin de repos** est **optionnelle et désactivée par défaut**, au premier plan comme en arrière-plan. Une seule vibration de 200 ms est prévue, sans son ni fenêtre intrusive. Une notification silencieuse permet de revenir à la séance. Dans Réglages, son activation demande les autorisations nécessaires ; aucun prompt au lancement. Le rappel natif sert à déclencher cette vibration écran éteint, et le statut précise si les autorisations sont bloquées ou si Android peut retarder le rappel. Sur téléphone, tester l’autorisation acceptée/refusée, l’écran verrouillé, le passage en arrière-plan, « +30 s », l’arrêt, la fin de séance et la désactivation du réglage ; vérifier qu’aucun ancien rappel ou double vibration n’arrive. Tester aussi Retour avec une fenêtre ouverte, la reprise après interruption, le clavier et la barre de séance pendant le défilement. Ces essais physiques restent à réaliser et ne sont pas couverts par le simple lancement automatisé.
+
+Pendant une séance, chaque carte propose Remplacer, Modifier et Retirer ; la recherche permet aussi de créer un exercice. Les changements sont sauvegardés avant confirmation. Modifier le nombre de séries conserve les premières lignes et ajoute des lignes vides ; les brouillons et records restent séparés par salle. Une carte peut être réduite manuellement avec son résumé de séries. Le temps total, le repos, le compteur de séries et Terminer restent accessibles pendant le défilement et avec le clavier.
+
+Progrès reprend le bilan du site sur les **28 derniers jours** : séances, séries saisies, durée moyenne, programmes réalisés et zones musculaires principales. Les séries avec une charge ou des répétitions sont comptées ; le RIR seul ne compte pas. La courbe par exercice utilise **tout l’historique de la salle choisie**, avec début, variation et record. Toucher un point affiche sa date et sa charge ; les valeurs datées restent accessibles sous le graphique. Avant deux séances, un message indique comment faire apparaître la courbe. Les records de toutes les salles restent consultables dans la section dépliable. Aucun accès réseau n’est nécessaire.
+
+La barre de séance est désormais **compacte et fixée en haut du défilement**, sous l’en-tête : temps de séance, séries, Terminer et repos (+30 s / arrêt). Les totaux de poids soulevé ne sont plus affichés : l’accueil montre les séries sur sept jours, l’historique montre les exercices et les séries, et Progrès montre les charges/records et leur évolution. La durée d’une séance et sa moyenne restent disponibles, sans cumul de temps passé en salle.

@@ -8,4 +8,7 @@
     <ProjectReference Include="../Performance.Domain/Performance.Domain.csproj" />
     <ProjectReference Include="../Performance.Application/Performance.Application.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="default-training-catalog.json" LogicalName="Performance.Infrastructure.default-training-catalog.json" />
+  </ItemGroup>
 </Project>

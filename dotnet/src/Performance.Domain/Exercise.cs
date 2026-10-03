@@ -5,6 +5,7 @@ public sealed record Exercise
 {
     public required string Id { get; init; }
     public required string Name { get; init; }
+    public string? AlternativeName { get; init; }
     public string MuscleGroup { get; init; } = "";
     public string RepTarget { get; init; } = "";
     public int Sets { get; init; } = 4;

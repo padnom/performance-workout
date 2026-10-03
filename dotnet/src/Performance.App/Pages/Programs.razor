@@ -1,0 +1,49 @@
+@page "/programmes"
+@using Performance.Application
+@using Performance.Domain
+@inject WorkoutStateService State
+
+<PageTitle>Programmes · Performance</PageTitle>
+<p class="eyebrow library-heading">BIBLIOTHÈQUE · @LibraryCount séances</p>
+<div class="page-heading"><div><h1>Choisis ta séance</h1><p class="muted">Choisis une catégorie et une variante, puis prépare ta semaine.</p></div></div>
+@if (_loading) { <p class="loading" role="status">Chargement de tes données…</p> }
+@if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
+@if (!_loading)
+{
+    @if (State.Data.ActiveWorkout?.Session is { } active)
+    {
+        <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
+    }
+    <WeeklyPlan Sessions="State.WeekSessions" Selected="SelectSession" Error="SetMessage" Disabled="_busy" />
+    <ProgramLibrary Added="AddWeekAsync" Started="StartSession" Disabled="_busy" />
+    <SessionStart @ref="_starter" />
+}
+
+@code {
+    private bool _loading = true;
+    private bool _busy;
+    private string _message = "";
+    private SessionStart? _starter;
+    private int LibraryCount => State.Programs.Where(program => program.Id != "react-week-plan").Sum(program => ProgramLibrary.VariantsFor(program).Count);
+    protected override async Task OnInitializedAsync()
+    {
+        try { await State.InitializeAsync(); }
+        catch { _message = "Impossible de charger les données. Rouvre l’application pour réessayer."; }
+        finally { _loading = false; }
+    }
+    private void SetMessage(string message) => _message = message;
+    private void SelectSession(WorkoutSession session) => Open(session, false);
+    private void StartSession(WorkoutSession session) => Open(session, true);
+    private void Open(WorkoutSession session, bool confirmOnly)
+    {
+        if (State.Data.ActiveWorkout is not null) { _message = WorkoutUi.Error("ActiveWorkoutExists"); return; }
+        _starter?.Select(session, confirmOnly);
+    }
+    private async Task AddWeekAsync(string id)
+    {
+        _busy = true;
+        try { var result = await State.AddWeekSessionAsync(id); _message = result.IsSuccess ? "" : WorkoutUi.Error(result.Error); }
+        catch { _message = WorkoutUi.Error(null); }
+        finally { _busy = false; }
+    }
+}

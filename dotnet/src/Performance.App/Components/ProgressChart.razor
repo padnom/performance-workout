@@ -1,0 +1,75 @@
+@using System.Globalization
+@using Performance.Application
+@using Microsoft.AspNetCore.Components.Web
+
+<section class="panel progress-chart" aria-label="Progression de @ExerciseName dans la salle @Gym">
+    <div class="chart-head"><div><p class="eyebrow">CHARGE MAXIMALE</p><h3 class="chart-latest">@WorkoutUi.Decimal(Latest) <small>kg</small></h3></div><span class="count">@_points.Length séance(s)</span></div>
+    @if (_points.Length < 2)
+    {
+        <p class="chart-empty muted">@(_points.Length == 0 ? "Aucune séance enregistrée pour cet exercice dans cette salle." : "Enregistre au moins 2 séances pour voir la courbe.")</p>
+    }
+    else
+    {
+        <svg class="progress-spark" viewBox="0 0 360 150" role="img" aria-labelledby="@(_id + "-title") @(_id + "-description")">
+            <title id="@(_id + "-title")">Charge maximale de @ExerciseName · @Gym</title>
+            <desc id="@(_id + "-description")">De @WorkoutUi.Decimal(_points[0].Weight) kg à @WorkoutUi.Decimal(Latest) kg sur @_points.Length séances. Les valeurs datées sont disponibles sous le graphique.</desc>
+            <line x1="32" y1="24" x2="346" y2="24" class="chart-guide" />
+            <line x1="32" y1="118" x2="346" y2="118" class="chart-guide" />
+            <g><text x="2" y="27" class="chart-axis">@WorkoutUi.Decimal(_max)</text><text x="2" y="121" class="chart-axis">@WorkoutUi.Decimal(_min)</text></g>
+            <polyline points="@Coordinates" fill="none" class="chart-line" />
+            @for (var index = 0; index < _points.Length; index++)
+            {
+                var position = index;
+                <g class="chart-target" role="button" tabindex="0" aria-label="@PointLabel(position)" @onclick="() => _selected = position" @onkeydown="args => SelectPoint(position, args)">
+                    <circle cx="@Coordinate(X(index))" cy="@Coordinate(Y(index))" r="12" fill="transparent" />
+                    <circle class="chart-point @(_selected == index ? "selected" : "")" cx="@Coordinate(X(index))" cy="@Coordinate(Y(index))" r="4"><title>@PointLabel(index)</title></circle>
+                </g>
+            }
+            <g><text x="32" y="143" class="chart-axis">@Date(_points[0].Date)</text><text x="346" y="143" text-anchor="end" class="chart-axis">@Date(_points[^1].Date)</text></g>
+        </svg>
+        <p class="chart-point-detail" aria-live="polite">@PointLabel(_selected)</p>
+    }
+    <div class="chart-foot">
+        <div class="chart-start"><span>Début</span><strong>@WorkoutUi.Decimal(_points.FirstOrDefault()?.Weight ?? 0) kg</strong></div>
+        <div class="chart-change"><span>Progression</span><strong>@Change</strong></div>
+        <div class="chart-record"><span>Record</span><strong>@WorkoutUi.Decimal(_max) kg</strong></div>
+    </div>
+    @if (_points.Length > 0)
+    {
+        <details class="chart-values"><summary>Voir les valeurs datées</summary>
+            <table><caption class="sr-only">Charges maximales par séance pour @ExerciseName dans @Gym</caption><thead><tr><th>Date</th><th>Charge maximale</th></tr></thead>
+                <tbody>@foreach (var point in _points) { <tr><td>@Date(point.Date)</td><td>@WorkoutUi.Decimal(point.Weight) kg</td></tr> }</tbody>
+            </table>
+        </details>
+    }
+    <p class="muted progress-note">Historique complet de cette salle. 0 kg correspond à une charge non renseignée ou au poids du corps ; la courbe ne mesure pas les répétitions.</p>
+</section>
+
+@code {
+    [Parameter] public IReadOnlyList<ExerciseHistoryEntry> History { get; set; } = [];
+    [Parameter] public string ExerciseName { get; set; } = "";
+    [Parameter] public string Gym { get; set; } = "One Air";
+    private readonly string _id = "progress-" + Guid.NewGuid().ToString("N");
+    private Point[] _points = [];
+    private decimal _min;
+    private decimal _max;
+    private int _selected;
+    private decimal Latest => _points.LastOrDefault()?.Weight ?? 0;
+    private string Change => _points.Length < 2 ? "—" : $"{(Latest >= _points[0].Weight ? "+" : "")}{WorkoutUi.Decimal(Latest - _points[0].Weight)} kg";
+    private string Coordinates => string.Join(" ", Enumerable.Range(0, _points.Length).Select(index => $"{Coordinate(X(index))},{Coordinate(Y(index))}"));
+    protected override void OnParametersSet()
+    {
+        _points = History.Reverse().OrderBy(entry => entry.Date).Where(entry => entry.Performance.Sets.Any(WorkoutUi.HasData))
+            .Select(entry => new Point(entry.Date, entry.Performance.Sets.Max(set => WorkoutUi.Number(set.Weight)))).ToArray();
+        _min = _points.Length == 0 ? 0 : _points.Min(point => point.Weight);
+        _max = _points.Length == 0 ? 0 : _points.Max(point => point.Weight);
+        _selected = Math.Max(0, _points.Length - 1);
+    }
+    private double X(int index) => 32 + index * (314d / Math.Max(1, _points.Length - 1));
+    private double Y(int index) => _max == _min ? 71 : 118 - (double)((_points[index].Weight - _min) / (_max - _min)) * 94;
+    private static string Coordinate(double value) => value.ToString("0.##", CultureInfo.InvariantCulture);
+    private static string Date(DateTimeOffset value) => value.ToLocalTime().ToString("dd/MM/yyyy", CultureInfo.GetCultureInfo("fr-FR"));
+    private string PointLabel(int index) => $"{Date(_points[index].Date)} : {WorkoutUi.Decimal(_points[index].Weight)} kg";
+    private void SelectPoint(int index, KeyboardEventArgs args) { if (args.Key is "Enter" or " ") _selected = index; }
+    private sealed record Point(DateTimeOffset Date, decimal Weight);
+}

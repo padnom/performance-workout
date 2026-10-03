@@ -1,0 +1,43 @@
+@implements IAsyncDisposable
+@inject TimeProvider Clock
+
+@Display
+
+@code {
+    [Parameter] public DateTimeOffset? StartedAt { get; set; }
+    [Parameter] public DateTimeOffset? Deadline { get; set; }
+    [Parameter] public EventCallback Expired { get; set; }
+    private readonly CancellationTokenSource _lifetime = new();
+    private Task? _ticks;
+    private string Display
+    {
+        get
+        {
+            var value = Deadline is { } end ? Math.Ceiling((end - Clock.GetUtcNow()).TotalSeconds)
+                : StartedAt is { } start ? Math.Floor((Clock.GetUtcNow() - start).TotalSeconds) : 0;
+            var seconds = (int)Math.Clamp(value, 0, int.MaxValue);
+            return $"{seconds / 60}:{seconds % 60:00}";
+        }
+    }
+    protected override void OnInitialized() => _ticks = TickAsync();
+    private async Task TickAsync()
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(_lifetime.Token)) await InvokeAsync(RefreshAsync);
+        }
+        catch (OperationCanceledException) { }
+    }
+    private async Task RefreshAsync()
+    {
+        if (Deadline is { } end && end <= Clock.GetUtcNow() && Expired.HasDelegate) await Expired.InvokeAsync();
+        StateHasChanged();
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await _lifetime.CancelAsync();
+        if (_ticks is not null) await _ticks;
+        _lifetime.Dispose();
+    }
+}

@@ -1,0 +1,28 @@
+@page "/historique"
+@using Performance.Application
+@using Performance.Domain
+@inject WorkoutStateService State
+
+<PageTitle>Historique · Performance</PageTitle>
+<p class="eyebrow">SÉANCE APRÈS SÉANCE</p>
+<h1>Historique</h1>
+<p class="muted intro">Retrouve tes séances terminées et tes performances par salle.</p>
+@if (_loading) { <p class="loading">Chargement de l’historique…</p> }
+@if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
+@if (!_loading)
+{
+    <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+    <SessionHistory Gym="@_gym" />
+}
+
+@code {
+    private bool _loading = true;
+    private string _message = "";
+    private string _gym = "";
+    protected override async Task OnInitializedAsync()
+    {
+        try { await State.InitializeAsync(); }
+        catch { _message = "Impossible de charger l’historique. Rouvre l’application pour réessayer."; }
+        finally { _loading = false; }
+    }
+}

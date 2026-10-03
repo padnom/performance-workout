@@ -1,0 +1,192 @@
+@page "/seance"
+@implements IDisposable
+@using Performance.Application
+@using Performance.Domain
+@using Performance.App.Services
+@inject WorkoutStateService State
+@inject IWorkoutFeedback Feedback
+@inject NavigationManager Navigation
+@inject IServiceProvider Services
+
+<PageTitle>Séance en cours · Performance</PageTitle>
+@if (_loading) { <p class="loading" role="status">Chargement de ta séance…</p> }
+@if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
+@if (!_loading && Active?.Session is { } session)
+{
+    <div class="workout-page">
+        <aside class="workout-toolbar" aria-label="Suivi de la séance">
+            <div class="workout-clock"><span>Temps total</span><strong class="workout-elapsed"><LiveTimer StartedAt="Active.StartedAt" /></strong></div>
+            <div class="workout-completion"><strong>@CompletedCount / @TotalCount</strong><span>séries</span></div>
+            <button class="primary-button finish-workout" aria-label="Terminer la séance" disabled="@_busy" @onclick="() => _confirmation = Confirmation.Finish">Terminer</button>
+            @if (Active.RestEnd is { } deadline)
+            {
+                <div class="rest-banner" role="status"><div><span>@RestExerciseName</span><strong>Repos · <LiveTimer Deadline="deadline" Expired="() => CompleteRestAsync(deadline)" /></strong></div>
+                    <button class="secondary-button" disabled="@_busy" aria-label="Ajouter 30 secondes de repos" @onclick="() => RunAsync(() => State.ExtendRestAsync())">+30 s</button>
+                    <button class="secondary-button" disabled="@_busy" aria-label="Arrêter le repos" @onclick="() => RunAsync(() => State.StopRestAsync())">×</button>
+                </div>
+            }
+        </aside>
+        <div class="page-heading workout-page-heading"><div><p class="eyebrow">SÉANCE EN COURS</p><h1>@session.Name</h1></div>
+            <button class="secondary-button" aria-label="Consulter l’historique sans quitter la séance" @onclick="() => _historyOpen = true">◷ Historique</button>
+        </div>
+        <label class="field gym-field">Salle de cette séance<select value="@Active.DefaultGym" disabled="@_busy" @onchange="ChangeGymAsync">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+        @foreach (var plan in session.Exercises.OrderBy(exercise => exercise.Order))
+        {
+            var exercise = State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId);
+            @if (exercise is not null)
+            {
+                <WorkoutExerciseCard @key="exercise.Id" Exercise="exercise" Plan="plan" Number="@(plan.Order + 1)" Error="SetMessage" Changed="RefreshWorkout" Replace="OpenReplace" Edit="OpenEdit" Remove="OpenRemove" />
+            }
+            else { <p class="notice">Exercice indisponible : @plan.ExerciseId. Les données restent conservées.</p> }
+        }
+        <button class="secondary-button add-workout-exercise" disabled="@_busy" @onclick="OpenAdd">＋ Ajouter un exercice</button>
+        <button class="danger-button abandon-workout" disabled="@_busy" @onclick="() => _confirmation = Confirmation.Cancel">Abandonner la séance</button>
+    </div>
+}
+@if (!_loading && Active is null) { <section class="panel empty-state"><h2>Aucune séance en cours</h2><a class="action-link" href="/">Retour à l’accueil →</a></section> }
+@if (_historyOpen && Active is not null)
+{
+    <div class="modal-backdrop"><section class="panel confirm-dialog workout-history-dialog" role="dialog" aria-modal="true" aria-labelledby="workout-history-title">
+        <div class="card-heading"><h2 id="workout-history-title">Historique récent</h2><button class="secondary-button" aria-label="Fermer l’historique" @onclick="() => _historyOpen = false">×</button></div>
+        <SessionHistory RecentLimit="10" />
+    </section></div>
+}
+@if (_pickerOpen && !_editorOpen)
+{
+    <div class="modal-backdrop"><section class="panel confirm-dialog exercise-picker" role="dialog" aria-modal="true" aria-labelledby="exercise-picker-title">
+        <div class="card-heading"><h2 id="exercise-picker-title">@(_replacing is null ? "Ajouter un exercice" : "Remplacer l’exercice")</h2><button class="secondary-button" aria-label="Fermer la recherche" disabled="@_busy" @onclick="ClosePicker">×</button></div>
+        <input autofocus class="search-input" aria-label="Rechercher un exercice à ajouter" placeholder="Nom, muscle, tag…" @bind="_search" @bind:event="oninput" />
+        <div class="picker-list">@foreach (var exercise in AvailableExercises.Take(25))
+            { <button class="picker-item" disabled="@_busy" @onclick="() => PickAsync(exercise.Id)"><span>@exercise.Name<small>@exercise.MuscleGroup</small></span><b>＋</b></button> }</div>
+        @if (!AvailableExercises.Any()) { <p class="muted">Aucun exercice disponible pour cette recherche.</p> }
+        <button class="secondary-button create-workout-exercise" disabled="@_busy" @onclick="OpenCreate">＋ Créer un exercice</button>
+        @if (_editorError.Length > 0) { <p class="notice" role="alert">@_editorError</p> }
+    </section></div>
+}
+@if (_editorOpen)
+{
+    <ExerciseEditor Original="_editing" SessionSets="EditingPlan?.Sets" SessionTarget="@(EditingPlan?.RepTarget)" SessionRest="@(_editing is null ? null : State.GetRestSeconds(_editing.Id))" DefaultGym="@(Active?.DefaultGym ?? State.CurrentGym)" Busy="_busy" Error="@_editorError" Saved="SaveExerciseAsync" ExistingSelected="UseExistingAsync" Cancelled="CloseEditor" />
+}
+@if (_confirmation != Confirmation.None)
+{
+    <div class="modal-backdrop"><section class="panel confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmation-title">
+        <h2 id="confirmation-title">@ConfirmationTitle</h2><p class="muted">@ConfirmationMessage</p>
+        @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
+        <div class="settings-actions"><button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_confirmation == Confirmation.Cancel ? "Oui, abandonner" : "Confirmer")</button>
+            <button class="secondary-button" disabled="@_busy" @onclick="() => _confirmation = Confirmation.None">Retour</button></div>
+    </section></div>
+}
+
+@code {
+    private enum Confirmation { None, Finish, Cancel, Remove }
+    private Confirmation _confirmation;
+    private bool _loading = true, _busy, _historyOpen, _pickerOpen, _editorOpen;
+    private string _search = "", _message = "", _editorError = "";
+    private Exercise? _editing, _replacing, _removing;
+    private IDisposable? _backRegistration;
+    private bool _disposed;
+    private ActiveWorkout? Active => State.Data.ActiveWorkout;
+    private WorkoutExercise? EditingPlan => Active?.Session?.Exercises.FirstOrDefault(plan => plan.ExerciseId == _editing?.Id);
+    private int CompletedCount => Active?.Session?.Exercises.Sum(plan => State.GetSets(plan.ExerciseId).Count(WorkoutUi.IsWorkoutSetCompleted)) ?? 0;
+    private int TotalCount => Active?.Session?.Exercises.Sum(plan => State.GetSets(plan.ExerciseId).Count) ?? 0;
+    private string RestExerciseName => State.AllExercises.FirstOrDefault(item => item.Id == Active?.RestExerciseId)?.Name ?? "";
+    private IEnumerable<Exercise> AvailableExercises => State.Exercises.GroupBy(exercise => WorkoutUi.NormalizeName(exercise.Name)).Select(group => group.First())
+        .Where(exercise => !IsAlreadyAdded(exercise) && WorkoutUi.NormalizeName($"{exercise.Name} {exercise.MuscleGroup} {string.Join(' ', exercise.Tags)}").Contains(WorkoutUi.NormalizeName(_search), StringComparison.Ordinal)).OrderBy(exercise => exercise.Name);
+    private bool IsAlreadyAdded(Exercise exercise) => Active?.Session?.Exercises.Any(plan => State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId) is { } existing && WorkoutUi.NormalizeName(existing.Name) == WorkoutUi.NormalizeName(exercise.Name)) ?? false;
+    private string ConfirmationTitle => _confirmation switch { Confirmation.Finish => "Terminer la séance ?", Confirmation.Remove => "Retirer l’exercice ?", _ => "Abandonner la séance ?" };
+    private string ConfirmationMessage => _confirmation switch
+    {
+        Confirmation.Finish => "Les séries renseignées seront ajoutées à ton historique.",
+        Confirmation.Remove => $"{_removing?.Name} et ses séries seront retirés de cette séance, dans toutes les salles.",
+        _ => "Les séries de la séance en cours seront supprimées. Ton historique reste conservé."
+    };
+    protected override async Task OnInitializedAsync()
+    {
+        State.DataChanged += DataChanged;
+        if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation) _backRegistration = navigation.RegisterBackHandler(HandleBackAsync, 10);
+        try { await State.InitializeAsync(); _pickerOpen = Navigation.Uri.Contains("ajouter=1", StringComparison.Ordinal) && Active is not null; }
+        catch { _message = "Impossible de charger la séance. Rouvre l’application pour réessayer."; }
+        finally { _loading = false; }
+    }
+    private void SetMessage(string message) => _message = message;
+    private void RefreshWorkout() => StateHasChanged();
+    private void DataChanged(PerformanceData data)
+    {
+        if (!_disposed) _ = InvokeAsync(StateHasChanged);
+    }
+    private void OpenAdd() { _search = ""; _replacing = null; _editorError = ""; _pickerOpen = true; }
+    private void OpenReplace(Exercise exercise) { OpenAdd(); _replacing = exercise; }
+    private void OpenRemove(Exercise exercise) { _removing = exercise; _confirmation = Confirmation.Remove; }
+    private void OpenEdit(Exercise exercise) { _editing = exercise; _editorError = ""; _editorOpen = true; }
+    private void OpenCreate() { _editing = null; _editorError = ""; _editorOpen = true; }
+    private void ClosePicker() { _pickerOpen = false; _replacing = null; }
+    private void CloseEditor() => _editorOpen = false;
+    private Task ChangeGymAsync(ChangeEventArgs args) => RunAsync(() => State.SetGymAsync(args.Value?.ToString() ?? "One Air"));
+    private async Task PickAsync(string id)
+    {
+        var result = await RunAsync(() => _replacing is null ? State.AddExerciseAsync(id) : State.ReplaceExerciseAsync(_replacing.Id, id));
+        if (result) ClosePicker(); else _editorError = _message;
+    }
+    private async Task SaveExerciseAsync(Exercise exercise)
+    {
+        var result = await RunAsync(() => _editing is null ? State.CreateAndAddExerciseAsync(exercise) : State.UpdateActiveExerciseAsync(exercise));
+        if (!result) { _editorError = _message; return; }
+        CloseEditor(); ClosePicker();
+    }
+    private async Task UseExistingAsync(Exercise exercise)
+    {
+        await PickAsync(exercise.Id);
+        if (!_pickerOpen) CloseEditor();
+    }
+    private async Task<bool> RunAsync(Func<Task<WorkoutResult>> action)
+    {
+        if (_busy) return false;
+        _busy = true;
+        try { var result = await action(); _message = result.IsSuccess ? "" : WorkoutUi.Error(result.Error); return result.IsSuccess; }
+        catch { _message = WorkoutUi.Error(null); return false; }
+        finally { _busy = false; }
+    }
+    private async Task ConfirmAsync()
+    {
+        if (_confirmation == Confirmation.Remove && _removing is not null)
+        { if (await RunAsync(() => State.RemoveExerciseAsync(_removing.Id))) _confirmation = Confirmation.None; return; }
+        var success = await RunAsync(() => _confirmation == Confirmation.Finish ? State.FinishAsync() : State.CancelAsync());
+        if (success) Navigation.NavigateTo("/");
+    }
+    private async Task CompleteRestAsync(DateTimeOffset deadline)
+    {
+        if (Active?.RestEnd != deadline) return;
+        if (Services.GetService(typeof(RestNotificationCoordinator)) is RestNotificationCoordinator coordinator)
+        {
+            await coordinator.CompleteForegroundAsync(deadline);
+            if (Active is { RestEnd: null }) _message = "Repos terminé ✓";
+            StateHasChanged(); return;
+        }
+        var result = await State.CompleteRestAsync(deadline);
+        if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
+        if (Active?.RestEnd is not null) return;
+        _message = "Repos terminé ✓";
+        if (State.RestNotificationsEnabled) Feedback.NotifyRestCompleted();
+        StateHasChanged();
+    }
+    private async Task<bool> HandleBackAsync()
+    {
+        await InvokeAsync(() =>
+        {
+            if (_busy) return;
+            if (_editorOpen) CloseEditor();
+            else if (_pickerOpen) ClosePicker();
+            else if (_historyOpen) _historyOpen = false;
+            else if (_confirmation != Confirmation.None) _confirmation = Confirmation.None;
+            else Navigation.NavigateTo("/");
+            StateHasChanged();
+        });
+        return true;
+    }
+    public void Dispose()
+    {
+        _disposed = true;
+        State.DataChanged -= DataChanged;
+        _backRegistration?.Dispose();
+    }
+}

@@ -1,64 +1,56 @@
-# Performance
+# Performance — application Android
 
-Application mobile-first de suivi de musculation. La PWA React reste disponible pendant la migration vers une application Android autonome en .NET MAUI Blazor Hybrid.
+Application de suivi de musculation en **C# / .NET 10 MAUI Blazor Hybrid**, utilisable hors connexion et sans hébergement. L’interface, le catalogue et les données sont embarqués dans l’APK.
+
+Version actuelle : **1.1.1**, code Android **3**.
 
 ## Fonctionnalités
 
-- programmes Push, Pull, Jambes, Upper et séances ciblées ;
-- variantes de séances et construction de la semaine ;
-- suivi des charges et répétitions sur quatre séries ;
-- historique et tableau de progression ;
-- exercices personnalisés, tags et machines par salle ;
-- reprise automatique de la séance en cours ;
-- fonctionnement hors connexion après la première ouverture.
+- Accueil et programme de la semaine : ajout, réorganisation et retrait des séances.
+- Bibliothèque de programmes, variantes et démarrage rapide d’une séance libre.
+- Charges et répétitions par salle, remplacement/modification des exercices et exercices personnalisés.
+- Sauvegarde et reprise de la séance en cours après interruption.
+- Barre compacte en haut : durée de la séance, séries renseignées, repos et terminaison.
+- Vibration discrète de fin de repos, optionnelle et désactivée par défaut.
+- Historique, records par salle, graphiques de progression et répartition des séries par muscle.
+- Import/export des sauvegardes Android et de l’ancien site web.
+- Diagnostics locaux exportés uniquement à la demande.
 
-## Stack actuelle
+Le RIR, le poids cumulé soulevé et le temps cumulé en salle ne sont pas affichés. Les anciennes données restent compatibles avec les imports.
 
-- React 19 et TypeScript ;
-- Vinext / Vite ;
-- hébergement ChatGPT Sites ;
-- stockage local dans le navigateur du téléphone ;
-- manifeste PWA et service worker.
-
-## Développement
-
-Prérequis : Node.js 22 ou supérieur.
-
-```bash
-npm ci
-npm run dev
-```
-
-Compilation :
-
-```bash
-npm run build
-```
-
-## Données
-
-Les séances, records et exercices personnalisés de la PWA sont stockés sur l’appareil avec `localStorage`. L’onglet Réglages exporte maintenant une sauvegarde JSON complète et versionnée, importable par la nouvelle application MAUI. Effacer les données du navigateur avant cet export peut supprimer l’historique.
-
-## Android
-
-La version Android utilise .NET MAUI Blazor Hybrid. Son interface et son stockage sont intégrés à l’APK : aucun hébergement n’est requis pour l’utiliser. Le projet se trouve dans `dotnet/` et la CI produit un APK Debug téléchargeable depuis GitHub Actions.
-
-- `Performance.Domain` : règles et modèles métier ;
-- `Performance.Application` : cas d’usage et abstractions ;
-- `Performance.Infrastructure` : stockage et migration des données React ;
-- `Performance.App` : interface MAUI Blazor Hybrid ;
-- tests xUnit pour les couches Application et Infrastructure.
-
-## Évolution .NET
-
-Une API ASP.NET Core pourra être ajoutée ultérieurement dans `backend/` pour les comptes, la synchronisation multi-appareils et le partage. Elle restera facultative pour l’utilisation locale de l’APK.
-
-## Structure cible
+## Organisation du dépôt
 
 ```text
-app/                  application web
-public/               manifeste PWA et icônes
-dotnet/               solution Clean Architecture et application MAUI
-backend/              API ASP.NET Core optionnelle (à venir)
-.github/workflows/    intégration continue
+dotnet/               application Android, tests et scripts de livraison
+legacy/web/           ancien site React conservé comme référence
+specs/android-migration/ décisions et preuves de migration
+.github/workflows/    vérification et fabrication de l’APK Android
+outputs/              APK et captures locaux, exclus de Git
 ```
+
+Les couches Domain, Application et Infrastructure sont indépendantes de l’hôte Android. Les pages Blazor et les services natifs sont dans `Performance.App`.
+
+## Développer et vérifier
+
+Prérequis : SDK .NET 10, workload MAUI Android, JDK 21 et Android SDK avec plateforme/build-tools 36. Android API 23 minimum.
+
+Depuis la racine :
+
+```sh
+dotnet workload restore dotnet/Performance.sln
+dotnet build dotnet/src/Performance.App/Performance.App.csproj -f net10.0-android
+dotnet test dotnet/tests/Performance.Application.Tests/Performance.Application.Tests.csproj -c Release
+dotnet test dotnet/tests/Performance.Infrastructure.Tests/Performance.Infrastructure.Tests.csproj -c Release
+dotnet test dotnet/tests/Performance.App.Tests/Performance.App.Tests.csproj -c Release
+python3 -m unittest discover -s dotnet/scripts/tests -v
+```
+
+Voir [le projet Android](dotnet/README.md) et [la compilation, la signature et les essais](dotnet/README-ANDROID.md).
+
+## Installer et livrer
+
+L’APK livré localement se trouve dans `outputs/performance-android-1.1.1.apk`. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
+
+La CI vérifie les tests, les versions, un APK Release avec AOT/trimming et son lancement sur émulateur. Son APK de diagnostic utilise une clé jetable et ne met pas à jour l’installation existante. La distribution compatible nécessite les quatre secrets du certificat actuel dans l’environnement GitHub `android-release`, comme décrit dans le guide Android. Aucune clé privée ni APK n’est versionné.
+
+L’ancien site est [archivé sous legacy/web](legacy/web/README.md). Il sert de référence pour les comportements et le format des sauvegardes ; son pipeline n’est plus actif. Le déplacement des sources ne modifie pas le site déjà déployé.

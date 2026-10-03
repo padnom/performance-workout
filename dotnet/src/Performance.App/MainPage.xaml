@@ -4,8 +4,9 @@
              xmlns:blazor="clr-namespace:Microsoft.AspNetCore.Components.WebView.Maui;assembly=Microsoft.AspNetCore.Components.WebView.Maui"
              xmlns:components="clr-namespace:Performance.App.Components"
              x:Class="Performance.App.MainPage"
+             SafeAreaEdges="Container"
              BackgroundColor="#101512">
-    <blazor:BlazorWebView HostPage="wwwroot/index.html">
+    <blazor:BlazorWebView HostPage="wwwroot/index.html" BlazorWebViewInitialized="OnBlazorWebViewInitialized">
         <blazor:BlazorWebView.RootComponents>
             <blazor:RootComponent Selector="#app" ComponentType="{x:Type components:Routes}" />
         </blazor:BlazorWebView.RootComponents>

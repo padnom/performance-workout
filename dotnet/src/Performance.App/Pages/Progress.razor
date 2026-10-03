@@ -1,0 +1,102 @@
+@page "/progres"
+@using Performance.Application
+@using Performance.Domain
+@using Performance.App.Components
+@implements IDisposable
+@inject WorkoutStateService State
+@inject TimeProvider Clock
+
+<PageTitle>Progrès · Performance</PageTitle>
+<p class="eyebrow">28 DERNIERS JOURS</p>
+<h1>Mes progrès</h1>
+<p class="muted intro">Comprends ce que tu entraînes réellement.</p>
+@if (_loading) { <p class="loading">Chargement des performances…</p> }
+@if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
+@if (!_loading)
+{
+    <label class="field gym-field">Filtrer le bilan par salle<select @bind="_gym" @bind:after="Refresh"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+    <div class="progress-summary">
+        <section class="panel"><strong>@_summary.Sessions</strong><span>Séances</span></section>
+        <section class="panel"><strong>@_summary.EnteredSets</strong><span>Séries saisies</span></section>
+        <section class="panel"><strong>@(_summary.AverageMinutes == 0 ? "—" : _summary.AverageMinutes.ToString())</strong><span>@(_summary.AverageMinutes == 0 ? "Durée moyenne" : "Min / séance")</span></section>
+    </div>
+    <section class="panel progress-insight @(_summary.Sessions == 0 ? "neutral" : MissingAreas.Length > 0 ? "warning" : "good")">
+        <p class="eyebrow">@(_summary.Sessions == 0 ? "BILAN" : "BILAN DE RÉGULARITÉ")</p><h2>@InsightTitle</h2><p class="muted">@InsightText</p>
+    </section>
+    <section class="panel progress-panel">
+        <header><div><p class="eyebrow">RÉPARTITION</p><h2>Programmes réalisés</h2></div><span class="count">@_summary.Sessions au total</span></header>
+        <div class="progress-bars program-bars">
+            @foreach (var item in _summary.Programs)
+            {
+                <div class="progress-bar-row"><div><strong>@item.Name</strong><span>@item.Count @(item.Count == 1 ? "séance" : "séances")</span></div><div class="progress-track" role="meter" aria-label="@item.Name" aria-valuemin="0" aria-valuemax="@Maximum(_summary.Programs)" aria-valuenow="@item.Count" aria-valuetext="@($"{item.Count} séance(s) sur {_summary.Sessions}")"><span style="width: @Percent(item.Count, _summary.Programs)%"></span></div></div>
+            }
+            @if (_summary.Sessions == 0) { <p class="muted">Aucune séance sur cette période.</p> }
+        </div>
+    </section>
+    <section class="panel progress-panel">
+        <header><div><p class="eyebrow">ÉQUILIBRE</p><h2>Zones travaillées</h2></div><span class="count">Séries directes</span></header>
+        <div class="progress-bars area-bars">
+            @foreach (var item in _summary.Areas)
+            {
+                <div class="progress-bar-row @(item.Count == 0 ? "missing" : "")"><div><strong>@item.Name</strong><span>@(item.Count == 0 ? "Aucune" : $"{item.Count} séries")</span></div><div class="progress-track" role="meter" aria-label="@item.Name" aria-valuemin="0" aria-valuemax="@Maximum(_summary.Areas)" aria-valuenow="@item.Count" aria-valuetext="@($"{item.Count} séries directes")"><span style="width: @Percent(item.Count, _summary.Areas)%"></span></div></div>
+            }
+        </div>
+        <p class="muted progress-note">Ce graphique compte les séries enregistrées sur les muscles principalement ciblés. Les sollicitations secondaires ne sont pas additionnées.</p>
+    </section>
+    <div class="section-heading"><div><p class="eyebrow">DÉTAIL</p><h2>Progression par exercice</h2></div></div>
+    <div class="progress-selectors">
+        <label class="field progress-exercise">Exercice<select @bind="_selected" @bind:after="RefreshCurve">@foreach (var exercise in State.AllExercises) { <option value="@exercise.Id">@exercise.Name</option> }</select></label>
+        <label class="field exercise-progress-gym">Salle de la courbe<select @bind="_exerciseGym" @bind:after="RefreshCurve">@foreach (var gym in CurveGyms) { <option>@gym</option> }</select></label>
+    </div>
+    <ProgressChart History="_history" ExerciseName="@ExerciseName(_selected)" Gym="@_exerciseGym" />
+    <section class="panel personal-record"><span aria-hidden="true">🏆</span><div><p class="eyebrow">RECORD PERSONNEL · @_exerciseGym</p><h3>@ExerciseName(_selected)</h3><strong>@WorkoutUi.Decimal(_history.SelectMany(entry => entry.Performance.Sets).Select(set => WorkoutUi.Number(set.Weight)).DefaultIfEmpty(0).Max()) kg</strong></div></section>
+    <details class="progress-all-records"><summary>Tous les records par exercice et salle</summary>
+        <input class="search-input" aria-label="Rechercher un record par exercice" placeholder="Rechercher un exercice…" @bind="_search" @bind:event="oninput" />
+        <div class="card-list records-list">
+            @foreach (var group in Performances.GroupBy(performance => new { Name = ExerciseName(performance.ExerciseId), Gym = WorkoutUi.Gym(performance) }).Where(group => group.Key.Name.Contains(_search, StringComparison.CurrentCultureIgnoreCase)).OrderBy(group => group.Key.Name).ThenBy(group => group.Key.Gym))
+            {
+                var rows = group.SelectMany(performance => performance.Sets).Where(set => WorkoutUi.Number(set.Reps) > 0).ToArray();
+                @if (rows.Length > 0)
+                {
+                    <section class="panel record-card"><h3>@group.Key.Name</h3><p class="eyebrow">@group.Key.Gym</p><div class="record-metrics"><div><strong>@WorkoutUi.Decimal(rows.Max(set => WorkoutUi.Number(set.Weight))) kg</strong><span>Meilleure charge</span></div><div><strong>@rows.Length</strong><span>Séries</span></div></div></section>
+                }
+            }
+        </div>
+    </details>
+}
+
+@code {
+    private bool _loading = true;
+    private string _message = "";
+    private string _gym = "";
+    private string _exerciseGym = "One Air";
+    private string _selected = "bench";
+    private string _search = "";
+    private WorkoutProgressSummary _summary = new(0, 0, 0, 0, [], []);
+    private IReadOnlyList<ExerciseHistoryEntry> _history = [];
+    private string[] MissingAreas => _summary.Areas.Where(item => item.Count == 0).Select(item => item.Name).ToArray();
+    private string[] LightAreas => _summary.Areas.Where(item => item.Count > 0 && item.Count < _summary.Areas.Max(area => area.Count) * .35).Take(3).Select(item => item.Name).ToArray();
+    private string InsightTitle => _summary.Sessions == 0 ? "Pas encore assez de données" : MissingAreas.Length > 0 ? "Certaines zones sont absentes" : "Toutes les grandes zones sont présentes";
+    private string InsightText => _summary.Sessions == 0 ? "Termine une séance pour obtenir la répartition de tes programmes et des zones travaillées." : MissingAreas.Length > 0 ? $"{string.Join(", ", MissingAreas)} : aucune série directe enregistrée sur cette période." : LightAreas.Length > 0 ? $"{string.Join(", ", LightAreas)} apparaissent moins souvent que le reste." : "La répartition de tes séries est homogène sur les quatre dernières semaines.";
+    private IEnumerable<ExercisePerformance> Performances => State.Data.History.Where(log => log.Date <= Clock.GetUtcNow()).SelectMany(log => log.Exercises).Where(performance => _gym.Length == 0 || WorkoutUi.Gym(performance) == _gym);
+    private IEnumerable<string> CurveGyms => WorkoutUi.Gyms.Concat(State.Data.History.SelectMany(log => log.Exercises).Select(WorkoutUi.Gym)).Append(State.CurrentGym).Distinct();
+    private string ExerciseName(string id) => State.AllExercises.FirstOrDefault(exercise => exercise.Id == id)?.Name ?? id;
+    private static int Maximum(IReadOnlyList<ProgressCount> items) => Math.Max(1, items.Select(item => item.Count).DefaultIfEmpty(0).Max());
+    private static string Percent(int count, IReadOnlyList<ProgressCount> items) => (100m * count / Maximum(items)).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    protected override async Task OnInitializedAsync()
+    {
+        State.DataChanged += DataChanged;
+        try { await State.InitializeAsync(); _exerciseGym = State.CurrentGym; Refresh(); }
+        catch { _message = "Impossible de charger les performances. Rouvre l’application pour réessayer."; }
+        finally { _loading = false; }
+    }
+    private void Refresh()
+    {
+        _summary = WorkoutProgress.Summarize(State.Data.History, State.AllExercises, State.Programs, Clock.GetUtcNow(), _gym.Length == 0 ? null : _gym);
+        if (!State.AllExercises.Any(exercise => exercise.Id == _selected)) _selected = State.AllExercises.FirstOrDefault()?.Id ?? "";
+        RefreshCurve();
+    }
+    private void RefreshCurve() => _history = State.GetExerciseHistory(_selected, _exerciseGym).Where(entry => entry.Date <= Clock.GetUtcNow() && entry.Performance.Sets.Any(WorkoutUi.HasData)).ToArray();
+    private void DataChanged(PerformanceData data) => _ = InvokeAsync(() => { Refresh(); StateHasChanged(); });
+    public void Dispose() => State.DataChanged -= DataChanged;
+}

@@ -1,23 +1,53 @@
 @inherits LayoutComponentBase
+@implements IDisposable
+@using Performance.App.Services
+@inject IServiceProvider Services
+@inject NavigationManager Navigation
 
 <div class="app-shell">
-    <header class="topbar">
-        <a class="brand" href="/" aria-label="Performance, accueil">
-            <span class="brand-mark">P</span>
-            <span>PERFORMANCE</span>
-        </a>
-        <span class="offline-pill"><span></span> LOCAL</span>
-    </header>
-
-    <main class="content">
-        @Body
-    </main>
-
+    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><span class="offline-pill"><span></span> LOCAL</span></header>
+    <main class="content @(IsWorkout ? "workout-content" : "")" @key="Navigation.Uri">@Body</main>
+    @if (_plusOpen)
+    {
+        <div class="plus-menu-backdrop" @onclick="ClosePlus"></div>
+        <section class="panel plus-menu" aria-label="Autres écrans"><a href="/exercices" @onclick="ClosePlus">◉ Exercices</a><a href="/reglages" @onclick="ClosePlus">⚙ Réglages</a></section>
+    }
     <nav class="bottom-nav" aria-label="Navigation principale">
-        <NavLink href="/" Match="NavLinkMatch.All"><span class="nav-icon">▦</span><span>Programmes</span></NavLink>
-        <NavLink href="/exercices"><span class="nav-icon">◉</span><span>Exercices</span></NavLink>
+        <NavLink href="/" Match="NavLinkMatch.All"><span class="nav-icon">⌂</span><span>Accueil</span></NavLink>
+        <NavLink href="/programmes" Match="NavLinkMatch.All"><span class="nav-icon">▦</span><span>Programmes</span></NavLink>
         <NavLink href="/progres"><span class="nav-icon">↗</span><span>Progrès</span></NavLink>
         <NavLink href="/historique"><span class="nav-icon">◷</span><span>Historique</span></NavLink>
-        <NavLink href="/reglages"><span class="nav-icon">⚙</span><span>Réglages</span></NavLink>
+        <button class="@(_plusOpen ? "active" : "")" aria-expanded="@(_plusOpen ? "true" : "false")" aria-label="Plus" @onclick="() => _plusOpen = !_plusOpen"><span class="nav-icon">•••</span><span>Plus</span></button>
     </nav>
 </div>
+
+@code {
+    private bool _plusOpen;
+    private bool IsWorkout => new Uri(Navigation.Uri).AbsolutePath == "/seance";
+    private AppNavigationService? _navigation;
+    private IDisposable? _backRegistration;
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += LocationChanged;
+        _navigation = Services.GetService(typeof(AppNavigationService)) as AppNavigationService;
+        if (_navigation is null) return;
+        _backRegistration = _navigation.RegisterBackHandler(HandleBackAsync, 20);
+        _navigation.WorkoutRequested += OpenWorkout;
+        if (_navigation.ConsumeWorkoutRequest()) OpenWorkout();
+    }
+    private void OpenWorkout() => _ = InvokeAsync(() => Navigation.NavigateTo("/seance"));
+    private void ClosePlus() => _plusOpen = false;
+    private void LocationChanged(object? sender, LocationChangedEventArgs args) => _ = InvokeAsync(() => { ClosePlus(); StateHasChanged(); });
+    private async Task<bool> HandleBackAsync()
+    {
+        if (!_plusOpen) return false;
+        await InvokeAsync(() => { ClosePlus(); StateHasChanged(); });
+        return true;
+    }
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= LocationChanged;
+        if (_navigation is not null) _navigation.WorkoutRequested -= OpenWorkout;
+        _backRegistration?.Dispose();
+    }
+}

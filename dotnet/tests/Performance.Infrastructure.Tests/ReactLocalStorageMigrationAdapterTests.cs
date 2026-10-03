@@ -1,10 +1,108 @@
 using System.Text.Json;
 using Performance.Infrastructure;
+using Performance.Domain;
+using Shouldly;
 
 namespace Performance.Infrastructure.Tests;
 
 public sealed class ReactLocalStorageMigrationAdapterTests
 {
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("{\"schemaVersion\":3,\"logs\":[]}")]
+    [InlineData("{\"schemaVersion\":2,\"logs\":{}}")]
+    [InlineData("{\"schemaVersion\":\"2\",\"logs\":[]}")]
+    [InlineData("{\"schemaVersion\":2,\"logs\":[null,{}]}")]
+    [InlineData("{\"schemaVersion\":2,\"logs\":[],\"customExercises\":{}}")]
+    [InlineData("{\"schemaVersion\":2,\"logs\":[],\"customExercises\":[{\"id\":\"x\"}]}")]
+    [InlineData("{\"schemaVersion\":2,\"logs\":[],\"activeWorkout\":{\"active\":null}}")]
+    [InlineData("{\"schemaVersion\":1,\"exercises\":[],\"history\":[],\"programs\":null}")]
+    [InlineData("{\"schemaVersion\":1,\"exercises\":[],\"history\":[],\"settings\":null}")]
+    [InlineData("{\"schemaVersion\":1,\"exercises\":[null],\"history\":[]}")]
+    [InlineData("{\"schemaVersion\":1,\"exercises\":[],\"history\":[{\"id\":\"log\",\"sessionId\":\"push\",\"exercises\":null}]}")]
+    public void ImportBackup_UnrecognizedEnvelope_RejectsBeforeReplacingData(string json)
+    {
+        // Arrange
+        var adapter = new ReactLocalStorageMigrationAdapter();
+
+        // Act
+        var import = () => adapter.ImportBackup(json);
+
+        // Assert
+        import.ShouldThrow<JsonException>();
+    }
+
+    [Fact]
+    public void ImportBackup_ActiveSnapshot_RetainsUnknownExerciseDefinitionAndSetOverrides()
+    {
+        // Arrange
+        var json = """
+        {"schemaVersion":2,"logs":[],"activeWorkout":{
+          "active":{"id":"free","name":"Séance libre","exercises":[{
+            "id":"old-custom","name":"Tirage personnel","group":"Dos",
+            "sets":3,"target":"6–8","rest":"2 min","gym":"Basic-Fit"}]},
+          "draft":{"old-custom":[{"weight":"42,5","reps":"8","rir":"2"}]},
+          "started":1790935200000,"workoutGym":"Basic-Fit","exerciseGyms":{"old-custom":"Basic-Fit"}
+        }}
+        """;
+
+        // Act
+        var data = new ReactLocalStorageMigrationAdapter().ImportBackup(json);
+
+        // Assert
+        data.Exercises.ShouldContain(exercise => exercise.Id == "old-custom" && exercise.Name == "Tirage personnel");
+        data.ActiveWorkout.ShouldNotBeNull();
+        data.ActiveWorkout.Session.ShouldNotBeNull();
+        data.ActiveWorkout.Session.Exercises.Single().Sets.ShouldBe(3);
+        data.ActiveWorkout.Draft["old-custom"].Single().Weight.ShouldBe("42,5");
+    }
+
+    [Fact]
+    public void ImportBackup_WeekPlan_ResolvesOrderedCatalogSessions()
+    {
+        // Arrange
+        var json = """{"schemaVersion":2,"logs":[],"weekPlan":["pa","pb","pa"]}""";
+
+        // Act
+        var data = new ReactLocalStorageMigrationAdapter().ImportBackup(json);
+
+        // Assert
+        data.Programs.Single().Sessions.Select(session => session.Id).ShouldBe(new[] { "pa", "pb", "pa" });
+        data.Programs.Single().Sessions.ShouldAllBe(session => session.Exercises.Count > 0);
+    }
+
+    [Theory]
+    [InlineData("""{"schemaVersion":2,"logs":[],"activeWorkout":{"active":{"id":"push","name":"Push","exercises":[{"id":"bench","name":"Développé couché"},{"id":"bench","name":"Développé couché"}]},"draft":{}}}""")]
+    [InlineData("""{"schemaVersion":1,"exercises":[],"history":[],"activeWorkout":{"session":{"id":"push","name":"Push","exercises":[{"exerciseId":"bench"},{"exerciseId":"bench"}]},"draft":{}}}""")]
+    public void ImportBackup_DuplicateActiveExerciseIds_RejectsUnusableSession(string json)
+    {
+        // Arrange
+        var adapter = new ReactLocalStorageMigrationAdapter();
+
+        // Act
+        var import = () => adapter.ImportBackup(json);
+
+        // Assert
+        import.ShouldThrow<JsonException>();
+    }
+
+    [Theory]
+    [InlineData("rest")]
+    [InlineData("repTarget")]
+    [InlineData("muscleGroup")]
+    public void ImportBackup_NullRequiredExerciseText_RejectsUnusableExercise(string field)
+    {
+        // Arrange
+        var json = $$"""{"schemaVersion":1,"exercises":[{"id":"bench","name":"Bench","{{field}}":null}],"history":[]}""";
+        var adapter = new ReactLocalStorageMigrationAdapter();
+
+        // Act
+        var import = () => adapter.ImportBackup(json);
+
+        // Assert
+        import.ShouldThrow<JsonException>();
+    }
+
     [Fact]
     public void Import_preserves_history_exercise_id_and_gym_qualified_records()
     {

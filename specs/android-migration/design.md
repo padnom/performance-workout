@@ -1,0 +1,37 @@
+# Design
+
+Route: Brownfield. Preserve the current .NET layer boundaries and existing React application.
+
+- `legacy/web/app/page.tsx` is the archived reference for the catalog, variants, gym-specific history and explicit start.
+- `Performance.Domain/Training.cs` retains stable IDs and local training records.
+- `Performance.Application/WorkoutStateService.cs` owns serialized persisted state transitions.
+- `Performance.Infrastructure/DefaultTrainingCatalog.cs` loads an embedded offline catalog.
+- `ReactLocalStorageMigrationAdapter.cs` keeps the supported web/native backup formats.
+- `Performance.App/Pages/` becomes a working French training interface.
+- `MauiProgram.cs` wires the catalog, state and local JSON storage.
+
+D-01: retain MAUI Blazor Hybrid; do not wrap the hosted website.
+D-02: persist before publishing updated in-memory state; failed writes retain the previous data.
+D-03: keep gym-specific history and draft entries separate, including imported legacy records.
+D-04: retain old opaque React keys for compatibility and reject unrecognized backup envelopes.
+D-05: Debug APK for direct device trials; no store publication or Release credentials.
+D-06: additionally deliver an optimized Release build with AOT and trimming for local installation, using the existing diagnostic signing certificate so it can update the current app. Store publication and dedicated production signing remain outside this delivery.
+D-07: persist rest as an absolute deadline with the draft; update individual set fields under the existing mutation lock to preserve concurrent weight/repetition edits. Failed saves retain prior state.
+D-08: let a small LiveTimer component refresh its text; cache catalog lists and invalidate them when their source data changes. Keep workout inputs editable during slow saves and show pending field values.
+D-09: show the existing elapsed LiveTimer at the top right of the workout heading, labelled "Temps total". Keep the persisted StartedAt as its source and do not show the start time. Remove RIR inputs/column from workout entry while retaining stored/imported RIR values for compatibility.
+D-10: reuse the imported `react-week-plan` program for the ordered week, including duplicate sessions. Weekly mutations use the existing persistence lock, and native backups retain the plan; raw React export emits its current session IDs. Home passes the current Sessions collection explicitly to WeeklyPlan so a successful library addition refreshes the child component.
+D-11: place a compact, accessible 44-pixel plus button inside the library session card, beside its main selection button. Keep the two controls as siblings to avoid nested buttons; adding does not open the session preview or start a workout.
+D-12: WeeklyPlan groups the ordinal, name and three 44-pixel controls on a compact row. ProgramLibrary owns transient family/category/variant selection; mutations remain in WorkoutStateService via Home callbacks. Standard categories show their four catalog variants, while custom programs retain all their sessions under Personnalisés. Selecting a card updates inline exercise details; Démarrer opens confirmation directly. Filter buttons expose explicit true/false aria-pressed values.
+D-13: Home serves explicit local routes / (dashboard), /programmes (editor/library) and /seance (active workout), sharing the existing start/finish/persistence pipeline. The six-item bottom navigation has separate Home and Programs links. Because RouteView may reuse this page without parameter changes, subscribe to NavigationManager.LocationChanged to render the new route and clear transient dialogs; unsubscribe on disposal. Dashboard computes read-only aggregates from completed history with injected TimeProvider, rolling windows matching the React reference, decimal-aware volume and one-decimal tonnes. Exclude future timestamps; active drafts do not enter metrics. Preserve active state when leaving the workout and expose a Resume link. Gym selection moves into the preview/start dialog and defaults to the latest persisted gym.
+
+The in-session modal shows the ten most recent sessions with expandable set details; the full History page remains available. This delivery targets the reported rest/history gaps, not an assertion of complete visual or functional parity with every PWA feature.
+
+D-14: replace/edit/remove/create transformations run under the existing state mutation lock, saving before publication. Resize retains leading sets for every gym and adds empty rows. Replacing preserves position, resets repetitions and seeds gym-specific history loads. Removing cleans every gym draft and only cancels the affected rest. Editing also publishes a catalog override; legacy imports remain supported.
+D-15: RestNotificationCoordinator observes successful state publications. Tokens hash workout start, exercise and deadline. A native AlarmManager receiver checks current durable JSON and opt-in before claiming a token; a silent notification channel vibrates once for 200 ms. Foreground visual completion works without opt-in. Resume checks permissions and re-arms; blocked/approximate status is visible, without a startup permission prompt.
+D-16: Home, Programs and Workout are separate route components. Five bottom controls expose Home/Programs/Progress/History/Plus; Plus contains Exercises/Settings. Back handlers use a locked snapshot and run outside the lock. Android's dispatcher delegates to the modal-first handlers after WebView initialization. Cards only collapse manually; the compact toolbar retains elapsed time, rest, series and Finish above navigation and adjusts with the keyboard.
+D-17: the repository diagnostics decorator records controlled operation names, durations and exception types only. A bounded local journal has no session content or automatic upload. Settings displays installed version and voluntary export. CI validates Release AOT/trimming, ABIs, package version, signing certificate and real dashboard rendering. The protected distribution job signs with existing-certificate secrets and refuses a different certificate or reused Android code.
+
+Risk: successful compilation does not establish phone/WebView behavior. Device checks are explicit.
+
+D-18: Progress follows the inspected deployed screen and `legacy/web/app/page.tsx` calculations. A pure Application summary owns the strict rolling 28-day window, entered rows (weight OR repetitions), rounded average duration, program-family mapping and primary muscle areas. Future logs are excluded. The existing history index supplies full-history gym-specific chart entries; native SVG/CSS bars require no chart package, script download or server. Zero/one-point guidance, flat curves, French decimal values, keyboard/touch point selection and dated tables make the chart usable offline. The old gym-filtered records remain under an expandable section. Release increments to 1.1.1/code 3 and keeps the existing signer.
+D-19: user's latest preferences supersede the earlier bottom-fixed toolbar and tonnage display. The toolbar is the first Workout child and sticks at top:0 of the existing main scroll container, with zero top padding on that route. It uses a 44-pixel Finish control and compact rest row, retaining essential actions with the keyboard. Home displays completed sets in seven days instead of tonnes; Progress/History omit cumulative volume and cumulative gym time. Stored duration/weights and backup formats are unchanged.

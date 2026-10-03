@@ -12,6 +12,7 @@ public sealed record WorkoutSession
 {
     public required string Id { get; init; }
     public required string Name { get; init; }
+    public string? Color { get; init; }
     public string? Focus { get; init; }
     public IReadOnlyList<WorkoutExercise> Exercises { get; init; } = [];
 }
@@ -22,6 +23,7 @@ public sealed record WorkoutExercise
     public int Order { get; init; }
     public int? Sets { get; init; }
     public string? RepTarget { get; init; }
+    public string? Rest { get; init; }
     public string? Gym { get; init; }
 }
 
@@ -55,4 +57,7 @@ public sealed record ActiveWorkout
     public IReadOnlyDictionary<string, IReadOnlyList<TrainingSet>> Draft { get; init; } = new Dictionary<string, IReadOnlyList<TrainingSet>>();
     public string? DefaultGym { get; init; }
     public IReadOnlyDictionary<string, string> ExerciseGyms { get; init; } = new Dictionary<string, string>();
+    public IReadOnlyDictionary<string, int> RestDurations { get; init; } = new Dictionary<string, int>();
+    public DateTimeOffset? RestEnd { get; init; }
+    public string? RestExerciseId { get; init; }
 }

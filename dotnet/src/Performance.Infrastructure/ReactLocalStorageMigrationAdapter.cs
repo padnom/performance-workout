@@ -6,7 +6,7 @@ using Performance.Domain;
 namespace Performance.Infrastructure;
 
 /// <summary>Compatibility bridge for the React PWA's known localStorage keys plus opaque preservation of unknown keys.</summary>
-public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapter
+public sealed class ReactLocalStorageMigrationAdapter(ITrainingCatalog? catalog = null) : IReactLocalStorageAdapter
 {
     public const string LogsKey = "jo-strength-logs";
     public const string ActiveKey = "jo-strength-active";
@@ -15,16 +15,21 @@ public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapte
     public const string HiddenExercisesKey = "training-hidden-exercises";
     private static readonly HashSet<string> SettingKeys = ["training-theme", "training-one-air", "training-workout-gym"];
     private readonly JsonSerializerOptions _json = PersistenceJson.Options();
+    private readonly ITrainingCatalog _catalog = catalog ?? new DefaultTrainingCatalog();
 
     public PerformanceData Import(IReadOnlyDictionary<string, string?> localStorage)
     {
         ArgumentNullException.ThrowIfNull(localStorage);
         var raw = localStorage.Where(x => x.Value is not null).ToDictionary(x => x.Key, x => x.Value!, StringComparer.Ordinal);
+        var customExercises = ParseExercises(raw.GetValueOrDefault(CustomExercisesKey));
+        var knownIds = _catalog.Exercises.Concat(customExercises).Select(exercise => exercise.Id).ToHashSet(StringComparer.Ordinal);
+        var recoveredExercises = ParseActiveExercises(raw.GetValueOrDefault(ActiveKey))
+            .Where(exercise => !knownIds.Contains(exercise.Id));
         return new PerformanceData
         {
             ReactLocalStorage = raw,
             Settings = raw.Where(x => SettingKeys.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value, StringComparer.Ordinal),
-            Exercises = ParseExercises(raw.GetValueOrDefault(CustomExercisesKey)),
+            Exercises = customExercises.Concat(recoveredExercises).DistinctBy(exercise => exercise.Id).ToArray(),
             History = ParseHistory(raw.GetValueOrDefault(LogsKey)),
             ActiveWorkout = ParseActive(raw.GetValueOrDefault(ActiveKey)),
             Programs = ParseWeekPlan(raw.GetValueOrDefault(WeekPlanKey)),
@@ -43,6 +48,9 @@ public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapte
             output[LogsKey] = JsonSerializer.Serialize(data.History.Select(ToReactLog), _json);
         if (data.HiddenExerciseIds.Count > 0 || output.ContainsKey(HiddenExercisesKey))
             output[HiddenExercisesKey] = JsonSerializer.Serialize(data.HiddenExerciseIds, _json);
+        var week = data.Programs.FirstOrDefault(program => program.Id == "react-week-plan");
+        if (week is not null)
+            output[WeekPlanKey] = JsonSerializer.Serialize(week.Sessions.Select(session => session.Id), _json);
         return output;
     }
 
@@ -54,20 +62,49 @@ public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapte
         using var document = JsonDocument.Parse(json);
         var root = document.RootElement;
 
-        // Historical exports from the React app contained the logs array only.
         if (root.ValueKind == JsonValueKind.Array)
+        {
+            BackupValidation.ValidateLogs(root);
             return Import(new Dictionary<string, string?> { [LogsKey] = root.GetRawText() });
+        }
 
         if (root.ValueKind != JsonValueKind.Object)
-            throw new JsonException("Sauvegarde vide ou invalide.");
+            throw new JsonException("Invalid backup document.");
 
-        // Version 2 is the complete backup produced by the React PWA.
-        if (Property(root, "schemaVersion", out var schema) && schema.TryGetInt32(out var version) && version >= 2)
+        if (!Property(root, "schemaVersion", out var schema) || schema.ValueKind != JsonValueKind.Number || !schema.TryGetInt32(out var version))
+            throw new JsonException("Unrecognized backup format.");
+
+        if (version == 2)
+        {
+            RequireArray(root, "logs");
+            BackupValidation.ValidateReact(root);
             return ImportReactBackup(root);
+        }
+
+        if (version != 1)
+            throw new JsonException("Unsupported backup version.");
+
+        RequireArray(root, "exercises");
+        RequireArray(root, "history");
 
         var data = JsonSerializer.Deserialize<PerformanceData>(json, _json)
             ?? throw new JsonException("Sauvegarde vide ou invalide.");
+        BackupValidation.ValidateNative(data);
         return data with { SchemaVersion = 1 };
+    }
+
+    private static void RequireArray(JsonElement root, string propertyName)
+    {
+        if (!Property(root, propertyName, out var value) || value.ValueKind != JsonValueKind.Array)
+            throw new JsonException($"Invalid backup field: {propertyName}.");
+    }
+
+    private static IReadOnlyList<Exercise> ParseActiveExercises(string? json)
+    {
+        if (!Object(json, out var root) || !Property(root, "active", out var active) || !Property(active, "exercises", out var exercises))
+            return [];
+
+        return ParseExercises(exercises.GetRawText());
     }
 
     private PerformanceData ImportReactBackup(JsonElement root)
@@ -118,7 +155,7 @@ public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapte
             var link = NullableText(item, "link");
             output.Add(new Exercise
             {
-                Id = id, Name = name, MuscleGroup = Text(item, "group"), RepTarget = Text(item, "target"),
+                Id = id, Name = name, AlternativeName = NullableText(item, "alt"), MuscleGroup = Text(item, "group"), RepTarget = Text(item, "target"),
                 Rest = Text(item, "rest"), Sets = Number(item, "sets", 4), Link = link, Tags = TextArray(item, "tags"), IsCustom = true,
                 Variants = gyms.Distinct(StringComparer.OrdinalIgnoreCase).Select(g => new GymVariant { Gym = g, PhotoUrl = link }).ToArray()
             });
@@ -157,7 +194,11 @@ public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapte
         if (Property(active, "exercises", out var list) && list.ValueKind == JsonValueKind.Array)
         {
             var order = 0;
-            foreach (var x in list.EnumerateArray()) if (Text(x, "id") is { Length: > 0 } id) exercises.Add(new WorkoutExercise { ExerciseId = id, Order = order++ });
+            foreach (var x in list.EnumerateArray()) if (Text(x, "id") is { Length: > 0 } id) exercises.Add(new WorkoutExercise
+            {
+                ExerciseId = id, Order = order++, Sets = Number(x, "sets", 4),
+                RepTarget = NullableText(x, "target"), Rest = NullableText(x, "rest"), Gym = NullableText(x, "gym")
+            });
         }
         var draft = new Dictionary<string, IReadOnlyList<TrainingSet>>(StringComparer.Ordinal);
         if (Property(root, "draft", out var draftObject) && draftObject.ValueKind == JsonValueKind.Object)
@@ -165,6 +206,14 @@ public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapte
         var gyms = new Dictionary<string, string>(StringComparer.Ordinal);
         if (Property(root, "exerciseGyms", out var gymObject) && gymObject.ValueKind == JsonValueKind.Object)
             foreach (var x in gymObject.EnumerateObject()) if (x.Value.ValueKind == JsonValueKind.String) gyms[x.Name] = x.Value.GetString()!;
+        var restDurations = new Dictionary<string, int>(StringComparer.Ordinal);
+        if (Property(root, "restDurations", out var restObject) && restObject.ValueKind == JsonValueKind.Object)
+            foreach (var entry in restObject.EnumerateObject())
+                if (entry.Value.ValueKind == JsonValueKind.Number && entry.Value.TryGetInt32(out var seconds) && seconds is >= 15 and <= 600)
+                    restDurations[entry.Name] = seconds;
+        DateTimeOffset? restEnd = Property(root, "restEnd", out var deadline) && deadline.ValueKind == JsonValueKind.Number
+            && deadline.TryGetInt64(out var restMilliseconds) && restMilliseconds is >= -62135596800000 and <= 253402300799999
+                ? DateTimeOffset.FromUnixTimeMilliseconds(restMilliseconds) : null;
         var startedText = Text(root, "started");
         var started = long.TryParse(startedText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var unixMilliseconds)
             ? DateTimeOffset.FromUnixTimeMilliseconds(unixMilliseconds)
@@ -172,21 +221,28 @@ public sealed class ReactLocalStorageMigrationAdapter : IReactLocalStorageAdapte
                 ? parsedStarted : DateTimeOffset.MinValue;
         return new ActiveWorkout
         {
-            Session = new WorkoutSession { Id = Text(active, "id"), Name = Text(active, "name"), Focus = NullableText(active, "kicker"), Exercises = exercises },
-            StartedAt = started, Draft = draft, ExerciseGyms = gyms, DefaultGym = NullableText(root, "workoutGym")
+            Session = new WorkoutSession { Id = Text(active, "id"), Name = Text(active, "name"), Color = NullableText(active, "color"), Focus = NullableText(active, "kicker"), Exercises = exercises },
+            StartedAt = started, Draft = draft, ExerciseGyms = gyms, DefaultGym = NullableText(root, "workoutGym"),
+            RestDurations = restDurations, RestEnd = restEnd, RestExerciseId = NullableText(root, "restExerciseId")
         };
     }
 
-    private static IReadOnlyList<WorkoutProgram> ParseWeekPlan(string? json)
+    private IReadOnlyList<WorkoutProgram> ParseWeekPlan(string? json)
     {
-        if (string.IsNullOrWhiteSpace(json)) return [];
-        try { using var doc = JsonDocument.Parse(json); return doc.RootElement.ValueKind == JsonValueKind.Null ? [] : [new WorkoutProgram { Id = "react-week-plan", Name = "Programme hebdomadaire" }]; }
-        catch (JsonException) { return []; }
+        var sessionIds = ParseStringArray(json);
+        if (sessionIds.Count == 0) return [];
+        var sessions = _catalog.Programs.SelectMany(program => program.Sessions).DistinctBy(session => session.Id)
+            .ToDictionary(session => session.Id, StringComparer.Ordinal);
+        return [new WorkoutProgram
+        {
+            Id = "react-week-plan", Name = "Programme hebdomadaire",
+            Sessions = sessionIds.Select(id => sessions.GetValueOrDefault(id) ?? new WorkoutSession { Id = id, Name = id }).ToArray()
+        }];
     }
 
     private static IReadOnlyList<string> ParseStringArray(string? json) => Array(json, out var value) ? value.EnumerateArray().Where(x => x.ValueKind == JsonValueKind.String).Select(x => x.GetString()!).ToArray() : [];
     private static IReadOnlyList<TrainingSet> ParseSets(JsonElement value) => value.ValueKind == JsonValueKind.Array ? value.EnumerateArray().Where(x => x.ValueKind == JsonValueKind.Object).Select(x => new TrainingSet { Weight = Text(x, "weight"), Reps = Text(x, "reps"), Rir = Text(x, "rir") }).ToArray() : [];
-    private static object ToReactExercise(Exercise x) => new { x.Id, x.Name, target = x.RepTarget, x.Rest, x.Sets, group = x.MuscleGroup, x.Link, x.Tags, gyms = x.Variants.Select(v => v.Gym).Distinct().ToArray(), gym = x.Variants.FirstOrDefault()?.Gym };
+    private static object ToReactExercise(Exercise x) => new { x.Id, x.Name, alt = x.AlternativeName, target = x.RepTarget, x.Rest, x.Sets, group = x.MuscleGroup, x.Link, x.Tags, gyms = x.Variants.Select(v => v.Gym).Distinct().ToArray(), gym = x.Variants.FirstOrDefault()?.Gym };
     private static object ToReactLog(TrainingSessionLog x) => new { x.Id, date = x.Date.ToString("O", CultureInfo.InvariantCulture), sessionId = x.SessionId, duration = x.DurationMinutes, entries = x.Exercises.ToDictionary(e => e.Gym is null ? e.ExerciseId : $"{e.ExerciseId}@@{e.Gym}", e => e.Sets.Select(s => new { s.Weight, s.Reps, s.Rir }).ToArray(), StringComparer.Ordinal) };
     private static (string Id, string? Gym) SplitId(string value) { var at = value.LastIndexOf("@@", StringComparison.Ordinal); return at < 0 ? (value, null) : (value[..at], value[(at + 2)..]); }
     private static bool Array(string? json, out JsonElement value) { value = default; try { using var doc = JsonDocument.Parse(json ?? ""); if (doc.RootElement.ValueKind != JsonValueKind.Array) return false; value = doc.RootElement.Clone(); return true; } catch (JsonException) { return false; } }

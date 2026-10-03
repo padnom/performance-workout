@@ -1,0 +1,147 @@
+@using Performance.Application
+@using Performance.Domain
+@inject WorkoutStateService State
+
+<article class="panel exercise-card" data-exercise="@Exercise.Id">
+    <div class="card-heading">
+        <div>
+            <p class="eyebrow">EXERCICE @Number</p><h2>@Exercise.Name</h2>
+            <p class="muted">@Exercise.MuscleGroup · @(Plan.RepTarget ?? Exercise.RepTarget) · repos @(Plan.Rest ?? Exercise.Rest)</p>
+            @if (!string.IsNullOrWhiteSpace(Exercise.AlternativeName)) { <p class="machine-name">Alternative : @Exercise.AlternativeName</p> }
+        </div>
+        <button class="secondary-button collapse-exercise" disabled="@_busy" aria-expanded="@(_collapsed ? "false" : "true")" aria-label="@($"{(_collapsed ? "Développer" : "Réduire")} {Exercise.Name}")" @onclick="() => _collapsed = !_collapsed">@(_collapsed ? "⌄" : "⌃")</button>
+    </div>
+    <p class="muted exercise-completion">@Rows.Count(WorkoutUi.IsWorkoutSetCompleted) / @Rows.Count séries renseignées</p>
+    @if (!_collapsed)
+    {
+    <div class="gym-history">
+        <label>Salle
+            <select aria-label="Salle de @Exercise.Name" value="@SelectedGym" disabled="@_busy" @onchange="SwitchGymAsync">
+                @foreach (var gym in WorkoutUi.ExerciseGyms(Exercise)) { <option>@gym</option> }
+            </select>
+        </label>
+        @if (Exercise.Variants.FirstOrDefault(variant => variant.Gym == SelectedGym)?.MachineName is { Length: > 0 } machine)
+        {
+            <p class="muted">@machine</p>
+        }
+        <div class="gym-record"><span>Record dans cette salle</span><strong>@(Record > 0 ? $"{WorkoutUi.Decimal(Record)} kg" : "—")</strong></div>
+        @if (History.Any())
+        {
+            <details>
+                <summary>Dernières séances · @SelectedGym</summary>
+                @foreach (var item in History.Take(3))
+                {
+                    <p class="muted">@item.Date.ToLocalTime().ToString("dd/MM/yyyy") : @HistorySummary(item)</p>
+                }
+            </details>
+        }
+    </div>
+    <div class="set-grid set-labels"><span>Série</span><span>Dernière</span><span>kg</span><span>Reps</span><span aria-hidden="true">✓</span></div>
+    @for (var index = 0; index < Rows.Count; index++)
+    {
+        var setIndex = index;
+        var row = Rows[index];
+        var previous = Previous.ElementAtOrDefault(index);
+        <div class="set-grid set-row @(WorkoutUi.IsWorkoutSetCompleted(row) ? "done" : "")" @key="setIndex">
+            <b>@(index + 1)</b><span class="last-cell">@(previous is null ? "—" : $"{previous.Weight}×{previous.Reps}")</span>
+            <input inputmode="decimal" aria-label="Charge série @(index + 1) @Exercise.Name" value="@FieldValue(setIndex, TrainingSetField.Weight, row.Weight)" @onchange="args => SaveFieldAsync(setIndex, TrainingSetField.Weight, args.Value?.ToString() ?? string.Empty)" />
+            <input inputmode="numeric" aria-label="Répétitions série @(index + 1) @Exercise.Name" value="@FieldValue(setIndex, TrainingSetField.Reps, row.Reps)" @oninput="args => SaveFieldAsync(setIndex, TrainingSetField.Reps, args.Value?.ToString() ?? string.Empty)" />
+            <span class="set-completed" aria-label="@(WorkoutUi.IsWorkoutSetCompleted(row) ? "Série renseignée" : "Série à renseigner")">@(WorkoutUi.IsWorkoutSetCompleted(row) ? "✓" : "○")</span>
+        </div>
+    }
+    @if (State.Data.ActiveWorkout is { RestEnd: { } end } active && active.RestExerciseId == Exercise.Id)
+    {
+        <div class="mini-rest-timer" role="status">
+            <span>Repos</span><strong><LiveTimer Deadline="end" /></strong>
+            <button class="secondary-button" disabled="@_busy" aria-label="Ajouter 30 secondes @Exercise.Name" @onclick="() => RunRestAsync(() => State.ExtendRestAsync())">+30 s</button>
+            <button class="secondary-button" disabled="@_busy" aria-label="Arrêter le timer @Exercise.Name" @onclick="() => RunRestAsync(() => State.StopRestAsync())">×</button>
+        </div>
+    }
+    <div class="exercise-rest-controls">
+        <label>Repos<select aria-label="Durée de repos @Exercise.Name" value="@RestSeconds" disabled="@_busy" @onchange="ChangeRestAsync">
+            @foreach (var seconds in RestOptions) { <option value="@seconds">@FormatDuration(seconds)</option> }
+        </select></label>
+        <button class="secondary-button rest-button" disabled="@_busy" @onclick="() => RunRestAsync(() => State.StartRestAsync(Exercise.Id))">Démarrer le repos</button>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Exercise.Link) && Uri.TryCreate(Exercise.Link, UriKind.Absolute, out var link) && (link.Scheme == "https" || link.Scheme == "http"))
+    {
+        <a class="action-link" href="@Exercise.Link" target="_blank" rel="noopener noreferrer">Voir le mouvement ↗</a>
+    }
+    <div class="exercise-actions">
+        <button class="secondary-button replace-exercise" disabled="@_busy" @onclick="() => Replace.InvokeAsync(Exercise)">↻ Remplacer</button>
+        <button class="secondary-button edit-exercise" disabled="@_busy" @onclick="() => Edit.InvokeAsync(Exercise)">✎ Modifier</button>
+        <button class="danger-button remove-exercise" disabled="@_busy" @onclick="() => Remove.InvokeAsync(Exercise)">Retirer</button>
+    </div>
+    }
+</article>
+
+@code {
+    [Parameter, EditorRequired] public Exercise Exercise { get; set; } = default!;
+    [Parameter, EditorRequired] public WorkoutExercise Plan { get; set; } = default!;
+    [Parameter] public int Number { get; set; }
+    [Parameter] public EventCallback<string> Error { get; set; }
+    [Parameter] public EventCallback Changed { get; set; }
+    [Parameter] public EventCallback<Exercise> Replace { get; set; }
+    [Parameter] public EventCallback<Exercise> Edit { get; set; }
+    [Parameter] public EventCallback<Exercise> Remove { get; set; }
+    private bool _collapsed;
+    private int _pendingOperations;
+    private bool _busy => _pendingOperations > 0;
+    private long _editRevision;
+    private readonly Dictionary<(string Gym, int Index, TrainingSetField Field), (long Revision, string Value)> _pendingValues = new();
+    private string SelectedGym => State.GetExerciseGym(Exercise.Id);
+    private IReadOnlyList<TrainingSet> Rows => State.GetSets(Exercise.Id);
+    private IReadOnlyList<ExerciseHistoryEntry> History => State.GetExerciseHistory(Exercise.Id, SelectedGym);
+    private IReadOnlyList<TrainingSet> Previous => State.GetPreviousSets(Exercise.Id, SelectedGym);
+    private int RestSeconds => State.GetRestSeconds(Exercise.Id);
+    private IEnumerable<int> RestOptions => new[] { 60, 90, 120, 150, 180, RestSeconds }.Distinct().Order();
+    private decimal Record => State.GetExerciseRecord(Exercise.Id, SelectedGym) ?? 0;
+    private static string FormatDuration(int seconds) => seconds % 60 == 0 ? $"{seconds / 60} min" : $"{seconds / 60} min {seconds % 60:00}";
+    private static string HistorySummary(ExerciseHistoryEntry entry) => string.Join(" · ", entry.Performance.Sets.Where(WorkoutUi.HasData).Select(set => $"{set.Weight} kg × {set.Reps}"));
+    private string FieldValue(int index, TrainingSetField field, string saved) =>
+        _pendingValues.TryGetValue((SelectedGym, index, field), out var pending) ? pending.Value : saved;
+    private async Task SaveFieldAsync(int index, TrainingSetField field, string value)
+    {
+        var gym = SelectedGym;
+        var key = (gym, index, field);
+        var revision = ++_editRevision;
+        _pendingValues[key] = (revision, value);
+        _pendingOperations++;
+        try
+        {
+            var result = await State.UpdateSetValueAsync(Exercise.Id, index, field, value, gym);
+            await Error.InvokeAsync(result.IsSuccess ? "" : WorkoutUi.Error(result.Error));
+        }
+        catch { await Error.InvokeAsync(WorkoutUi.Error(null)); }
+        finally
+        {
+            if (_pendingValues.TryGetValue(key, out var pending) && pending.Revision == revision) _pendingValues.Remove(key);
+            _pendingOperations--;
+            await Changed.InvokeAsync();
+        }
+    }
+    private async Task SwitchGymAsync(ChangeEventArgs args)
+    {
+        _pendingOperations++;
+        try
+        {
+            var result = await State.SetExerciseGymAsync(Exercise.Id, args.Value?.ToString() ?? "One Air");
+            await Error.InvokeAsync(result.IsSuccess ? "" : WorkoutUi.Error(result.Error));
+        }
+        catch { await Error.InvokeAsync(WorkoutUi.Error(null)); }
+        finally { _pendingOperations--; await Changed.InvokeAsync(); }
+    }
+    private Task ChangeRestAsync(ChangeEventArgs args) => int.TryParse(args.Value?.ToString(), out var seconds)
+        ? RunRestAsync(() => State.SetRestDurationAsync(Exercise.Id, seconds)) : Task.CompletedTask;
+    private async Task RunRestAsync(Func<Task<WorkoutResult>> action)
+    {
+        _pendingOperations++;
+        try
+        {
+            var result = await action();
+            await Error.InvokeAsync(result.IsSuccess ? "" : WorkoutUi.Error(result.Error));
+        }
+        catch { await Error.InvokeAsync(WorkoutUi.Error(null)); }
+        finally { _pendingOperations--; await Changed.InvokeAsync(); }
+    }
+}

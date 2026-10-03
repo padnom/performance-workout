@@ -1,0 +1,4480 @@
+{
+  "exercises": [
+    {
+      "id": "bench",
+      "name": "Développé couché barre",
+      "alternativeName": "Hammer Horizontal Bench Press",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 6–8",
+      "sets": 4,
+      "rest": "2–3 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-horizontal-bench-press",
+      "tags": [
+        "Pectoraux",
+        "Barre",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Développé couché barre"
+        }
+      ]
+    },
+    {
+      "id": "incline",
+      "name": "Hammer Iso-Lateral Incline Press",
+      "alternativeName": "Développé incliné haltères",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 8–10",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-incline-press",
+      "tags": [
+        "Pectoraux",
+        "Machine",
+        "Unilatéral",
+        "Isolation",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Iso-Lateral Incline Press"
+        }
+      ]
+    },
+    {
+      "id": "fly",
+      "name": "Life Fitness Pectoral Fly",
+      "alternativeName": "Écartés à la poulie",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Pectoraux",
+        "Machine",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Pectoral Fly"
+        }
+      ]
+    },
+    {
+      "id": "shoulder",
+      "name": "Hammer Iso-Lateral Shoulder Press",
+      "alternativeName": "Développé haltères assis",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 8–10",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-shoulder-press",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Unilatéral",
+        "Isolation",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Iso-Lateral Shoulder Press"
+        }
+      ]
+    },
+    {
+      "id": "lateral",
+      "name": "Hammer Plate Loaded Lateral Raise",
+      "alternativeName": "Élévations haltères / poulie",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1–1 min 30",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-lateral-raise",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Isolation",
+        "Élévation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Plate Loaded Lateral Raise"
+        }
+      ]
+    },
+    {
+      "id": "rope",
+      "name": "Extension corde poulie",
+      "alternativeName": "Life Fitness Triceps Extension",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1–1 min 30",
+      "tags": [
+        "Triceps",
+        "Poulie",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Extension corde poulie"
+        }
+      ]
+    },
+    {
+      "id": "plank",
+      "name": "Planche",
+      "muscleGroup": "Abdominaux",
+      "repTarget": "4 × 30–45 s",
+      "sets": 4,
+      "rest": "1 min",
+      "tags": [
+        "Abdominaux",
+        "Poids du corps",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Planche"
+        }
+      ]
+    },
+    {
+      "id": "pulldown",
+      "name": "Hammer Front Lat Pulldown",
+      "alternativeName": "Life Fitness Pulldown / tractions",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 6–10",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-wide-pulldown",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Poulie",
+        "Polyarticulaire",
+        "Tirage vertical"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Front Lat Pulldown"
+        }
+      ]
+    },
+    {
+      "id": "lowrow",
+      "name": "Hammer Iso-Lateral Low Row",
+      "alternativeName": "Rowing haltère unilatéral",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–10",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-low-row",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Unilatéral",
+        "Isolation",
+        "Tirage horizontal"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Iso-Lateral Low Row"
+        }
+      ]
+    },
+    {
+      "id": "row",
+      "name": "Hammer Iso-Lateral Row",
+      "alternativeName": "Life Fitness Row",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 10–12",
+      "sets": 4,
+      "rest": "1 min 30–2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-row",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Unilatéral",
+        "Isolation",
+        "Tirage horizontal"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Iso-Lateral Row"
+        }
+      ]
+    },
+    {
+      "id": "rear",
+      "name": "Life Fitness Rear Deltoid",
+      "alternativeName": "Reverse Fly poulie",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Rear Deltoid"
+        }
+      ]
+    },
+    {
+      "id": "curl",
+      "name": "Curl incliné haltères",
+      "alternativeName": "Life Fitness Biceps Curl",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Haltères",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Curl incliné haltères"
+        }
+      ]
+    },
+    {
+      "id": "hammer-curl",
+      "name": "Curl marteau haltères",
+      "alternativeName": "Curl marteau poulie",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Haltères",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Curl marteau haltères"
+        }
+      ]
+    },
+    {
+      "id": "abs",
+      "name": "Life Fitness Abdominal",
+      "alternativeName": "Crunch poulie",
+      "muscleGroup": "Abdominaux",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min",
+      "tags": [
+        "Abdominaux",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Abdominal"
+        }
+      ]
+    },
+    {
+      "id": "squat",
+      "name": "Hammer Pendulum-X Squat",
+      "alternativeName": "Life Fitness Leg Press",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 6–10",
+      "sets": 4,
+      "rest": "2–3 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-pendulum-x-squat",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Pendulum-X Squat"
+        }
+      ]
+    },
+    {
+      "id": "rdl",
+      "name": "Soulevé de terre roumain barre",
+      "alternativeName": "Soulevé de terre roumain haltères",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 8–10",
+      "sets": 4,
+      "rest": "2–3 min",
+      "tags": [
+        "Jambes",
+        "Barre",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Soulevé de terre roumain barre"
+        }
+      ]
+    },
+    {
+      "id": "legcurl",
+      "name": "Life Fitness Leg Curl",
+      "alternativeName": "Leg Curl plate-loaded",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30–2 min",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Leg Curl"
+        }
+      ]
+    },
+    {
+      "id": "glute",
+      "name": "Hammer Glute Drive",
+      "alternativeName": "Hammer Belt Squat",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-glute-drive",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Glute Drive"
+        }
+      ]
+    },
+    {
+      "id": "legext",
+      "name": "Hammer Iso-Lateral Leg Extension",
+      "alternativeName": "Leg Extension plate-loaded",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 12–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-leg-extension",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Unilatéral",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Iso-Lateral Leg Extension"
+        }
+      ]
+    },
+    {
+      "id": "calf",
+      "name": "Hammer Seated Calf Raise",
+      "alternativeName": "Mollets debout",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-seated-calf-raise",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Seated Calf Raise"
+        }
+      ]
+    },
+    {
+      "id": "abduction",
+      "name": "Life Fitness Hip Abduction",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1 min",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Isolation",
+        "Fessiers"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Hip Abduction"
+        }
+      ]
+    },
+    {
+      "id": "incline-db",
+      "name": "Développé incliné haltères",
+      "alternativeName": "Hammer Incline Press",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 8–10",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-incline-press",
+      "tags": [
+        "Pectoraux",
+        "Haltères",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Développé incliné haltères"
+        }
+      ]
+    },
+    {
+      "id": "pulldown-u",
+      "name": "Hammer Front Lat Pulldown",
+      "alternativeName": "Life Fitness Pulldown / tractions",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-wide-pulldown",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Poulie",
+        "Polyarticulaire",
+        "Tirage vertical"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Front Lat Pulldown"
+        }
+      ]
+    },
+    {
+      "id": "dip",
+      "name": "Hammer Seated Dip",
+      "alternativeName": "Dips poids du corps",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-seated-dip",
+      "tags": [
+        "Triceps",
+        "Machine",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Seated Dip"
+        }
+      ]
+    },
+    {
+      "id": "row-u",
+      "name": "Hammer Iso-Lateral Row",
+      "alternativeName": "Rowing haltère unilatéral",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-row",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Unilatéral",
+        "Isolation",
+        "Tirage horizontal"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Iso-Lateral Row"
+        }
+      ]
+    },
+    {
+      "id": "lateral-u",
+      "name": "Élévations latérales poulie",
+      "alternativeName": "Hammer Lateral Raise",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1–1 min 30",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-lateral-raise",
+      "tags": [
+        "Épaules",
+        "Poulie",
+        "Isolation",
+        "Élévation"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Élévations latérales poulie"
+        }
+      ]
+    },
+    {
+      "id": "biceps-u",
+      "name": "Life Fitness Biceps Curl",
+      "alternativeName": "Curl haltères",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Machine",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Biceps Curl"
+        }
+      ]
+    },
+    {
+      "id": "triceps-u",
+      "name": "Extension au-dessus de la tête poulie",
+      "alternativeName": "Life Fitness Triceps Extension",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Triceps",
+        "Poulie",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Extension au-dessus de la tête poulie"
+        }
+      ]
+    },
+    {
+      "id": "pallof",
+      "name": "Pallof Press",
+      "muscleGroup": "Abdominaux",
+      "repTarget": "4 × 12–15 / côté",
+      "sets": 4,
+      "rest": "1 min",
+      "tags": [
+        "Abdominaux",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Pallof Press"
+        }
+      ]
+    },
+    {
+      "id": "lateral-a",
+      "name": "Hammer Lateral Raise",
+      "alternativeName": "Poulie / haltères",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1–1 min 30",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-lateral-raise",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Isolation",
+        "Élévation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Lateral Raise"
+        }
+      ]
+    },
+    {
+      "id": "rear-a",
+      "name": "Life Fitness Rear Deltoid",
+      "alternativeName": "Reverse Fly poulie",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Rear Deltoid"
+        }
+      ]
+    },
+    {
+      "id": "curl-a",
+      "name": "Curl incliné haltères",
+      "alternativeName": "Life Fitness Biceps Curl",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Haltères",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Curl incliné haltères"
+        }
+      ]
+    },
+    {
+      "id": "hammer-a",
+      "name": "Curl marteau haltères",
+      "alternativeName": "Poulie",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Haltères",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Curl marteau haltères"
+        }
+      ]
+    },
+    {
+      "id": "rope-a",
+      "name": "Extension corde poulie",
+      "alternativeName": "Life Fitness Triceps Extension",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Triceps",
+        "Poulie",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Extension corde poulie"
+        }
+      ]
+    },
+    {
+      "id": "overhead-a",
+      "name": "Extension au-dessus tête poulie",
+      "alternativeName": "Haltère",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Triceps",
+        "Poulie",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Extension au-dessus tête poulie"
+        }
+      ]
+    },
+    {
+      "id": "abs-a",
+      "name": "Life Fitness Abdominal",
+      "alternativeName": "Crunch poulie",
+      "muscleGroup": "Abdominaux",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min",
+      "tags": [
+        "Abdominaux",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Abdominal"
+        }
+      ]
+    },
+    {
+      "id": "lf-abdominal",
+      "name": "Life Fitness Abdominal",
+      "alternativeName": "Crunch à la poulie",
+      "muscleGroup": "Abdominaux",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Abdominaux",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Abdominal"
+        }
+      ]
+    },
+    {
+      "id": "lf-torso-rotation",
+      "name": "Life Fitness Torso Rotation",
+      "alternativeName": "Rotation à la poulie",
+      "muscleGroup": "Obliques",
+      "repTarget": "4 × 10–15 / côté",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Obliques",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Torso Rotation"
+        }
+      ]
+    },
+    {
+      "id": "lf-chest-press",
+      "name": "Life Fitness Chest Press",
+      "alternativeName": "Développé couché haltères",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Pectoraux",
+        "Machine",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Chest Press"
+        }
+      ]
+    },
+    {
+      "id": "lf-incline-press",
+      "name": "Life Fitness Incline Press",
+      "alternativeName": "Développé incliné haltères",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Pectoraux",
+        "Machine",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Incline Press"
+        }
+      ]
+    },
+    {
+      "id": "lf-shoulder-press",
+      "name": "Life Fitness Shoulder Press",
+      "alternativeName": "Développé épaules haltères",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Shoulder Press"
+        }
+      ]
+    },
+    {
+      "id": "lf-lateral-raise",
+      "name": "Life Fitness Lateral Raise",
+      "alternativeName": "Élévations latérales haltères",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Isolation",
+        "Élévation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Lateral Raise"
+        }
+      ]
+    },
+    {
+      "id": "lf-pulldown",
+      "name": "Life Fitness Pulldown",
+      "alternativeName": "Tirage vertical à la poulie",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Poulie",
+        "Polyarticulaire",
+        "Tirage vertical"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Pulldown"
+        }
+      ]
+    },
+    {
+      "id": "lf-row",
+      "name": "Life Fitness Seated Row",
+      "alternativeName": "Rowing poulie basse",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Polyarticulaire",
+        "Tirage horizontal"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Seated Row"
+        }
+      ]
+    },
+    {
+      "id": "lf-biceps",
+      "name": "Life Fitness Biceps Curl",
+      "alternativeName": "Curl pupitre",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Machine",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Biceps Curl"
+        }
+      ]
+    },
+    {
+      "id": "lf-triceps",
+      "name": "Life Fitness Triceps Extension",
+      "alternativeName": "Extension corde à la poulie",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Triceps",
+        "Machine",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Triceps Extension"
+        }
+      ]
+    },
+    {
+      "id": "lf-leg-press",
+      "name": "Life Fitness Leg Press",
+      "alternativeName": "Presse à cuisses",
+      "muscleGroup": "Quadriceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Quadriceps",
+        "Machine",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Leg Press"
+        }
+      ]
+    },
+    {
+      "id": "lf-leg-extension",
+      "name": "Life Fitness Leg Extension",
+      "alternativeName": "Leg extension guidé",
+      "muscleGroup": "Quadriceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Quadriceps",
+        "Machine",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Leg Extension"
+        }
+      ]
+    },
+    {
+      "id": "lf-seated-leg-curl",
+      "name": "Life Fitness Seated Leg Curl",
+      "alternativeName": "Leg curl allongé",
+      "muscleGroup": "Ischio-jambiers",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Ischio-jambiers",
+        "Machine",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Seated Leg Curl"
+        }
+      ]
+    },
+    {
+      "id": "lf-lying-leg-curl",
+      "name": "Life Fitness Lying Leg Curl",
+      "alternativeName": "Leg curl assis",
+      "muscleGroup": "Ischio-jambiers",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Ischio-jambiers",
+        "Machine",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Lying Leg Curl"
+        }
+      ]
+    },
+    {
+      "id": "lf-glute",
+      "name": "Life Fitness Glute",
+      "alternativeName": "Extension de hanche à la poulie",
+      "muscleGroup": "Fessiers",
+      "repTarget": "4 × 8–12 / côté",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Fessiers",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Glute"
+        }
+      ]
+    },
+    {
+      "id": "lf-adduction",
+      "name": "Life Fitness Hip Adduction",
+      "alternativeName": "Adduction à la poulie",
+      "muscleGroup": "Adducteurs",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Adducteurs",
+        "Machine",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Hip Adduction"
+        }
+      ]
+    },
+    {
+      "id": "lf-abduction",
+      "name": "Life Fitness Hip Abduction",
+      "alternativeName": "Abduction à la poulie",
+      "muscleGroup": "Fessiers",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Isolation",
+        "Fessiers"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Hip Abduction"
+        }
+      ]
+    },
+    {
+      "id": "lf-calf",
+      "name": "Life Fitness Calf Extension",
+      "alternativeName": "Mollets debout",
+      "muscleGroup": "Mollets",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Mollets",
+        "Machine",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Calf Extension"
+        }
+      ]
+    },
+    {
+      "id": "lf-back-extension",
+      "name": "Life Fitness Back Extension",
+      "alternativeName": "Extension lombaire au banc",
+      "muscleGroup": "Lombaires",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Lombaires",
+        "Machine",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Back Extension"
+        }
+      ]
+    },
+    {
+      "id": "bench-db",
+      "name": "Développé couché haltères",
+      "alternativeName": "Chest Press",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Pectoraux",
+        "Haltères",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Développé couché haltères"
+        }
+      ]
+    },
+    {
+      "id": "incline-bar",
+      "name": "Développé incliné barre",
+      "alternativeName": "Incline Press",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 6–10",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Pectoraux",
+        "Barre",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Développé incliné barre"
+        }
+      ]
+    },
+    {
+      "id": "cable-fly",
+      "name": "Écarté à la poulie",
+      "alternativeName": "Pectoral Fly",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Pectoraux",
+        "Poulie",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Écarté à la poulie"
+        }
+      ]
+    },
+    {
+      "id": "pushup",
+      "name": "Pompes",
+      "alternativeName": "Chest Press",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "4 × 10–20",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Pectoraux",
+        "Poids du corps",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Pompes"
+        }
+      ]
+    },
+    {
+      "id": "shoulder-db",
+      "name": "Développé épaules haltères",
+      "alternativeName": "Shoulder Press",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Épaules",
+        "Haltères",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Développé épaules haltères"
+        }
+      ]
+    },
+    {
+      "id": "lateral-db",
+      "name": "Élévations latérales haltères",
+      "alternativeName": "Lateral Raise",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1 min",
+      "tags": [
+        "Épaules",
+        "Haltères",
+        "Isolation",
+        "Élévation"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Élévations latérales haltères"
+        }
+      ]
+    },
+    {
+      "id": "pullup",
+      "name": "Tractions",
+      "alternativeName": "Tirage vertical",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 6–10",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Dos",
+        "Poids du corps",
+        "Polyarticulaire",
+        "Tirage vertical"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Tractions"
+        }
+      ]
+    },
+    {
+      "id": "cable-row",
+      "name": "Rowing poulie basse",
+      "alternativeName": "Low Row",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Dos",
+        "Poulie",
+        "Polyarticulaire",
+        "Tirage horizontal"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Rowing poulie basse"
+        }
+      ]
+    },
+    {
+      "id": "row-db",
+      "name": "Rowing haltère unilatéral",
+      "alternativeName": "Iso-Lateral Row",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Dos",
+        "Haltères",
+        "Unilatéral",
+        "Isolation",
+        "Tirage horizontal"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Rowing haltère unilatéral"
+        }
+      ]
+    },
+    {
+      "id": "pullover",
+      "name": "Pull-over à la poulie",
+      "alternativeName": "Pulldown",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Dos",
+        "Poulie",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Pull-over à la poulie"
+        }
+      ]
+    },
+    {
+      "id": "facepull",
+      "name": "Face pull",
+      "alternativeName": "Rear Deltoid",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Épaules",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Face pull"
+        }
+      ]
+    },
+    {
+      "id": "curl-cable",
+      "name": "Curl à la poulie",
+      "alternativeName": "Biceps Curl",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Poulie",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Curl à la poulie"
+        }
+      ]
+    },
+    {
+      "id": "legpress",
+      "name": "Presse à cuisses",
+      "alternativeName": "Pendulum Squat",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2–3 min",
+      "tags": [
+        "Jambes",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Presse à cuisses"
+        }
+      ]
+    },
+    {
+      "id": "goblet",
+      "name": "Goblet squat",
+      "alternativeName": "Squat guidé",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Jambes",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Goblet squat"
+        }
+      ]
+    },
+    {
+      "id": "split-squat",
+      "name": "Fente bulgare",
+      "alternativeName": "Presse unilatérale",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 8–12 / côté",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Jambes",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Fente bulgare"
+        }
+      ]
+    },
+    {
+      "id": "hipthrust",
+      "name": "Hip thrust barre",
+      "alternativeName": "Glute Drive",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Jambes",
+        "Barre",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Hip thrust barre"
+        }
+      ]
+    },
+    {
+      "id": "backext",
+      "name": "Extension lombaire",
+      "alternativeName": "Back Extension",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Jambes",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Extension lombaire"
+        }
+      ]
+    },
+    {
+      "id": "close-bench",
+      "name": "Développé couché prise serrée",
+      "alternativeName": "Seated Dip",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 6–10",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Triceps",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Développé couché prise serrée"
+        }
+      ]
+    },
+    {
+      "id": "preacher",
+      "name": "Curl pupitre",
+      "alternativeName": "Biceps Curl",
+      "muscleGroup": "Biceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Biceps",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Curl pupitre"
+        }
+      ]
+    },
+    {
+      "id": "pushdown-bar",
+      "name": "Extension triceps barre",
+      "alternativeName": "Triceps Extension",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Triceps",
+        "Barre",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Extension triceps barre"
+        }
+      ]
+    }
+  ],
+  "programs": [
+    {
+      "id": "push",
+      "name": "Push",
+      "description": "Pectoraux · Épaules · Triceps",
+      "sessions": [
+        {
+          "id": "push",
+          "name": "Push",
+          "focus": "Pectoraux · Épaules · Triceps",
+          "color": "#ff5c57",
+          "exercises": [
+            {
+              "exerciseId": "bench",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 6–8",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–10",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "shoulder",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–10",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lateral",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "plank",
+              "order": 6,
+              "sets": 4,
+              "repTarget": "4 × 30–45 s",
+              "rest": "1 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "pa",
+          "name": "Push · A",
+          "focus": "Barre, presse inclinée, poulie, épaules et triceps",
+          "color": "#ff5c57",
+          "exercises": [
+            {
+              "exerciseId": "bench",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "cable-fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "shoulder-db",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lateral",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "pb",
+          "name": "Push · B",
+          "focus": "Presse inclinée, haltères, poulie et machines guidées",
+          "color": "#ff5c57",
+          "exercises": [
+            {
+              "exerciseId": "incline",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "bench-db",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "cable-fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "shoulder",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lateral-db",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "overhead-a",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "pc",
+          "name": "Push · C",
+          "focus": "Développé épaules, incliné, chest press et isolations",
+          "color": "#ff5c57",
+          "exercises": [
+            {
+              "exerciseId": "shoulder",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "incline-bar",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lf-chest-press",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "cable-fly",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lateral-u",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pushdown-bar",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "pd",
+          "name": "Push · D",
+          "focus": "Chest press, presse inclinée et mouvements guidés",
+          "color": "#ff5c57",
+          "exercises": [
+            {
+              "exerciseId": "lf-chest-press",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "shoulder",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lateral",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pull",
+      "name": "Pull",
+      "description": "Dos · Biceps · Arrière d’épaule",
+      "sessions": [
+        {
+          "id": "pull",
+          "name": "Pull",
+          "focus": "Dos · Biceps · Arrière d’épaule",
+          "color": "#5279ff",
+          "exercises": [
+            {
+              "exerciseId": "pulldown",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 6–10",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–10",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "row",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–12",
+              "rest": "1 min 30–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "curl",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "hammer-curl",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 6,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "pua",
+          "name": "Pull · A",
+          "focus": "Tirage vertical, low row, pull-over, arrière d’épaule et biceps",
+          "color": "#5279ff",
+          "exercises": [
+            {
+              "exerciseId": "pulldown",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "pullover",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "curl",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "pub",
+          "name": "Pull · B",
+          "focus": "Tractions, tirage vertical, rowing haltère et pull-over",
+          "color": "#5279ff",
+          "exercises": [
+            {
+              "exerciseId": "pulldown",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "pullup",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "row-db",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pullover",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "curl-cable",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "puc",
+          "name": "Pull · C",
+          "focus": "Rowing guidé, poulie basse, tirage vertical et lombaires",
+          "color": "#5279ff",
+          "exercises": [
+            {
+              "exerciseId": "row",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "cable-row",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "hammer-curl",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "backext",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "pud",
+          "name": "Pull · D",
+          "focus": "Tirages guidés, rowing unilatéral, face pull et curl pupitre",
+          "color": "#5279ff",
+          "exercises": [
+            {
+              "exerciseId": "pulldown",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "row-db",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "facepull",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "preacher",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legs",
+      "name": "Jambes",
+      "description": "Quadriceps · Ischios · Fessiers",
+      "sessions": [
+        {
+          "id": "legs",
+          "name": "Jambes",
+          "focus": "Quadriceps · Ischios · Fessiers",
+          "color": "#31b57a",
+          "exercises": [
+            {
+              "exerciseId": "squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 6–10",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rdl",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–10",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "glute",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–15",
+              "rest": "1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abduction",
+              "order": 6,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "la",
+          "name": "Jambes · A",
+          "focus": "Squat pendulaire, soulevé roumain, leg curl et mollets",
+          "color": "#31b57a",
+          "exercises": [
+            {
+              "exerciseId": "squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rdl",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "lb",
+          "name": "Jambes · B",
+          "focus": "Squat, presse, fente bulgare, leg curl et leg extension",
+          "color": "#31b57a",
+          "exercises": [
+            {
+              "exerciseId": "squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legpress",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "split-squat",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "lc",
+          "name": "Jambes · C",
+          "focus": "Soulevé roumain, hip thrust, leg curl et fente bulgare",
+          "color": "#31b57a",
+          "exercises": [
+            {
+              "exerciseId": "rdl",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "hipthrust",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "split-squat",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "backext",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abduction",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "ld",
+          "name": "Jambes · D",
+          "focus": "Squat, presse, leg curl, leg extension et Glute Drive",
+          "color": "#31b57a",
+          "exercises": [
+            {
+              "exerciseId": "squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legpress",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "glute",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "upper",
+      "name": "Upper",
+      "description": "Haut du corps complet",
+      "sessions": [
+        {
+          "id": "upper",
+          "name": "Upper",
+          "focus": "Haut du corps complet",
+          "color": "#ff953f",
+          "exercises": [
+            {
+              "exerciseId": "incline-db",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–10",
+              "rest": "2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown-u",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "dip",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "row-u",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lateral-u",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "biceps-u",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "triceps-u",
+              "order": 6,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pallof",
+              "order": 7,
+              "sets": 4,
+              "repTarget": "4 × 12–15 / côté",
+              "rest": "1 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "ua",
+          "name": "Upper · A",
+          "focus": "Deux développés, deux tirages, épaules et biceps",
+          "color": "#ff953f",
+          "exercises": [
+            {
+              "exerciseId": "bench",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lateral",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "curl-cable",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "ub",
+          "name": "Upper · B",
+          "focus": "Haltères, tirages, élévations latérales et bras",
+          "color": "#ff953f",
+          "exercises": [
+            {
+              "exerciseId": "incline-db",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "cable-row",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lateral-u",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "biceps-u",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "triceps-u",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "uc",
+          "name": "Upper · C",
+          "focus": "Tirages variés, développé haltères, épaules et triceps",
+          "color": "#ff953f",
+          "exercises": [
+            {
+              "exerciseId": "pulldown",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "row-db",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "bench-db",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lateral-db",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "ud",
+          "name": "Upper · D",
+          "focus": "Presse inclinée, tirages guidés, épaules et bras",
+          "color": "#ff953f",
+          "exercises": [
+            {
+              "exerciseId": "incline",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "cable-row",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "shoulder",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "preacher",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pushdown-bar",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arms",
+      "name": "Bras + épaules",
+      "description": "Séance optionnelle",
+      "sessions": [
+        {
+          "id": "arms",
+          "name": "Bras + épaules",
+          "focus": "Séance optionnelle",
+          "color": "#a66cff",
+          "exercises": [
+            {
+              "exerciseId": "lateral-a",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear-a",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1 min 30",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "curl-a",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "hammer-a",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rope-a",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "overhead-a",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min 30",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs-a",
+              "order": 6,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "aa",
+          "name": "Bras + épaules · A",
+          "focus": "Élévations, arrière d’épaule, deux curls et deux extensions",
+          "color": "#a66cff",
+          "exercises": [
+            {
+              "exerciseId": "lateral-a",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "curl",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "hammer-curl",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "overhead-a",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "ab",
+          "name": "Bras + épaules · B",
+          "focus": "Curl pupitre, poulie, marteau, triceps et arrière d’épaule",
+          "color": "#a66cff",
+          "exercises": [
+            {
+              "exerciseId": "preacher",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "curl-cable",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "hammer-curl",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lateral-db",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pushdown-bar",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "ac",
+          "name": "Bras + épaules · C",
+          "focus": "Développé serré, deux extensions, élévations et curl",
+          "color": "#a66cff",
+          "exercises": [
+            {
+              "exerciseId": "close-bench",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "overhead-a",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lateral-u",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "curl",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "facepull",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "ad",
+          "name": "Bras + épaules · D",
+          "focus": "Développé épaules, élévations, arrière d’épaule et bras",
+          "color": "#a66cff",
+          "exercises": [
+            {
+              "exerciseId": "shoulder-db",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lateral-a",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "preacher",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pushdown-bar",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full",
+      "name": "Full Body",
+      "description": "Corps entier",
+      "sessions": [
+        {
+          "id": "full",
+          "name": "Full Body",
+          "focus": "Corps entier",
+          "color": "#f59e42",
+          "exercises": []
+        },
+        {
+          "id": "fa",
+          "name": "Full Body · A · Équilibré",
+          "focus": "Un mouvement majeur par grande zone musculaire",
+          "color": "#f59e42",
+          "exercises": [
+            {
+              "exerciseId": "legpress",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "bench",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "shoulder",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "fb",
+          "name": "Full Body · B · Machines",
+          "focus": "Corps entier sur machines guidées",
+          "color": "#f59e42",
+          "exercises": [
+            {
+              "exerciseId": "squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "glute",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lateral",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "fc",
+          "name": "Full Body · C · Unilatéral",
+          "focus": "Stabilité et équilibre droite-gauche",
+          "color": "#f59e42",
+          "exercises": [
+            {
+              "exerciseId": "split-squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "bench-db",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "row-db",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "shoulder-db",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pallof",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "fd",
+          "name": "Full Body · D · Chaîne postérieure",
+          "focus": "Dos, fessiers et ischios légèrement prioritaires",
+          "color": "#f59e42",
+          "exercises": [
+            {
+              "exerciseId": "rdl",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "hipthrust",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chest-biceps",
+      "name": "Pectoraux + biceps",
+      "description": "Pectoraux · Biceps",
+      "sessions": [
+        {
+          "id": "chest-biceps",
+          "name": "Pectoraux + biceps",
+          "focus": "Pectoraux · Biceps",
+          "color": "#ff6b76",
+          "exercises": []
+        },
+        {
+          "id": "cba",
+          "name": "Pectoraux + biceps · A · Équilibré",
+          "focus": "Trois angles pectoraux et deux angles de curl",
+          "color": "#ff6b76",
+          "exercises": [
+            {
+              "exerciseId": "bench",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "curl",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "preacher",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "cbb",
+          "name": "Pectoraux + biceps · B · Incliné",
+          "focus": "Haut des pectoraux prioritaire et biceps complets",
+          "color": "#ff6b76",
+          "exercises": [
+            {
+              "exerciseId": "incline-db",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "bench-db",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "cable-fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "curl-cable",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "hammer-curl",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "cbc",
+          "name": "Pectoraux + biceps · C · Machines",
+          "focus": "Pectoraux guidés et biceps avec exécution contrôlée",
+          "color": "#ff6b76",
+          "exercises": [
+            {
+              "exerciseId": "lf-chest-press",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "biceps-u",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "preacher",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "plank",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 30–45 s",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "cbd",
+          "name": "Pectoraux + biceps · D · Haltères et poulie",
+          "focus": "Angles libres pour varier les contraintes",
+          "color": "#ff6b76",
+          "exercises": [
+            {
+              "exerciseId": "bench-db",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "incline-db",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "cable-fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "curl",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "curl-cable",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pallof",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "back-triceps",
+      "name": "Dos + triceps",
+      "description": "Dos · Triceps",
+      "sessions": [
+        {
+          "id": "back-triceps",
+          "name": "Dos + triceps",
+          "focus": "Dos · Triceps",
+          "color": "#6386ff",
+          "exercises": []
+        },
+        {
+          "id": "bta",
+          "name": "Dos + triceps · A · Dos complet",
+          "focus": "Largeur, épaisseur et deux angles triceps",
+          "color": "#6386ff",
+          "exercises": [
+            {
+              "exerciseId": "pulldown",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "row",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "overhead-a",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "btb",
+          "name": "Dos + triceps · B · Largeur",
+          "focus": "Tirages verticaux prioritaires et triceps",
+          "color": "#6386ff",
+          "exercises": [
+            {
+              "exerciseId": "pullup",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "pullover",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pushdown-bar",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "close-bench",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "plank",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 30–45 s",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "btc",
+          "name": "Dos + triceps · C · Épaisseur",
+          "focus": "Rowings prioritaires et extensions de triceps",
+          "color": "#6386ff",
+          "exercises": [
+            {
+              "exerciseId": "cable-row",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "row-db",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rope",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "overhead-a",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "backext",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "btd",
+          "name": "Dos + triceps · D · Machines",
+          "focus": "Tirages guidés avec travail complet des triceps",
+          "color": "#6386ff",
+          "exercises": [
+            {
+              "exerciseId": "row",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "dip",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "pushdown-bar",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chest-back",
+      "name": "Pectoraux + dos",
+      "description": "Pectoraux · Dos",
+      "sessions": [
+        {
+          "id": "chest-back",
+          "name": "Pectoraux + dos",
+          "focus": "Pectoraux · Dos",
+          "color": "#a06cff",
+          "exercises": []
+        },
+        {
+          "id": "cda",
+          "name": "Pectoraux + dos · A · Équilibré",
+          "focus": "Alternance poussée et tirage pour tout le torse",
+          "color": "#a06cff",
+          "exercises": [
+            {
+              "exerciseId": "bench",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "incline",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "fly",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "cdb",
+          "name": "Pectoraux + dos · B · Haut du torse",
+          "focus": "Pectoraux supérieurs, largeur du dos et posture",
+          "color": "#a06cff",
+          "exercises": [
+            {
+              "exerciseId": "incline-db",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pullup",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "cable-fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "cable-row",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pullover",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "facepull",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "cdc",
+          "name": "Pectoraux + dos · C · Machines",
+          "focus": "Pectoraux et dos avec appuis stables",
+          "color": "#a06cff",
+          "exercises": [
+            {
+              "exerciseId": "incline",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "row",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "fly",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "pulldown",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "rear",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "cdd",
+          "name": "Pectoraux + dos · D · Unilatéral",
+          "focus": "Travail droite-gauche et amplitude contrôlée",
+          "color": "#a06cff",
+          "exercises": [
+            {
+              "exerciseId": "bench-db",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "row-db",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "incline-db",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "lowrow",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "cable-fly",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "pullover",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quads-calves",
+      "name": "Quadriceps + mollets",
+      "description": "Quadriceps · Mollets",
+      "sessions": [
+        {
+          "id": "quads-calves",
+          "name": "Quadriceps + mollets",
+          "focus": "Quadriceps · Mollets",
+          "color": "#36c98b",
+          "exercises": []
+        },
+        {
+          "id": "qca",
+          "name": "Quadriceps + mollets · A · Squat",
+          "focus": "Quadriceps complets et mollets",
+          "color": "#36c98b",
+          "exercises": [
+            {
+              "exerciseId": "squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legpress",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "split-squat",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "qcb",
+          "name": "Quadriceps + mollets · B · Presse",
+          "focus": "Volume quadriceps avec fatigue dorsale réduite",
+          "color": "#36c98b",
+          "exercises": [
+            {
+              "exerciseId": "legpress",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "squat",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "split-squat",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "plank",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 30–45 s",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "qcc",
+          "name": "Quadriceps + mollets · C · Unilatéral",
+          "focus": "Équilibre des jambes et stabilité du bassin",
+          "color": "#36c98b",
+          "exercises": [
+            {
+              "exerciseId": "split-squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legpress",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "squat",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abduction",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "qcd",
+          "name": "Quadriceps + mollets · D · Machines",
+          "focus": "Quadriceps et mollets avec mouvements guidés",
+          "color": "#36c98b",
+          "exercises": [
+            {
+              "exerciseId": "squat",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legext",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legpress",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abduction",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hams-glutes",
+      "name": "Ischios + fessiers",
+      "description": "Ischios · Fessiers",
+      "sessions": [
+        {
+          "id": "hams-glutes",
+          "name": "Ischios + fessiers",
+          "focus": "Ischios · Fessiers",
+          "color": "#20b8a9",
+          "exercises": []
+        },
+        {
+          "id": "hga",
+          "name": "Ischios + fessiers · A · Équilibré",
+          "focus": "Ischios, fessiers et stabilité des hanches",
+          "color": "#20b8a9",
+          "exercises": [
+            {
+              "exerciseId": "rdl",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "glute",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "backext",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "abduction",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "hgb",
+          "name": "Ischios + fessiers · B · Fessiers",
+          "focus": "Extension de hanche et moyen fessier prioritaires",
+          "color": "#20b8a9",
+          "exercises": [
+            {
+              "exerciseId": "hipthrust",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "split-squat",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "glute",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abduction",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        },
+        {
+          "id": "hgc",
+          "name": "Ischios + fessiers · C · Ischios",
+          "focus": "Flexion du genou et charnière de hanche",
+          "color": "#20b8a9",
+          "exercises": [
+            {
+              "exerciseId": "rdl",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "backext",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "hipthrust",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "plank",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 30–45 s",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            }
+          ]
+        },
+        {
+          "id": "hgd",
+          "name": "Ischios + fessiers · D · Machines",
+          "focus": "Chaîne postérieure avec exécution stable",
+          "color": "#20b8a9",
+          "exercises": [
+            {
+              "exerciseId": "glute",
+              "order": 0,
+              "sets": 4,
+              "repTarget": "4 × 8–12",
+              "rest": "2–3 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "legcurl",
+              "order": 1,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abduction",
+              "order": 2,
+              "sets": 4,
+              "repTarget": "4 × 12–20",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "backext",
+              "order": 3,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "Toutes"
+            },
+            {
+              "exerciseId": "calf",
+              "order": 4,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            },
+            {
+              "exerciseId": "abs",
+              "order": 5,
+              "sets": 4,
+              "repTarget": "4 × 10–15",
+              "rest": "1–2 min",
+              "gym": "One Air"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

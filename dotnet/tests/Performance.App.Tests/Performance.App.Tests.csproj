@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Performance.App</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" PrivateAssets="all" />
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+    <PackageReference Include="bunit" Version="2.11.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Performance.Application/Performance.Application.csproj" />
+    <ProjectReference Include="../../src/Performance.Infrastructure/Performance.Infrastructure.csproj" />
+    <RazorComponent Include="../../src/Performance.App/Pages/**/*.razor" Link="Pages/%(RecursiveDir)%(Filename)%(Extension)" />
+    <RazorComponent Include="../../src/Performance.App/Components/**/*.razor" Exclude="../../src/Performance.App/Components/Routes.razor;../../src/Performance.App/Components/_Imports.razor" Link="Components/%(RecursiveDir)%(Filename)%(Extension)" />
+    <RazorComponent Include="../../src/Performance.App/Layout/**/*.razor" Link="Layout/%(RecursiveDir)%(Filename)%(Extension)" />
+    <RazorComponent Include="../../src/Performance.App/_Imports.razor" Link="_Imports.razor" />
+    <Compile Include="../../src/Performance.App/Services/IBackupFiles.cs" Link="Services/IBackupFiles.cs" />
+    <Compile Include="../../src/Performance.App/Services/IWorkoutFeedback.cs" Link="Services/IWorkoutFeedback.cs" />
+    <Compile Include="../../src/Performance.App/Services/AppNavigationService.cs" Link="Services/AppNavigationService.cs" />
+    <Compile Include="../../src/Performance.App/Services/IRestNotificationScheduler.cs" Link="Services/IRestNotificationScheduler.cs" />
+    <Compile Include="../../src/Performance.App/Services/RestNotificationCoordinator.cs" Link="Services/RestNotificationCoordinator.cs" />
+    <Compile Include="../../src/Performance.App/Services/IAppDiagnostics.cs" Link="Services/IAppDiagnostics.cs" />
+    <Compile Include="../../src/Performance.App/Services/DiagnosticJournal.cs" Link="Services/DiagnosticJournal.cs" />
+    <Compile Include="../../src/Performance.App/Services/DiagnosticPerformanceDataRepository.cs" Link="Services/DiagnosticPerformanceDataRepository.cs" />
+    <Compile Include="../../src/Performance.App/Components/*.cs" Link="Components/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

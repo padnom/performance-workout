@@ -1,0 +1,64 @@
+@using Performance.Application
+@using Performance.Domain
+@inject WorkoutStateService State
+@inject TimeProvider Clock
+
+<section class="dashboard" aria-label="Accueil entraînement">
+    <div class="dashboard-metrics">
+        <section class="dashboard-metric weekly-metric" aria-label="Séances des 7 derniers jours">
+            <p class="eyebrow">CETTE SEMAINE</p>
+            <strong>@_weekCount <small>@(_weekCount == 1 ? "séance" : "séances")</small></strong>
+            <span>@(_weekCount >= 4 ? "Objectif atteint ✓" : $"{4 - _weekCount} avant l’objectif")</span>
+        </section>
+        <section class="dashboard-metric sets-metric" aria-label="Séries des 7 derniers jours">
+            <p class="eyebrow">SÉRIES · 7 J</p>
+            <strong>@_weekSets <small>séries</small></strong>
+            <span>@(_weekSets == 0 ? "Commence ta 1re séance" : "Séries avec répétitions enregistrées")</span>
+        </section>
+    </div>
+    <button class="free-workout-card" disabled="@Disabled" @onclick="() => Free.InvokeAsync()">
+        <span class="free-icon" aria-hidden="true">＋</span>
+        <span><strong>Séance libre</strong><small>Recherche et ajoute tes exercices à la volée</small></span>
+        <b aria-hidden="true">→</b>
+    </button>
+    <div class="section-heading">
+        <div><p class="eyebrow">MA SEMAINE</p><h2>Programme actif</h2></div>
+        <span class="count">@Sessions.Count séance(s)</span>
+    </div>
+    @if (Sessions.Count == 0)
+    {
+        <a class="panel empty-week" href="/programmes"><strong>Créer ma semaine</strong><span>Ajoute librement des séances classiques ou ciblées →</span></a>
+    }
+    else
+    {
+        <div class="dashboard-week">
+            @for (var index = 0; index < Sessions.Count; index++)
+            {
+                var session = Sessions[index];
+                <button class="panel dashboard-session" style="--session-color: @Accent(session.Color)" disabled="@Disabled" aria-label="Choisir la séance @(index + 1) : @session.Name" @onclick="() => Selected.InvokeAsync(session)">
+                    <span class="session-index">@((index + 1).ToString("00"))</span>
+                    <span class="dashboard-session-copy"><h3>@session.Name</h3><span>@session.Focus</span><small>@session.Exercises.Count exercices</small></span>
+                    <b aria-hidden="true">→</b>
+                </button>
+            }
+        </div>
+        <a class="action-link" href="/programmes">Modifier ma semaine →</a>
+    }
+</section>
+
+@code {
+    [Parameter] public IReadOnlyList<WorkoutSession> Sessions { get; set; } = [];
+    [Parameter] public EventCallback<WorkoutSession> Selected { get; set; }
+    [Parameter] public EventCallback Free { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    private int _weekCount;
+    private int _weekSets;
+    protected override void OnParametersSet()
+    {
+        var now = Clock.GetUtcNow();
+        _weekCount = State.Data.History.Count(log => IsRecent(log, now, 7));
+        _weekSets = State.Data.History.Where(log => IsRecent(log, now, 7)).Sum(log => WorkoutUi.CompletedSets(log).Count());
+    }
+    private static bool IsRecent(TrainingSessionLog log, DateTimeOffset now, int days) => log.Date <= now && log.Date > now.AddDays(-days);
+    private static string Accent(string? color) => color is { Length: 7 } && color[0] == '#' && color.Skip(1).All(Uri.IsHexDigit) ? color : "#b7f36b";
+}

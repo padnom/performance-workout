@@ -5,12 +5,14 @@
     <RootNamespace>Performance.App</RootNamespace>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidManifest>Platforms\Android\AndroidManifest.xml</AndroidManifest>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationTitle>Performance</ApplicationTitle>
     <ApplicationId>fr.padnom.performance</ApplicationId>
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.1.1</ApplicationDisplayVersion>
+    <ApplicationVersion>3</ApplicationVersion>
     <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
@@ -26,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#101512" />
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundScale="0.65" Color="#101510" />
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#101512" BaseSize="256,256" />
   </ItemGroup>
 </Project>

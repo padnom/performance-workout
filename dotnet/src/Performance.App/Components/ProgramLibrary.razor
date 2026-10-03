@@ -1,0 +1,107 @@
+@using Performance.Application
+@using Performance.Domain
+@inject WorkoutStateService State
+
+<section class="program-library" aria-label="Bibliothèque des programmes">
+    <div class="family-filters" aria-label="Famille de programmes">
+        <button class="secondary-button" data-family="classic" aria-pressed="@Pressed(_family == Family.Classic)" disabled="@Disabled" @onclick="() => SelectFamily(Family.Classic)">Classiques</button>
+        <button class="secondary-button" data-family="targeted" aria-pressed="@Pressed(_family == Family.Targeted)" disabled="@Disabled" @onclick="() => SelectFamily(Family.Targeted)">Ciblées</button>
+        @if (LibraryPrograms.Any(program => FamilyOf(program.Id) == Family.Custom))
+        {
+            <button class="secondary-button" data-family="custom" aria-pressed="@Pressed(_family == Family.Custom)" disabled="@Disabled" @onclick="() => SelectFamily(Family.Custom)">Personnalisés</button>
+        }
+    </div>
+    <div class="category-filters" aria-label="Catégorie de programme">
+        @foreach (var program in Categories)
+        {
+            <button class="secondary-button category-filter" data-category="@program.Id" aria-pressed="@Pressed(Category?.Id == program.Id)" disabled="@Disabled" @onclick="() => SelectCategory(program.Id)">@program.Name</button>
+        }
+    </div>
+    @if (Variants.Count == 0)
+    {
+        <p class="muted">Aucune séance dans cette catégorie.</p>
+    }
+    else
+    {
+        <p class="eyebrow variant-format">CHOISIS TA VARIANTE</p>
+        <div class="variant-grid">
+            @foreach (var candidate in Variants)
+            {
+                <article class="library-session variant-card @(SelectedSession?.Id == candidate.Id ? "selected" : "")" data-session="@candidate.Id" @key="candidate.Id">
+                    <button class="session-option" aria-label="Afficher @candidate.Name" aria-pressed="@Pressed(SelectedSession?.Id == candidate.Id)" disabled="@Disabled" @onclick="() => _sessionId = candidate.Id">
+                        <strong>@VariantLabel(candidate)</strong><small>@candidate.Focus</small>
+                    </button>
+                    <button class="secondary-button add-week" disabled="@Disabled" aria-label="Ajouter @candidate.Name à ma semaine" title="Ajouter à ma semaine" @onclick="() => Added.InvokeAsync(candidate.Id)"><span aria-hidden="true">＋</span></button>
+                </article>
+            }
+        </div>
+    }
+    @if (SelectedSession is { } session)
+    {
+        <section class="panel variant-detail" aria-label="Détail de la variante">
+            <div class="variant-heading">
+                <div><h2>@session.Name</h2><p class="muted">@session.Exercises.Count exercices · @TotalSets(session) séries</p></div>
+                <button class="primary-button start-library" disabled="@Disabled" @onclick="() => Started.InvokeAsync(session)">Démarrer</button>
+            </div>
+            <ol class="program-exercises">
+                @foreach (var plan in session.Exercises.OrderBy(plan => plan.Order))
+                {
+                    var exercise = State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId);
+                    <li class="program-exercise" data-exercise="@plan.ExerciseId">
+                        <div>
+                            <strong>@(exercise?.Name ?? plan.ExerciseId)</strong>
+                            <span class="muted">@exercise?.MuscleGroup · @(plan.RepTarget ?? exercise?.RepTarget) · repos @(plan.Rest ?? exercise?.Rest)</span>
+                            @if (!string.IsNullOrWhiteSpace(exercise?.AlternativeName)) { <small class="machine-name">@exercise.AlternativeName</small> }
+                        </div>
+                        @if (exercise?.Link is { } url && Uri.TryCreate(url, UriKind.Absolute, out var link) && (link.Scheme == "https" || link.Scheme == "http"))
+                        {
+                            <a class="exercise-photo" href="@url" target="_blank" rel="noopener noreferrer" aria-label="Photo de @exercise.Name">Photo ↗</a>
+                        }
+                    </li>
+                }
+            </ol>
+            <button class="secondary-button next-variant" disabled="@(Disabled || Variants.Count < 2)" @onclick="NextVariant">↻ Prochaine variante</button>
+        </section>
+    }
+</section>
+
+@code {
+    [Parameter] public EventCallback<string> Added { get; set; }
+    [Parameter] public EventCallback<WorkoutSession> Started { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    private enum Family { Classic, Targeted, Custom }
+    private static readonly HashSet<string> ClassicIds = ["push", "pull", "legs", "upper", "arms", "full"];
+    private static readonly HashSet<string> TargetedIds = ["chest-biceps", "back-triceps", "chest-back", "quads-calves", "hams-glutes"];
+    private Family _family;
+    private string? _categoryId;
+    private string? _sessionId;
+    private IEnumerable<WorkoutProgram> LibraryPrograms => State.Programs.Where(program => program.Id != "react-week-plan");
+    private IEnumerable<WorkoutProgram> Categories => LibraryPrograms.Where(program => FamilyOf(program.Id) == _family);
+    private WorkoutProgram? Category => Categories.FirstOrDefault(program => program.Id == _categoryId) ?? Categories.FirstOrDefault();
+    public static IReadOnlyList<WorkoutSession> VariantsFor(WorkoutProgram program) => program.Sessions
+        .Where(session => FamilyOf(program.Id) == Family.Custom || session.Id != program.Id).ToArray();
+    private IReadOnlyList<WorkoutSession> Variants => Category is { } category ? VariantsFor(category) : [];
+    private WorkoutSession? SelectedSession => Variants.FirstOrDefault(session => session.Id == _sessionId) ?? Variants.FirstOrDefault();
+    private static Family FamilyOf(string id) => ClassicIds.Contains(id) ? Family.Classic : TargetedIds.Contains(id) ? Family.Targeted : Family.Custom;
+    private static string Pressed(bool selected) => selected ? "true" : "false";
+    private static string VariantLabel(WorkoutSession session) => session.Name.Split('·') is { Length: > 1 } parts ? parts[1].Trim() : session.Name;
+    private int TotalSets(WorkoutSession session) => session.Exercises.Sum(plan => plan.Sets ?? State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId)?.Sets ?? 4);
+    private void SelectFamily(Family family)
+    {
+        _family = family;
+        _categoryId = null;
+        _sessionId = null;
+    }
+    private void SelectCategory(string id)
+    {
+        _categoryId = id;
+        _sessionId = null;
+    }
+    private void NextVariant()
+    {
+        var variants = Variants;
+        if (variants.Count < 2) return;
+        var index = Array.FindIndex(variants.ToArray(), session => session.Id == SelectedSession?.Id);
+        _sessionId = variants[(index + 1) % variants.Count].Id;
+    }
+}

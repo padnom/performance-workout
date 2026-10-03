@@ -1,0 +1,70 @@
+@implements IDisposable
+@using Performance.Application
+@using Performance.Domain
+@using Performance.App.Services
+@inject WorkoutStateService State
+@inject NavigationManager Navigation
+@inject IServiceProvider Services
+
+@if (_pending is { } session)
+{
+    <div class="modal-backdrop"><section class="panel confirm-dialog @(_preview ? "start-preview" : "")" role="dialog" aria-modal="true" aria-labelledby="start-title">
+        <h2 id="start-title">@(_preview ? session.Name : "Démarrer la séance ?")</h2>
+        <p class="muted">@(_preview ? session.Focus : $"{session.Name}. Le chronomètre démarrera après confirmation.")</p>
+        <label class="field gym-field">Salle de cette séance<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+        @if (_preview)
+        {
+            <ol>@foreach (var plan in session.Exercises)
+            { <li>@(State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId)?.Name ?? plan.ExerciseId)<span class="muted">@(plan.Sets ?? 4) séries · @plan.RepTarget · repos @plan.Rest</span></li> }</ol>
+        }
+        @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
+        <div class="settings-actions">
+            <button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_preview ? "Démarrer cette séance" : "Confirmer")</button>
+            <button class="secondary-button" disabled="@_busy" @onclick="Close">Retour</button>
+        </div>
+    </section></div>
+}
+
+@code {
+    private WorkoutSession? _pending;
+    private bool _preview;
+    private bool _busy;
+    private string _gym = "One Air";
+    private string _message = "";
+    private IDisposable? _backRegistration;
+    protected override void OnInitialized()
+    {
+        if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation)
+            _backRegistration = navigation.RegisterBackHandler(HandleBackAsync, 10);
+    }
+    public void Select(WorkoutSession session, bool confirmOnly = false)
+    {
+        if (State.Data.ActiveWorkout is not null) return;
+        _pending = session; _gym = State.CurrentGym; _preview = !confirmOnly; _message = "";
+        StateHasChanged();
+    }
+    private async Task ConfirmAsync()
+    {
+        if (_preview) { _preview = false; return; }
+        if (_pending is null || _busy) return;
+        _busy = true;
+        try
+        {
+            var result = await State.StartAsync(_pending, _gym);
+            if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
+            var free = _pending.Id == "free";
+            _pending = null;
+            Navigation.NavigateTo(free ? "/seance?ajouter=1" : "/seance");
+        }
+        catch { _message = WorkoutUi.Error(null); }
+        finally { _busy = false; }
+    }
+    private void Close() => _pending = null;
+    private async Task<bool> HandleBackAsync()
+    {
+        if (_pending is null) return false;
+        await InvokeAsync(() => { if (!_busy) Close(); StateHasChanged(); });
+        return true;
+    }
+    public void Dispose() => _backRegistration?.Dispose();
+}
