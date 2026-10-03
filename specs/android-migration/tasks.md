@@ -23,8 +23,8 @@
 - [x] #21 T-21 Review and test the new seams; deliver signed Release APK with in-place emulator update proof.
 - [x] #22 T-22 Restore deployed Progress overview, program/muscle bars and exercise chart; test calculations/rendering and deliver Release 1.1.1/code 3.
 - [x] #23 T-23 Pin compact workout/rest controls at the top, replace cumulative tonnage with useful set metrics and verify Android scrolling/keyboard.
-- [x] #24 T-24 Archive the web reference, clean generated files, refresh Android documentation and commit/push the verified current branch.
-- [x] #25 T-25 Structure Performance.slnx, name UnitTests/IntegrationTests explicitly, mirror UI source folders and verify delivery directly on main.
+- [ ] #24 T-24 Archive the web reference, clean generated files, refresh Android documentation and commit/push main. Local cleanup and commits are complete; GitHub denied write access (403), so push remains pending.
+- [x] #25 T-25 Structure Performance.slnx, name UnitTests/IntegrationTests explicitly, mirror UI source folders and verify directly on main.
 
 | Acceptance | Implementation | Proof |
 |---|---|---|
