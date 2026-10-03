@@ -23,7 +23,13 @@ public sealed class DefaultTrainingCatalog : ITrainingCatalog
         return catalog with
         {
             Exercises = Array.AsReadOnly(catalog.Exercises.ToArray()),
-            Programs = Array.AsReadOnly(catalog.Programs.ToArray())
+            Programs = Array.AsReadOnly(catalog.Programs.Select(program => program with
+            {
+                Sessions = program.Sessions.Select(session => session with
+                {
+                    OptionalExercises = session.OptionalExercises ?? []
+                }).ToArray()
+            }).ToArray())
         };
     }
 }

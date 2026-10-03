@@ -8,14 +8,16 @@
 
 @if (_pending is { } session)
 {
+    var selectedSession = State.ResolveSessionForGym(session, _gym);
     <div class="modal-backdrop"><section class="panel confirm-dialog @(_preview ? "start-preview" : "")" role="dialog" aria-modal="true" aria-labelledby="start-title">
         <h2 id="start-title">@(_preview ? session.Name : "Démarrer la séance ?")</h2>
         <p class="muted">@(_preview ? session.Focus : $"{session.Name}. Le chronomètre démarrera après confirmation.")</p>
         <label class="field gym-field">Salle de cette séance<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
         @if (_preview)
         {
-            <ol>@foreach (var plan in session.Exercises)
+            <ol>@foreach (var plan in selectedSession.Exercises)
             { <li>@(State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId)?.Name ?? plan.ExerciseId)<span class="muted">@(plan.Sets ?? 4) séries · @plan.RepTarget · repos @plan.Rest</span></li> }</ol>
+            @if (selectedSession.OptionalExercises is { Count: > 0 } optionalExercises) { <p class="muted">@optionalExercises.Count exercices optionnels à ajouter en fin de séance.</p> }
         }
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
         <div class="settings-actions">
@@ -40,7 +42,12 @@
     public void Select(WorkoutSession session, bool confirmOnly = false)
     {
         if (State.Data.ActiveWorkout is not null) return;
-        _pending = session; _gym = State.CurrentGym; _preview = !confirmOnly; _message = "";
+        _pending = session;
+        var programGym = State.Programs.FirstOrDefault(program => (program.Gym is "One Air" or "Basic-Fit" or "Basic Fit")
+            && program.Sessions.Any(candidate => candidate.Id == session.Id))?.Gym;
+        var selectedGym = programGym ?? State.CurrentGym;
+        _gym = selectedGym.Trim() == "Basic Fit" ? "Basic-Fit" : selectedGym;
+        _preview = !confirmOnly; _message = "";
         StateHasChanged();
     }
     private async Task ConfirmAsync()

@@ -119,6 +119,49 @@ public sealed class JsonPerformanceDataRepositoryTest
         }
     }
 
+    [Fact]
+    public async Task ImportPrograms_ReopenFileStore_PreservesWeekAndOptionalPlansWithoutPersonalData()
+    {
+        // Arrange
+        var directory = Path.Combine(Path.GetTempPath(), "performance-program-test-" + Guid.NewGuid().ToString("N"));
+        var path = Path.Combine(directory, "data.json");
+        var catalog = new DefaultTrainingCatalog();
+        var program = catalog.Programs.Single(item => item.Id == "gym-one-air");
+        var codec = new JsonProgramPackageCodec();
+        var package = new ImportWorkoutProgramsUseCase(codec).Execute(new ExportWorkoutProgramsUseCase(codec).Execute([program], catalog.Exercises));
+        try
+        {
+            var repository = new JsonPerformanceDataRepository(new JsonFileDocumentStore(path));
+            var service = Create(repository);
+            await service.InitializeAsync();
+            await service.AddWeekSessionAsync("pa");
+            await service.StartAsync(program.Sessions[0], "One Air");
+            var previousSession = service.Data.ActiveWorkout!.Session!.Id;
+
+            // Act
+            (await service.ImportProgramsAsync(package)).IsSuccess.ShouldBeTrue();
+            var reopened = Create(new JsonPerformanceDataRepository(new JsonFileDocumentStore(path)));
+            await reopened.InitializeAsync();
+            (await reopened.AddOptionalExercisesAsync()).IsSuccess.ShouldBeTrue();
+            var restored = Create(new JsonPerformanceDataRepository(new JsonFileDocumentStore(path)));
+            await restored.InitializeAsync();
+
+            // Assert
+            restored.WeekSessions.Single().Id.ShouldBe("pa");
+            restored.Data.History.ShouldBeEmpty();
+            restored.Data.ActiveWorkout!.Session!.Id.ShouldBe(previousSession);
+            restored.Data.ActiveWorkout.Session.OptionalExercises.ShouldBeEmpty();
+            restored.Data.ActiveWorkout.Session.Exercises.Count.ShouldBe(program.Sessions[0].Exercises.Count + 2);
+            restored.Data.Programs.Single(item => item.Id.StartsWith("imported-program-", StringComparison.Ordinal))
+                .Sessions.ShouldAllBe(session => session.OptionalExercises.Count == 2);
+            File.Exists(path + ".tmp").ShouldBeFalse();
+        }
+        finally
+        {
+            if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
+        }
+    }
+
     private static WorkoutStateService Create(IPerformanceDataRepository repository) =>
         new(repository, new DefaultTrainingCatalog(), TimeProvider.System);
 }

@@ -25,6 +25,11 @@
 - [x] #23 T-23 Pin compact workout/rest controls at the top, replace cumulative tonnage with useful set metrics and verify Android scrolling/keyboard.
 - [ ] #24 T-24 Archive the web reference, clean generated files, refresh Android documentation and commit/push main. Local cleanup and commits are complete; GitHub denied write access (403), so push remains pending.
 - [x] #25 T-25 Structure Performance.slnx, name UnitTests/IntegrationTests explicitly, mirror UI source folders and verify directly on main.
+- [x] #26 T-26 Add gym-specific balanced four-session programs without modifying legacy catalog/history.
+- [x] #27 T-27 Add two optional abdominal exercises with atomic manual activation and persistent duplicate prevention.
+- [x] #28 T-28 Add private JSON program export/import with validated preview, semantic identity remapping and copies.
+- [x] #29 T-29 Add recommended gym cards, confirmed week replacement, folded library and Android program picker/share UI.
+- [x] #30 T-30 Review compatibility, run 530 .NET/11 script tests and verify signed Release 1.2.0/code 4 with emulator update/data preservation.
 
 | Acceptance | Implementation | Proof |
 |---|---|---|

@@ -63,11 +63,10 @@ dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   --framework net10.0-android \
   -p:AndroidPackageFormats=apk \
   -p:RunAOTCompilation=true \
-  -p:PublishTrimmed=true \
-  -p:RuntimeIdentifiers=android-arm64%3Bandroid-x64
+  -p:PublishTrimmed=true
 ```
 
-Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.1.0, code Android 2**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.2.0, code Android 4**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
 
 `verify-debug-apk.py` reste disponible pour le format Debug. Le nouveau contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
 
@@ -85,7 +84,7 @@ Le second contrôle nécessite un émulateur/appareil de test connecté. Il inst
 
 ## Release dans GitHub Actions
 
-Le workflow `.github/workflows/android.yml` exécute les trois suites .NET en **Release**, les tests des contrôles de livraison, puis construit un APK **Release AOT et trimming** pour les deux architectures. Il vérifie le paquet et le lance sur un émulateur API 36/x86_64. Il se déclenche pour les changements Android, les pull requests, les tags `android-v*` et les exécutions manuelles. Les preuves de lancement sont téléchargeables dans les artefacts.
+Le workflow `.github/workflows/android.yml` exécute les quatre suites .NET en **Release**, les tests des contrôles de livraison, puis construit un APK **Release AOT et trimming** pour les deux architectures. Il vérifie le paquet et le lance sur un émulateur API 36/x86_64. Il se déclenche pour les changements Android, les pull requests, les tags `android-v*` et les exécutions manuelles. Les preuves de lancement sont téléchargeables dans les artefacts.
 
 Le job de vérification utilise un certificat de diagnostic jetable généré sur le runner, y compris pour les pull requests ; il ne lit aucun secret. Son artefact `performance-release-diagnostic-not-an-update` sert aux essais sur une installation de test et **ne permet pas de mettre à jour l’installation de ton téléphone**.
 
@@ -129,3 +128,15 @@ Pendant une séance, chaque carte propose Remplacer, Modifier et Retirer ; la re
 Progrès reprend le bilan du site sur les **28 derniers jours** : séances, séries saisies, durée moyenne, programmes réalisés et zones musculaires principales. Les séries avec une charge ou des répétitions sont comptées ; le RIR seul ne compte pas. La courbe par exercice utilise **tout l’historique de la salle choisie**, avec début, variation et record. Toucher un point affiche sa date et sa charge ; les valeurs datées restent accessibles sous le graphique. Avant deux séances, un message indique comment faire apparaître la courbe. Les records de toutes les salles restent consultables dans la section dépliable. Aucun accès réseau n’est nécessaire.
 
 La barre de séance est désormais **compacte et fixée en haut du défilement**, sous l’en-tête : temps de séance, séries, Terminer et repos (+30 s / arrêt). Les totaux de poids soulevé ne sont plus affichés : l’accueil montre les séries sur sept jours, l’historique montre les exercices et les séries, et Progrès montre les charges/records et leur évolution. La durée d’une séance et sa moyenne restent disponibles, sans cumul de temps passé en salle.
+
+## Programmes par salle et partage — 1.2.0
+
+Dans Programmes, « Ton programme » propose Push, Pull, Jambes et Upper pour One Air ou Basic-Fit. Les exercices principaux sont en 4×10, avec des séries, répétitions et repos modifiables. One Air utilise les machines déjà cartographiées ; Basic-Fit propose du matériel standard à vérifier dans la salle utilisée. « Utiliser cette semaine » demande confirmation avant de remplacer la semaine. Les anciens programmes restent sous « Autres programmes » et les programmes importés sous « Personnalisés ».
+
+Le choix de salle au démarrage adapte les séances recommandées à cette salle. Changer la salle dans Réglages ne transforme pas une séance en cours. Les anciennes semaines et séances personnalisées sont conservées ; aucune charge n’est transférée automatiquement entre machines ou salles.
+
+Deux exercices d’abdos optionnels apparaissent en fin de séance : machine abdominale et reverse crunch à One Air, crunch à la poulie et reverse crunch à Basic-Fit. Ils sont proposés en 2×10–15 avec 60 secondes de repos, sans être comptés avant leur ajout volontaire. Après ajout, ils se modifient et s’enregistrent comme les autres exercices. Ils ne sont pas ajoutés une seconde fois après réouverture.
+
+« Partager des programmes » exporte la semaine ou les programmes cochés dans un JSON `performance-programs`, version 1, avec les définitions d’exercices et les consignes. Ce fichier exclut historique, charges personnelles, séance en cours, réglages et diagnostics. Android permet de choisir une destination ou une application de partage. L’import affiche un aperçu puis ajoute des copies après confirmation, sans remplacer les données existantes. Un exercice portant le même identifiant mais une définition différente reçoit un nouvel identifiant.
+
+La sauvegarde complète de Réglages reste distincte et conserve son rôle pour sauvegarder ou migrer les données personnelles. Les fichiers de partage de programmes sont à importer depuis Programmes.

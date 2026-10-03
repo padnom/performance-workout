@@ -5,8 +5,8 @@
 - Branch: `main` (direct delivery explicitly requested by the user).
 - Base commit: `697eb59`
 - Repository: `/mnt/d/Repos/performance-workout/` (moved by the user).
-- Status: Release 1.1.1/code 3 delivered; session parity, discreet optional vibration, offline charts and top-pinned controls implemented. Repository cleanup and structured Performance.slnx verified with 448 .NET tests and 11 release-script checks. Android is the main project; the web reference is archived in legacy/web. Direct delivery on main is explicitly authorized by the user; GitHub push is pending because the supplied PAT was denied write access (403).
-- Next action: install `outputs/performance-android-1.1.1.apk` over the existing app and verify the toolbar on the physical phone; the supplied phone screenshot still shows the old bottom toolbar. T-07 remains open. Configure the existing signing certificate in CI secrets before a distributed CI release. Import a complete web backup to recover an existing PWA week.
+- Status: Release 1.2.0/code 4 built and verified: gym-specific four-session programs, optional abdominal exercises and private program sharing implemented. 530 .NET tests and 11 release-script checks pass. Review passed after three compatibility/gym fixes. The Release APK updates 1.1.1 on the API 36 emulator while preserving the private data file byte-for-byte. Android remains the main project; legacy/web is preserved. Direct main delivery is authorized; GitHub push remains pending from PAT write denial (403).
+- Next action: install `outputs/performance-android-1.2.0.apk` over the existing app and verify programs, optional abs and native sharing on the physical phone. T-07 remains open. Configure the existing signing certificate in CI secrets before a distributed CI release; correct GitHub write rights for main push.
 - Updated: 2026-10-03
 
 The existing MAUI project had navigation and backup import/export, but training pages were placeholders.
@@ -14,3 +14,5 @@ The React PWA remains the behavioral reference under `legacy/web`, and the exist
 The user confirmed a C# development profile and that the application will no longer be hosted; MAUI Blazor Hybrid remains the selected framework.
 
 [Proposal](proposal.md) · [Design](design.md) · [Tasks](tasks.md) · [Progress](progress.md)
+
+[Approved gym/program-sharing plan and verification receipt](gym-programs.md)

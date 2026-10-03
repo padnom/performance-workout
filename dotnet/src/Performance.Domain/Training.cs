@@ -5,6 +5,7 @@ public sealed record WorkoutProgram
     public required string Id { get; init; }
     public required string Name { get; init; }
     public string? Description { get; init; }
+    public string? Gym { get; init; }
     public IReadOnlyList<WorkoutSession> Sessions { get; init; } = [];
 }
 
@@ -15,6 +16,7 @@ public sealed record WorkoutSession
     public string? Color { get; init; }
     public string? Focus { get; init; }
     public IReadOnlyList<WorkoutExercise> Exercises { get; init; } = [];
+    public IReadOnlyList<WorkoutExercise> OptionalExercises { get; init; } = [];
 }
 
 public sealed record WorkoutExercise

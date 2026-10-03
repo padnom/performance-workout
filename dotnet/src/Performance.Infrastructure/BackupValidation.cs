@@ -172,8 +172,12 @@ internal static class BackupValidation
         && program.Sessions is not null && program.Sessions.All(ValidSession);
 
     private static bool ValidSession(WorkoutSession? session) => session is not null && Nonempty(session.Id) && Nonempty(session.Name)
-        && session.Exercises is not null && session.Exercises.All(exercise => exercise is not null && Nonempty(exercise.ExerciseId))
-        && session.Exercises.Select(exercise => exercise.ExerciseId).Distinct(StringComparer.Ordinal).Count() == session.Exercises.Count;
+        && ValidSessionExercises(session.Exercises) && ValidSessionExercises(session.OptionalExercises);
+
+    private static bool ValidSessionExercises(IReadOnlyList<WorkoutExercise>? exercises) => exercises is not null
+        && exercises.All(exercise => exercise is not null && Nonempty(exercise.ExerciseId)
+            && (exercise.Sets is null || exercise.Sets is >= 1 and <= 20))
+        && exercises.Select(exercise => exercise.ExerciseId).Distinct(StringComparer.Ordinal).Count() == exercises.Count;
 
     private static bool ValidLog(TrainingSessionLog? log) => log is not null && Nonempty(log.Id) && Nonempty(log.SessionId)
         && log.Exercises is not null && log.Exercises.All(ValidPerformance);

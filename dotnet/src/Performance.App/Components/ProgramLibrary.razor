@@ -75,7 +75,7 @@
     private Family _family;
     private string? _categoryId;
     private string? _sessionId;
-    private IEnumerable<WorkoutProgram> LibraryPrograms => State.Programs.Where(program => program.Id != "react-week-plan");
+    private IEnumerable<WorkoutProgram> LibraryPrograms => State.Programs.Where(program => program.Id is not ("react-week-plan" or "gym-one-air" or "gym-basic-fit"));
     private IEnumerable<WorkoutProgram> Categories => LibraryPrograms.Where(program => FamilyOf(program.Id) == _family);
     private WorkoutProgram? Category => Categories.FirstOrDefault(program => program.Id == _categoryId) ?? Categories.FirstOrDefault();
     public static IReadOnlyList<WorkoutSession> VariantsFor(WorkoutProgram program) => program.Sessions

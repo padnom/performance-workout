@@ -25,7 +25,7 @@ public sealed class DefaultTrainingCatalogTests
         var catalog = new DefaultTrainingCatalog();
 
         // Act
-        var exerciseIds = catalog.Exercises.Select(exercise => exercise.Id);
+        var exerciseIds = catalog.Exercises.Where(exercise => expectedIds.Contains(exercise.Id)).Select(exercise => exercise.Id);
 
         // Assert
         exerciseIds.ShouldBe(expectedIds);

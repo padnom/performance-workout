@@ -14,8 +14,10 @@
     {
         <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
     }
+    <GymProgram Started="SelectSession" Changed="Refresh" />
     <WeeklyPlan Sessions="State.WeekSessions" Selected="SelectSession" Error="SetMessage" Disabled="_busy" />
-    <ProgramLibrary Added="AddWeekAsync" Started="StartSession" Disabled="_busy" />
+    <details class="other-programs"><summary>Autres programmes</summary><ProgramLibrary Added="AddWeekAsync" Started="StartSession" Disabled="_busy" /></details>
+    <ProgramSharing Changed="Refresh" />
     <SessionStart @ref="_starter" />
 }
 
@@ -24,7 +26,7 @@
     private bool _busy;
     private string _message = "";
     private SessionStart? _starter;
-    private int LibraryCount => State.Programs.Where(program => program.Id != "react-week-plan").Sum(program => ProgramLibrary.VariantsFor(program).Count);
+    private int LibraryCount => State.Programs.Where(program => program.Id is not ("react-week-plan" or "gym-one-air" or "gym-basic-fit")).Sum(program => ProgramLibrary.VariantsFor(program).Count);
     protected override async Task OnInitializedAsync()
     {
         try { await State.InitializeAsync(); }
@@ -32,6 +34,7 @@
         finally { _loading = false; }
     }
     private void SetMessage(string message) => _message = message;
+    private void Refresh() => StateHasChanged();
     private void SelectSession(WorkoutSession session) => Open(session, false);
     private void StartSession(WorkoutSession session) => Open(session, true);
     private void Open(WorkoutSession session, bool confirmOnly)

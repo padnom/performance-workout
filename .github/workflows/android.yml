@@ -75,7 +75,6 @@ jobs:
           dotnet build "$ANDROID_PROJECT"
           --configuration Release --framework "$ANDROID_FRAMEWORK"
           -p:AndroidPackageFormats=apk -p:RunAOTCompilation=true -p:PublishTrimmed=true
-          -p:RuntimeIdentifiers=android-arm64%3Bandroid-x64
       - name: Verify signed Release APK
         shell: bash
         run: |

@@ -39,6 +39,16 @@
             }
             else { <p class="notice">Exercice indisponible : @plan.ExerciseId. Les données restent conservées.</p> }
         }
+        @if (session.OptionalExercises is { Count: > 0 } optionalExercises)
+        {
+            var isAbs = optionalExercises.All(plan => State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId)?.MuscleGroup.Contains("Abdo", StringComparison.OrdinalIgnoreCase) == true);
+            <section class="panel optional-abs" aria-label="Abdos optionnels">
+                <p class="eyebrow">FIN DE SÉANCE · OPTIONNEL</p><h2>@(isAbs && optionalExercises.Count == 2 ? "Deux exercices d’abdos" : $"{optionalExercises.Count} exercices optionnels")</h2>
+                <p class="muted">Ajoute ce bloc si tu le souhaites. Tu peux modifier chaque exercice après ajout.</p>
+                <ul>@foreach (var plan in optionalExercises) { var exercise = State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId); <li>@(exercise?.Name ?? plan.ExerciseId)<small class="muted"> · @(plan.Sets ?? exercise?.Sets ?? 2) séries · @(plan.RepTarget ?? exercise?.RepTarget) · repos @(plan.Rest ?? exercise?.Rest)</small></li> }</ul>
+                <button class="secondary-button add-optional-abs" disabled="@_busy" @onclick="() => RunAsync(() => State.AddOptionalExercisesAsync())">＋ @(isAbs ? "Ajouter les abdos" : "Ajouter le bloc optionnel")</button>
+            </section>
+        }
         <button class="secondary-button add-workout-exercise" disabled="@_busy" @onclick="OpenAdd">＋ Ajouter un exercice</button>
         <button class="danger-button abandon-workout" disabled="@_busy" @onclick="() => _confirmation = Confirmation.Cancel">Abandonner la séance</button>
     </div>
@@ -121,7 +131,7 @@
     private void OpenCreate() { _editing = null; _editorError = ""; _editorOpen = true; }
     private void ClosePicker() { _pickerOpen = false; _replacing = null; }
     private void CloseEditor() => _editorOpen = false;
-    private Task ChangeGymAsync(ChangeEventArgs args) => RunAsync(() => State.SetGymAsync(args.Value?.ToString() ?? "One Air"));
+    private Task ChangeGymAsync(ChangeEventArgs args) => RunAsync(() => State.SetActiveWorkoutGymAsync(args.Value?.ToString() ?? "One Air"));
     private async Task PickAsync(string id)
     {
         var result = await RunAsync(() => _replacing is null ? State.AddExerciseAsync(id) : State.ReplaceExerciseAsync(_replacing.Id, id));

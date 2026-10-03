@@ -25,6 +25,7 @@
     <RazorComponent Include="../../src/Performance.App/Layout/**/*.razor" Link="Layout/%(RecursiveDir)%(Filename)%(Extension)" />
     <RazorComponent Include="../../src/Performance.App/_Imports.razor" Link="_Imports.razor" />
     <Compile Include="../../src/Performance.App/Services/IBackupFiles.cs" Link="Services/IBackupFiles.cs" />
+    <Compile Include="../../src/Performance.App/Services/IProgramFiles.cs" Link="Services/IProgramFiles.cs" />
     <Compile Include="../../src/Performance.App/Services/IWorkoutFeedback.cs" Link="Services/IWorkoutFeedback.cs" />
     <Compile Include="../../src/Performance.App/Services/AppNavigationService.cs" Link="Services/AppNavigationService.cs" />
     <Compile Include="../../src/Performance.App/Services/IRestNotificationScheduler.cs" Link="Services/IRestNotificationScheduler.cs" />

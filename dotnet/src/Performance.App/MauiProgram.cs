@@ -24,6 +24,10 @@ public static class MauiProgram
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddSingleton<WorkoutStateService>();
         builder.Services.AddSingleton<IBackupFiles, MauiBackupFiles>();
+        builder.Services.AddSingleton<IProgramFiles, MauiProgramFiles>();
+        builder.Services.AddSingleton<IProgramPackageCodec, JsonProgramPackageCodec>();
+        builder.Services.AddTransient<ImportWorkoutProgramsUseCase>();
+        builder.Services.AddTransient<ExportWorkoutProgramsUseCase>();
         builder.Services.AddSingleton<IWorkoutFeedback, MauiWorkoutFeedback>();
         builder.Services.AddSingleton<IRestNotificationScheduler, AndroidRestNotificationScheduler>();
         builder.Services.AddSingleton<RestNotificationCoordinator>();

@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Performance.Application;
 
-public sealed class WorkoutStateService(
+public sealed partial class WorkoutStateService(
     IPerformanceDataRepository repository,
     ITrainingCatalog catalog,
     TimeProvider timeProvider)
@@ -254,6 +254,10 @@ public sealed class WorkoutStateService(
     {
         if (Data.ActiveWorkout is not null) return Change.Failure("ActiveWorkoutExists");
         if (string.IsNullOrWhiteSpace(gym)) return Change.Failure("InvalidGym");
+        session = ResolveSessionForGym(session, gym);
+        if (IsRecommendedSession(session.Id)) gym = NormalizeGym(gym);
+        if (IsRecommendedSession(session.Id) && session.Exercises.Concat(session.OptionalExercises ?? [])
+            .Any(item => !IsAvailableInGym(item.ExerciseId, gym))) return Change.Failure("IncompatibleGym");
         if (session.Exercises.Any(item => !AllExercises.Any(exercise => exercise.Id == item.ExerciseId))) return Change.Failure("UnknownExercise");
         if (session.Exercises.Select(item => item.ExerciseId).Distinct(StringComparer.Ordinal).Count() != session.Exercises.Count)
             return Change.Failure("DuplicateExercise");
@@ -510,15 +514,7 @@ public sealed class WorkoutStateService(
     {
         if (string.IsNullOrWhiteSpace(gym)) return Change.Failure("InvalidGym");
         var settings = new Dictionary<string, string>(Data.Settings, StringComparer.Ordinal) { ["training-workout-gym"] = gym };
-        return new(Data with { Settings = settings, ActiveWorkout = WithDefaultGym(Data.ActiveWorkout, gym) });
-    }
-
-    private ActiveWorkout? WithDefaultGym(ActiveWorkout? active, string gym)
-    {
-        if (active?.Session is null) return active;
-        var gyms = active.Session.Exercises.ToDictionary(item => item.ExerciseId,
-            item => ResolveGym(active, item.ExerciseId), StringComparer.Ordinal);
-        return active with { DefaultGym = gym, ExerciseGyms = gyms, Draft = CopyDraft(active) };
+        return new(Data with { Settings = settings });
     }
 
     private Change SetExerciseGym(string exerciseId, string gym)
