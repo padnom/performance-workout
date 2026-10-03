@@ -14,11 +14,15 @@
     {
         <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
     }
-    <GymProgram Started="SelectSession" Changed="Refresh" />
+    <button class="primary-button create-program" disabled="@_busy" @onclick="() => _editor?.Open()">＋ Créer un programme</button>
+    <PersonalPrograms FavoritesOnly="true" Snapshot="State.Data" Selected="SelectSession" Added="AddWeekAsync" Changed="Refresh" Disabled="_busy" />
+    <GymProgram Snapshot="State.Data" Started="SelectSession" Changed="Refresh" />
     <WeeklyPlan Sessions="State.WeekSessions" Selected="SelectSession" Error="SetMessage" Disabled="_busy" />
-    <details class="other-programs"><summary>Autres programmes</summary><ProgramLibrary Added="AddWeekAsync" Started="StartSession" Disabled="_busy" /></details>
-    <ProgramSharing Changed="Refresh" />
+    <PersonalPrograms Snapshot="State.Data" Selected="SelectSession" Added="AddWeekAsync" Changed="Refresh" Disabled="_busy" />
+    <details class="other-programs"><summary>Autres programmes</summary><ProgramLibrary Snapshot="State.Data" Added="AddWeekAsync" Started="StartSession" Changed="Refresh" Disabled="_busy" /></details>
+    <ProgramSharing Snapshot="State.Data" Changed="Refresh" />
     <SessionStart @ref="_starter" />
+    <ProgramEditor @ref="_editor" Changed="Refresh" />
 }
 
 @code {
@@ -26,6 +30,7 @@
     private bool _busy;
     private string _message = "";
     private SessionStart? _starter;
+    private ProgramEditor? _editor;
     private int LibraryCount => State.Programs.Where(program => program.Id is not ("react-week-plan" or "gym-one-air" or "gym-basic-fit")).Sum(program => ProgramLibrary.VariantsFor(program).Count);
     protected override async Task OnInitializedAsync()
     {

@@ -1,0 +1,39 @@
+@using Performance.Application
+@using Performance.Domain
+@inject WorkoutStateService State
+
+<section class="personal-programs @(FavoritesOnly ? "favorite-programs" : "my-programs")" aria-label="@(FavoritesOnly ? "Programmes favoris" : "Mes programmes")">
+    <div class="section-heading"><h2>@(FavoritesOnly ? "Mes favoris" : "Mes programmes")</h2><span class="count">@Programs.Count()</span></div>
+    @if (!Programs.Any())
+    {
+        <p class="muted">@(FavoritesOnly ? "Ajoute un programme aux favoris avec son étoile pour le retrouver ici." : "Crée ou importe un programme pour le retrouver ici.")</p>
+    }
+    <div class="card-list">
+        @foreach (var program in Programs)
+        {
+            <article class="panel personal-program" data-personal-program="@program.Id" @key="program.Id">
+                <div class="card-heading"><div><h3>@program.Name</h3><p class="muted">@program.Gym · @program.Sessions.Count séance(s)</p></div><ProgramFavoriteButton Snapshot="State.Data" ProgramId="@program.Id" ProgramName="@program.Name" Disabled="Disabled" Changed="Changed" /></div>
+                @if (!string.IsNullOrWhiteSpace(program.Description)) { <p class="muted">@program.Description</p> }
+                <div class="session-list">
+                    @foreach (var session in program.Sessions)
+                    {
+                        <div class="library-session" data-personal-session="@session.Id">
+                            <button class="session-option personal-session-preview" disabled="@Disabled" aria-label="Afficher @session.Name" @onclick="() => Selected.InvokeAsync(session)"><strong>@session.Name</strong><small>@session.Exercises.Count exercices</small></button>
+                            <button class="secondary-button add-week" disabled="@Disabled" aria-label="Ajouter @session.Name à ma semaine" @onclick="() => Added.InvokeAsync(session.Id)">＋</button>
+                        </div>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter] public bool FavoritesOnly { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public EventCallback<WorkoutSession> Selected { get; set; }
+    [Parameter] public EventCallback<string> Added { get; set; }
+    [Parameter] public EventCallback Changed { get; set; }
+    [Parameter] public PerformanceData? Snapshot { get; set; }
+    private IEnumerable<WorkoutProgram> Programs => FavoritesOnly ? State.FavoritePrograms : State.Data.Programs.Where(program => program.Id != "react-week-plan");
+}

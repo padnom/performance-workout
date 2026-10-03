@@ -326,3 +326,35 @@ details p { margin: 8px 0; }
 .optional-abs li { padding: 6px 0; }
 .optional-abs button { width: 100%; }
 @media (max-width: 360px) { .gym-session-grid { grid-template-columns: 1fr; } }
+.create-program { width: 100%; margin-bottom: 10px; }
+.personal-programs { margin: 20px 0 26px; }
+.personal-programs .section-heading { margin: 0 0 14px; align-items: center; }
+.personal-programs .card-list { margin-top: 14px; }
+.personal-program h3 { overflow-wrap: anywhere; }
+.personal-program .card-heading { flex-wrap: wrap; }
+.personal-program .card-heading > div { min-width: 0; flex: 1; }
+.personal-program > .muted { margin-top: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.program-favorite { flex-shrink: 0; min-width: 44px; padding: 4px 10px; color: var(--accent); font-size: 26px; }
+.program-favorite[aria-pressed=true] { border-color: var(--accent); background: #b7f36b12; }
+.favorite-error { flex-basis: 100%; }
+.gym-favorite-heading, .library-favorite-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; }
+.library-favorite-heading { font-size: 13px; margin-bottom: 14px; }
+.program-editor { width: min(100%, 660px); }
+.program-editor-fields { margin: 0; padding: 0; border: 0; min-width: 0; }
+.program-editor textarea { width: 100%; min-height: 80px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; background: #121a15; color: var(--text); padding: 10px 11px; font: inherit; font-size: 14px; }
+.program-editor textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.draft-session { margin: 20px 0; padding: 14px; border: 1px solid var(--line); border-radius: 14px; min-width: 0; }
+.draft-session > .field:first-child { margin-top: 0; }
+.draft-order-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.draft-order-actions .secondary-button { width: 44px; padding: 0; }
+.draft-order-actions .danger-button { padding: 8px 10px; }
+.draft-exercise { margin-top: 16px; padding: 12px; background: var(--surface-2); border-radius: 12px; }
+.draft-exercise > strong { font-size: 13px; overflow-wrap: anywhere; }
+.draft-prescription { display: grid; grid-template-columns: 65px minmax(0, 1fr) minmax(70px, 1fr); gap: 8px; }
+.draft-prescription input { min-width: 0; }
+.draft-exercise-picker { max-height: 190px; margin-top: 10px; }
+.draft-exercise-picker .picker-item { gap: 10px; }
+.add-draft-session { width: 100%; }
+.program-editor-fields:disabled { opacity: .75; }
+.program-editor-actions { position: sticky; bottom: -20px; margin: 14px -20px -20px; padding: 14px 20px 20px; background: var(--surface); border-top: 1px solid var(--line); z-index: 1; }
+@media (max-width: 360px) { .draft-session { padding: 10px; } .draft-exercise { padding: 10px; } .draft-prescription { grid-template-columns: 55px minmax(0, 1fr); } .draft-prescription .field:last-child { grid-column: 1 / -1; } }

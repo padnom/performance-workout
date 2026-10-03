@@ -12,6 +12,7 @@
     @if (_gym == "Basic-Fit") { <p class="muted gym-equipment-note">Matériel standard : remplace explicitement une machine si elle n’est pas disponible dans ta salle.</p> }
     @if (State.GetRecommendedProgram(_gym) is { } program)
     {
+        <div class="gym-favorite-heading"><span class="muted">Retrouver ce programme dans Mes favoris</span><ProgramFavoriteButton Snapshot="State.Data" ProgramId="@program.Id" ProgramName="@program.Name" Disabled="_busy" Changed="Changed" /></div>
         <div class="gym-session-grid">@foreach (var session in program.Sessions)
         {
             <article class="panel gym-session" data-gym-session="@session.Id">
@@ -37,6 +38,7 @@
 @code {
     [Parameter] public EventCallback<WorkoutSession> Started { get; set; }
     [Parameter] public EventCallback Changed { get; set; }
+    [Parameter] public PerformanceData? Snapshot { get; set; }
     private string _gym = "One Air", _message = "";
     private bool _confirm, _busy;
     private IDisposable? _backRegistration;

@@ -2,12 +2,13 @@
 
 Application de suivi de musculation en **C# / .NET 10 MAUI Blazor Hybrid**, utilisable hors connexion et sans hébergement. L’interface, le catalogue et les données sont embarqués dans l’APK.
 
-Version actuelle : **1.2.0**, code Android **4**.
+Version actuelle : **1.2.1**, code Android **5**.
 
 ## Fonctionnalités
 
 - Accueil et programme de la semaine : ajout, réorganisation et retrait des séances.
 - Bibliothèque de programmes, variantes et démarrage rapide d’une séance libre.
+- Création de programmes personnels à plusieurs séances, réglage des exercices et favoris pour retrouver rapidement ses programmes.
 - Programme de quatre séances adapté à One Air ou Basic-Fit : Push, Pull, Jambes et Upper, en 4×10 modifiable. Deux exercices d’abdos peuvent être ajoutés volontairement en fin de séance.
 - Partage JSON de la semaine ou de programmes sélectionnés, et import de copies après aperçu, sans partager les charges ni l’historique personnel.
 - Charges et répétitions par salle, remplacement/modification des exercices et exercices personnalisés.
@@ -52,7 +53,7 @@ Voir [le projet Android](dotnet/README.md) et [la compilation, la signature et l
 
 ## Installer et livrer
 
-L’APK de cette version se trouve dans `outputs/performance-android-1.2.0.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
+L’APK de cette version se trouve dans `outputs/performance-android-1.2.1.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
 
 La CI vérifie les tests, les versions, un APK Release avec AOT/trimming et son lancement sur émulateur. Son APK de diagnostic utilise une clé jetable et ne met pas à jour l’installation existante. La distribution compatible nécessite les quatre secrets du certificat actuel dans l’environnement GitHub `android-release`, comme décrit dans le guide Android. Aucune clé privée ni APK n’est versionné.
 

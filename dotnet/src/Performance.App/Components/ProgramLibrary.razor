@@ -17,6 +17,10 @@
             <button class="secondary-button category-filter" data-category="@program.Id" aria-pressed="@Pressed(Category?.Id == program.Id)" disabled="@Disabled" @onclick="() => SelectCategory(program.Id)">@program.Name</button>
         }
     </div>
+    @if (Category is { } selectedProgram)
+    {
+        <div class="library-favorite-heading"><strong>@selectedProgram.Name</strong><ProgramFavoriteButton Snapshot="State.Data" ProgramId="@selectedProgram.Id" ProgramName="@selectedProgram.Name" Disabled="Disabled" Changed="Changed" /></div>
+    }
     @if (Variants.Count == 0)
     {
         <p class="muted">Aucune séance dans cette catégorie.</p>
@@ -68,6 +72,8 @@
 @code {
     [Parameter] public EventCallback<string> Added { get; set; }
     [Parameter] public EventCallback<WorkoutSession> Started { get; set; }
+    [Parameter] public EventCallback Changed { get; set; }
+    [Parameter] public PerformanceData? Snapshot { get; set; }
     [Parameter] public bool Disabled { get; set; }
     private enum Family { Classic, Targeted, Custom }
     private static readonly HashSet<string> ClassicIds = ["push", "pull", "legs", "upper", "arms", "full"];

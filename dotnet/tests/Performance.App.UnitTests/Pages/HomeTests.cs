@@ -108,6 +108,27 @@ public sealed class HomeTests : IDisposable
     }
 
     [Fact]
+    public void Home_FreeWorkout_SelectedGymOpensExerciseSearchAfterOneConfirmation()
+    {
+        // Arrange
+        var page = _context.Render<RouteHarness>();
+        page.Find(".free-workout-card").Click();
+        page.Find(".gym-field select").Change("Basic-Fit");
+
+        // Act
+        page.Find("[role=dialog] .primary-button").Click();
+
+        // Assert
+        page.WaitForAssertion(() => page.Find(".exercise-picker").ShouldNotBeNull());
+        _state.Data.ActiveWorkout!.Session!.Id.ShouldBe("free");
+        _state.Data.ActiveWorkout.Session.Exercises.ShouldBeEmpty();
+        _state.Data.ActiveWorkout.DefaultGym.ShouldBe("Basic-Fit");
+        new Uri(Navigation.Uri).AbsolutePath.ShouldBe("/seance");
+        new Uri(Navigation.Uri).Query.ShouldBe("?ajouter=1");
+        page.Find("[aria-label='Rechercher un exercice à ajouter']").ShouldNotBeNull();
+    }
+
+    [Fact]
     public async Task Home_ActiveWorkout_ShowsDashboardAndResumeWithoutLosingDraft()
     {
         var session = _catalog.Programs.First().Sessions.First(session => session.Id == "pa");

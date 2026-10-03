@@ -1,0 +1,132 @@
+@using Performance.Application
+@using Performance.Domain
+@using Performance.App.Services
+@implements IDisposable
+@inject WorkoutStateService State
+@inject IServiceProvider Services
+
+@if (_draft is { } draft)
+{
+    <div class="modal-backdrop"><section class="panel editor-dialog program-editor" role="dialog" aria-modal="true" aria-labelledby="program-editor-title" aria-busy="@Pressed(_busy)">
+        <h2 id="program-editor-title">Créer un programme</h2>
+        <p class="muted">Compose tes séances avec les exercices du catalogue.</p>
+        <fieldset disabled="@_busy" class="program-editor-fields">
+            <label class="field">Nom du programme<input class="program-name" maxlength="160" @bind="draft.Name" /></label>
+            <label class="field">Description (facultative)<textarea class="program-description" maxlength="2000" @bind="draft.Description"></textarea></label>
+            <label class="field">Salle du programme<select class="program-gym" @bind="draft.Gym">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+            @foreach (var session in draft.Sessions)
+            {
+                var sessionIndex = draft.Sessions.IndexOf(session);
+                var candidates = Candidates(session, draft.Gym);
+                <section class="draft-session" data-draft-session="@session.Key" @key="session.Key">
+                    <label class="field">Nom de la séance @(sessionIndex + 1)<input class="draft-session-name" maxlength="160" @bind="session.Name" /></label>
+                    <div class="draft-order-actions">
+                        <button type="button" class="secondary-button move-session-up" aria-label="Monter @session.Name" disabled="@(sessionIndex == 0)" @onclick="() => Move(draft.Sessions, session, -1)">↑</button>
+                        <button type="button" class="secondary-button move-session-down" aria-label="Descendre @session.Name" disabled="@(sessionIndex == draft.Sessions.Count - 1)" @onclick="() => Move(draft.Sessions, session, 1)">↓</button>
+                        <button type="button" class="danger-button remove-draft-session" disabled="@(draft.Sessions.Count == 1)" @onclick="() => draft.Sessions.Remove(session)">Retirer la séance</button>
+                    </div>
+                    @foreach (var plan in session.Exercises)
+                    {
+                        var exerciseIndex = session.Exercises.IndexOf(plan);
+                        var exercise = State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId);
+                        <article class="draft-exercise" data-draft-exercise="@plan.ExerciseId" @key="plan.ExerciseId">
+                            <strong>@(exercise?.Name ?? plan.ExerciseId)</strong>
+                            @if (exercise is null || !ProgramDraft.Compatible(exercise, draft.Gym)) { <p class="notice">Exercice indisponible pour cette salle.</p> }
+                            <div class="draft-prescription">
+                                <label class="field">Séries<input class="draft-sets" type="number" min="1" max="20" @bind="plan.Sets" /></label>
+                                <label class="field">Répétitions<input class="draft-repetitions" maxlength="100" @bind="plan.Repetitions" /></label>
+                                <label class="field">Repos (M:ss)<input class="draft-rest" maxlength="100" placeholder="1:30" @bind="plan.Rest" /></label>
+                            </div>
+                            <div class="draft-order-actions">
+                                <button type="button" class="secondary-button move-exercise-up" aria-label="Monter @(exercise?.Name ?? plan.ExerciseId)" disabled="@(exerciseIndex == 0)" @onclick="() => Move(session.Exercises, plan, -1)">↑</button>
+                                <button type="button" class="secondary-button move-exercise-down" aria-label="Descendre @(exercise?.Name ?? plan.ExerciseId)" disabled="@(exerciseIndex == session.Exercises.Count - 1)" @onclick="() => Move(session.Exercises, plan, 1)">↓</button>
+                                <button type="button" class="danger-button remove-draft-exercise" aria-label="Retirer @(exercise?.Name ?? plan.ExerciseId)" @onclick="() => session.Exercises.Remove(plan)">Retirer</button>
+                            </div>
+                        </article>
+                    }
+                    <label class="field">Ajouter un exercice<input class="draft-exercise-search" placeholder="Nom ou muscle…" @bind="session.Search" @bind:event="oninput" /></label>
+                    <div class="picker-list draft-exercise-picker" aria-label="Exercices disponibles pour @session.Name">
+                        @foreach (var exercise in candidates)
+                        {
+                            <button type="button" class="picker-item" data-add-exercise="@exercise.Id" disabled="@(session.Exercises.Count >= 80)" @onclick="() => AddExercise(session, exercise.Id)"><span>@exercise.Name<small>@exercise.MuscleGroup</small></span><b aria-hidden="true">＋</b></button>
+                        }
+                        @if (candidates.Count == 0) { <p class="muted">Aucun exercice disponible pour cette recherche.</p> }
+                    </div>
+                    @if (candidates.Count == 12) { <p class="muted">12 premiers résultats · précise le nom ou le muscle pour affiner la recherche.</p> }
+                </section>
+            }
+            <button type="button" class="secondary-button add-draft-session" disabled="@(draft.Sessions.Count >= 100)" @onclick="() => AddSession(draft)">＋ Ajouter une séance</button>
+            <label class="program-share-choice"><input type="checkbox" class="draft-favorite" @bind="draft.Favorite" /> Ajouter aux favoris</label>
+        </fieldset>
+        @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
+        <div class="settings-actions program-editor-actions"><button class="primary-button save-program" disabled="@_busy" @onclick="SaveAsync">@(_busy ? "Enregistrement…" : "Enregistrer le programme")</button><button class="secondary-button cancel-program" disabled="@_busy" @onclick="Close">Annuler</button></div>
+    </section></div>
+}
+
+@code {
+    [Parameter] public EventCallback Changed { get; set; }
+    private ProgramDraft? _draft;
+    private string _message = "";
+    private bool _busy;
+    private IDisposable? _backRegistration;
+    protected override void OnInitialized()
+    {
+        if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation) _backRegistration = navigation.RegisterBackHandler(BackAsync, 10);
+    }
+    public void Open()
+    {
+        if (_busy || _draft is not null) return;
+        _draft = new ProgramDraft { Gym = WorkoutUi.Gyms.Contains(State.CurrentGym) ? State.CurrentGym : "One Air" };
+        _message = "";
+        StateHasChanged();
+    }
+    private static string Pressed(bool value) => value ? "true" : "false";
+    private IReadOnlyList<Exercise> Candidates(ProgramSessionDraft session, string gym)
+    {
+        var search = WorkoutUi.NormalizeName(session.Search);
+        var selected = session.Exercises.Select(plan => plan.ExerciseId).ToHashSet(StringComparer.Ordinal);
+        return State.Exercises.Where(exercise => ProgramDraft.Compatible(exercise, gym) && !selected.Contains(exercise.Id)
+            && (WorkoutUi.NormalizeName(exercise.Name).Contains(search, StringComparison.Ordinal)
+                || WorkoutUi.NormalizeName(exercise.MuscleGroup).Contains(search, StringComparison.Ordinal))).Take(12).ToArray();
+    }
+    private static void AddExercise(ProgramSessionDraft session, string id)
+    {
+        if (session.Exercises.Count >= 80 || session.Exercises.Any(plan => plan.ExerciseId == id)) return;
+        session.Exercises.Add(new ProgramExerciseDraft { ExerciseId = id });
+        session.Search = "";
+    }
+    private static void AddSession(ProgramDraft draft)
+    {
+        if (draft.Sessions.Count < 100) draft.Sessions.Add(new ProgramSessionDraft { Name = $"Séance {draft.Sessions.Count + 1}" });
+    }
+    private static void Move<T>(List<T> items, T item, int direction)
+    {
+        var index = items.IndexOf(item);
+        var next = index + direction;
+        if (index < 0 || next < 0 || next >= items.Count) return;
+        items.RemoveAt(index); items.Insert(next, item);
+    }
+    private async Task SaveAsync()
+    {
+        if (_busy || _draft is null) return;
+        _message = _draft.Validate(State.AllExercises);
+        if (_message.Length > 0) return;
+        _busy = true;
+        try
+        {
+            var result = await State.CreateProgramAsync(_draft.ToProgram(), _draft.Favorite);
+            if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
+            _draft = null; _message = "";
+            await Changed.InvokeAsync();
+        }
+        catch { _message = WorkoutUi.Error(null); }
+        finally { _busy = false; }
+    }
+    private void Close() { if (!_busy) { _draft = null; _message = ""; } }
+    private async Task<bool> BackAsync()
+    {
+        if (_draft is null) return false;
+        await InvokeAsync(() => { Close(); StateHasChanged(); }); return true;
+    }
+    public void Dispose() => _backRegistration?.Dispose();
+}

@@ -30,6 +30,9 @@
 - [x] #28 T-28 Add private JSON program export/import with validated preview, semantic identity remapping and copies.
 - [x] #29 T-29 Add recommended gym cards, confirmed week replacement, folded library and Android program picker/share UI.
 - [x] #30 T-30 Review compatibility, run 530 .NET/11 script tests and verify signed Release 1.2.0/code 4 with emulator update/data preservation.
+- [x] #31 T-31 Implement atomic personal program creation and persisted program favorites, with validation and failure tests.
+- [x] #32 T-32 Add a cancelable multi-session program editor, favorites section and integrated star controls with component tests.
+- [x] #33 T-33 Verify file/backup/share compatibility, review and deliver signed Release 1.2.1/code 5 with emulator update proof.
 
 | Acceptance | Implementation | Proof |
 |---|---|---|
@@ -54,3 +57,7 @@
 | AC-21 | T-22 | WorkoutProgressTests, ProgressTests and native Android chart/navigation/update receipts in Progress |
 | AC-22 | T-23 | WorkoutParityTests.Workout_ToolbarPrecedesCardsAndRetainsRestActions, HomeTests seven-day set metrics, SessionHistoryTests no volume; native sticky/keyboard measurements |
 | Structure | T-25 | Native dotnet sln list: 8 projects; 445 unit/component cases and 3 real-file integration cases passed in Release; existing production project references unchanged |
+| AC-30/31 | T-31/32 | WorkoutProgramAuthoringTests validation/cloning/nullable/delayed-save/actual concurrency; ProgramAuthoringUiTests editor/reorder/cancel/Back/failure/busy |
+| AC-32 | T-31/32/33 | Persisted/stale/built-in/custom/imported favorite cases; UI stars and retained selection; ProgramAuthoringPersistenceTests native full-backup and package privacy |
+| AC-33 | T-32/33 | Immediate My programs/Favorites/ProgramSharing refresh, preview/week/start/export component cases; real-file export/import copy and planned-set start |
+| AC-34 | T-33 | 609 .NET/11 script checks; review-dotnet/micro PASS; signed 1.2.1/code 5 arm64/x64 AOT package and byte-identical emulator update |

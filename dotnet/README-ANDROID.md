@@ -66,7 +66,7 @@ dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   -p:PublishTrimmed=true
 ```
 
-Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.2.0, code Android 4**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.2.1, code Android 5**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
 
 `verify-debug-apk.py` reste disponible pour le format Debug. Le nouveau contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
 
@@ -140,3 +140,15 @@ Deux exercices d’abdos optionnels apparaissent en fin de séance : machine abd
 « Partager des programmes » exporte la semaine ou les programmes cochés dans un JSON `performance-programs`, version 1, avec les définitions d’exercices et les consignes. Ce fichier exclut historique, charges personnelles, séance en cours, réglages et diagnostics. Android permet de choisir une destination ou une application de partage. L’import affiche un aperçu puis ajoute des copies après confirmation, sans remplacer les données existantes. Un exercice portant le même identifiant mais une définition différente reçoit un nouvel identifiant.
 
 La sauvegarde complète de Réglages reste distincte et conserve son rôle pour sauvegarder ou migrer les données personnelles. Les fichiers de partage de programmes sont à importer depuis Programmes.
+
+## Création et favoris — 1.2.1
+
+Dans Programmes, « Créer un programme » ouvre un brouillon local : nom, description, salle et séances. Ajouter les exercices depuis la recherche, puis régler les séries, répétitions et repos. Les séances et exercices peuvent être déplacés ou retirés avant l’enregistrement. Annuler ou utiliser Retour ferme le brouillon sans modifier les données ; une erreur d’écriture conserve la saisie pour réessayer.
+
+Les programmes créés apparaissent sous « Mes programmes ». Leurs séances utilisent les mêmes actions d’aperçu, de démarrage et d’ajout à la semaine. Le partage JSON inclut les consignes et définitions d’exercices nécessaires.
+
+Les fichiers de partage restent limités à 1 Mio. Un programme exceptionnellement volumineux peut dépasser cette limite ; l’export affiche alors une erreur et conserve les données locales.
+
+Une étoile ajoute ou retire un programme des Favoris, y compris les programmes intégrés et importés. Le choix « Ajouter aux favoris » dans l’éditeur est enregistré avec le nouveau programme. Les favoris sont personnels : conservés dans la sauvegarde complète, ils sont exclus des fichiers partagés avec les amis.
+
+Sur téléphone, vérifier la création de deux séances, l’ordre des exercices, le clavier, Annuler/Retour et la réouverture après enregistrement. Marquer un programme comme favori, redémarrer l’application et vérifier sa présence, puis exporter/importer le programme sur une autre installation : il doit être ajouté comme copie sans reprendre le favori personnel.
