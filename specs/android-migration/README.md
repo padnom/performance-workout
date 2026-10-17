@@ -18,3 +18,5 @@ The user confirmed a C# development profile and that the application will no lon
 [Approved gym/program-sharing plan and verification receipt](gym-programs.md)
 
 [Personal program builder and favorites](program-builder.md)
+
+[Session sharing and single-session builder](session-sharing.md)

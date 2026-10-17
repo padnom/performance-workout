@@ -9,21 +9,27 @@ public sealed class ProgramDraft
     public string Description { get; set; } = "";
     public string Gym { get; set; } = "One Air";
     public bool Favorite { get; set; }
+    public bool SingleSession { get; set; }
     public List<ProgramSessionDraft> Sessions { get; } = [new()];
 
     public WorkoutProgram ToProgram() => new()
     {
         Id = "draft", Name = Name, Description = Description, Gym = Gym,
-        Sessions = Sessions.Select(session => new WorkoutSession
+        Sessions = Sessions.Select(ToSession).ToArray()
+    };
+
+    public WorkoutSession ToSession(ProgramSessionDraft session) => new()
+    {
+        Id = session.Key, Name = session.Name,
+        Exercises = session.Exercises.Select((exercise, index) => new WorkoutExercise
         {
-            Id = session.Key, Name = session.Name,
-            Exercises = session.Exercises.Select((exercise, index) => new WorkoutExercise
-            {
-                ExerciseId = exercise.ExerciseId, Order = index, Sets = exercise.Sets,
-                RepTarget = exercise.Repetitions, Rest = exercise.Rest, Gym = Gym
-            }).ToArray()
+            ExerciseId = exercise.ExerciseId, Order = index, Sets = exercise.Sets,
+            RepTarget = exercise.Repetitions, Rest = exercise.Rest, Gym = Gym
         }).ToArray()
     };
+
+    public string ValidateSingleSession(IReadOnlyList<Exercise> catalog) =>
+        Sessions.Count == 1 ? ValidateSession(Sessions[0], catalog) : "Une seule séance peut être créée à la fois.";
 
     public string Validate(IReadOnlyList<Exercise> catalog)
     {
@@ -63,7 +69,7 @@ public sealed class ProgramDraft
     public static bool Compatible(Exercise exercise, string gym) => gym == "Toutes" || exercise.Variants.Count == 0
         || exercise.Variants.Any(variant => variant.Gym == "Toutes" || NormalizeGym(variant.Gym) == NormalizeGym(gym));
 
-    private static string NormalizeGym(string gym) => gym.Trim() == "Basic Fit" ? "Basic-Fit" : gym.Trim();
+    internal static string NormalizeGym(string gym) => gym.Trim() == "Basic Fit" ? "Basic-Fit" : gym.Trim();
 
     private static bool ValidRest(string rest) => rest.Length <= 100 && ParseRestSeconds(rest) is >= 15 and <= 600;
 

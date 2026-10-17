@@ -19,6 +19,13 @@
             { <li>@(State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId)?.Name ?? plan.ExerciseId)<span class="muted">@(plan.Sets ?? 4) séries · @plan.RepTarget · repos @plan.Rest</span></li> }</ol>
             @if (selectedSession.OptionalExercises is { Count: > 0 } optionalExercises) { <p class="muted">@optionalExercises.Count exercices optionnels à ajouter en fin de séance.</p> }
         }
+        @if (session.Id != "free")
+        {
+            <div class="settings-actions">
+                <button class="secondary-button export-pending-session" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareFileAsync)">Exporter cette séance</button>
+                <button class="secondary-button share-pending-session-text" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareTextAsync)">Partager en texte</button>
+            </div>
+        }
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
         <div class="settings-actions">
             <button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_preview ? "Démarrer cette séance" : "Confirmer")</button>
@@ -45,11 +52,28 @@
         _pending = session;
         var programGym = State.Programs.FirstOrDefault(program => (program.Gym is "One Air" or "Basic-Fit" or "Basic Fit")
             && program.Sessions.Any(candidate => candidate.Id == session.Id))?.Gym;
-        var selectedGym = programGym ?? State.CurrentGym;
+        var selectedGym = programGym ?? SessionsProgramGym(session) ?? State.CurrentGym;
         _gym = selectedGym.Trim() == "Basic Fit" ? "Basic-Fit" : selectedGym;
         _preview = !confirmOnly; _message = "";
         StateHasChanged();
     }
+    private string? SessionsProgramGym(WorkoutSession session) => State.Programs
+        .Any(program => program.Id == WorkoutStateService.SessionsProgramId && program.Sessions.Any(candidate => candidate.Id == session.Id))
+        ? PlanGym(session) : null;
+    private static string? PlanGym(WorkoutSession session)
+    {
+        var gyms = session.Exercises.Concat(session.OptionalExercises)
+            .Select(plan => plan.Gym is null ? null : ProgramDraft.NormalizeGym(plan.Gym)).Distinct().ToArray();
+        return gyms is [("One Air" or "Basic-Fit") and var gym] ? gym : null;
+    }
+    private async Task ShareAsync(WorkoutSession resolved, Func<Func<WorkoutSession>, Task<string>> share)
+    {
+        if (_busy) return;
+        _busy = true; _message = "";
+        try { _message = await share(() => SessionExport.FromPlan(resolved, _gym, State.AllExercises)); }
+        finally { _busy = false; }
+    }
+    private SessionSharer Sharer => new(Services, State);
     private async Task ConfirmAsync()
     {
         if (_preview) { _preview = false; return; }

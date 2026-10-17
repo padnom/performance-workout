@@ -1,6 +1,8 @@
 @using Performance.Application
 @using Performance.Domain
+@using Performance.App.Services
 @inject WorkoutStateService State
+@inject IServiceProvider Services
 
 <div class="card-list">
     @foreach (var log in Logs)
@@ -30,6 +32,11 @@
                     </div>
                 }
             </details>
+            <div class="settings-actions">
+                <button class="secondary-button export-session" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareFileAsync)">Exporter la séance</button>
+                <button class="secondary-button share-session-text" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareTextAsync)">Partager en texte</button>
+            </div>
+            @if (_messageLogId == log.Id && _message.Length > 0) { <p class="notice" role="status">@_message</p> }
         </section>
     }
 </div>
@@ -41,6 +48,10 @@
 @code {
     [Parameter] public string Gym { get; set; } = "";
     [Parameter] public int? RecentLimit { get; set; }
+
+    private bool _busy;
+    private string _message = "";
+    private string _messageLogId = "";
 
     private IEnumerable<TrainingSessionLog> Logs
     {
@@ -57,6 +68,19 @@
     private string SessionName(string id) => State.Programs.SelectMany(program => program.Sessions)
         .FirstOrDefault(session => session.Id == id)?.Name ?? (id == "free" ? "Séance libre" : "Séance");
     private string ExerciseName(string id) => State.AllExercises.FirstOrDefault(exercise => exercise.Id == id)?.Name ?? "Exercice inconnu";
+    private WorkoutSession ExportSession(TrainingSessionLog log)
+    {
+        var planned = State.Programs.SelectMany(program => program.Sessions).FirstOrDefault(session => session.Id == log.SessionId);
+        return SessionExport.FromLog(log, planned, $"{SessionName(log.SessionId)} · {log.Date.ToLocalTime():dd/MM}", State.AllExercises);
+    }
+    private async Task ShareAsync(TrainingSessionLog log, Func<Func<WorkoutSession>, Task<string>> share)
+    {
+        if (_busy) return;
+        _busy = true; _messageLogId = log.Id; _message = "";
+        try { _message = await share(() => ExportSession(log)); }
+        finally { _busy = false; }
+    }
+    private SessionSharer Sharer => new(Services, State);
     private static bool HasData(TrainingSet set) => WorkoutUi.HasData(set);
     private static string Value(string text) => string.IsNullOrWhiteSpace(text) ? "—" : text;
 }

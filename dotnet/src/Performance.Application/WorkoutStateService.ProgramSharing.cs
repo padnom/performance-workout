@@ -12,10 +12,26 @@ public sealed partial class WorkoutStateService
         try { ProgramPackageValidation.Validate(package); }
         catch (FormatException) { return Change.Failure("InvalidProgramPackage"); }
 
+        var imported = MapImportedExercises(package.Exercises);
+        var copies = package.Programs.Select(program => program with
+        {
+            Id = $"imported-program-{Guid.NewGuid():N}",
+            Sessions = program.Sessions.Select(session => session with
+            {
+                Id = $"imported-session-{Guid.NewGuid():N}",
+                Exercises = Remap(session.Exercises, imported.Map),
+                OptionalExercises = Remap(session.OptionalExercises, imported.Map)
+            }).ToArray()
+        }).ToArray();
+        return new Change(Data with { Programs = [.. Data.Programs, .. copies], Exercises = [.. Data.Exercises, .. imported.Additions] });
+    }
+
+    private ImportedExercises MapImportedExercises(IEnumerable<Exercise> definitions)
+    {
         var existing = AllExercises.ToDictionary(exercise => exercise.Id, StringComparer.Ordinal);
         var map = new Dictionary<string, string>(StringComparer.Ordinal);
         var additions = new List<Exercise>();
-        foreach (var definition in package.Exercises)
+        foreach (var definition in definitions)
         {
             if (existing.TryGetValue(definition.Id, out var local) && SameDefinition(local, definition))
             {
@@ -26,18 +42,10 @@ public sealed partial class WorkoutStateService
             map.Add(definition.Id, id);
             additions.Add(definition with { Id = id, IsCustom = true });
         }
-        var copies = package.Programs.Select(program => program with
-        {
-            Id = $"imported-program-{Guid.NewGuid():N}",
-            Sessions = program.Sessions.Select(session => session with
-            {
-                Id = $"imported-session-{Guid.NewGuid():N}",
-                Exercises = Remap(session.Exercises, map),
-                OptionalExercises = Remap(session.OptionalExercises, map)
-            }).ToArray()
-        }).ToArray();
-        return new Change(Data with { Programs = [.. Data.Programs, .. copies], Exercises = [.. Data.Exercises, .. additions] });
+        return new ImportedExercises(map, additions);
     }
+
+    private sealed record ImportedExercises(IReadOnlyDictionary<string, string> Map, IReadOnlyList<Exercise> Additions);
 
     private static WorkoutExercise[] Remap(IReadOnlyList<WorkoutExercise> plans, IReadOnlyDictionary<string, string> map) =>
         plans.Select(plan => plan with { ExerciseId = map[plan.ExerciseId] }).ToArray();

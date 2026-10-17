@@ -8,11 +8,14 @@
 @if (_draft is { } draft)
 {
     <div class="modal-backdrop"><section class="panel editor-dialog program-editor" role="dialog" aria-modal="true" aria-labelledby="program-editor-title" aria-busy="@Pressed(_busy)">
-        <h2 id="program-editor-title">Créer un programme</h2>
+        <h2 id="program-editor-title">@(draft.SingleSession ? "Créer une séance" : "Créer un programme")</h2>
         <p class="muted">Compose tes séances avec les exercices du catalogue.</p>
         <fieldset disabled="@_busy" class="program-editor-fields">
-            <label class="field">Nom du programme<input class="program-name" maxlength="160" @bind="draft.Name" /></label>
-            <label class="field">Description (facultative)<textarea class="program-description" maxlength="2000" @bind="draft.Description"></textarea></label>
+            @if (!draft.SingleSession)
+            {
+                <label class="field">Nom du programme<input class="program-name" maxlength="160" @bind="draft.Name" /></label>
+                <label class="field">Description (facultative)<textarea class="program-description" maxlength="2000" @bind="draft.Description"></textarea></label>
+            }
             <label class="field">Salle du programme<select class="program-gym" @bind="draft.Gym">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
             @foreach (var session in draft.Sessions)
             {
@@ -20,11 +23,14 @@
                 var candidates = Candidates(session, draft.Gym);
                 <section class="draft-session" data-draft-session="@session.Key" @key="session.Key">
                     <label class="field">Nom de la séance @(sessionIndex + 1)<input class="draft-session-name" maxlength="160" @bind="session.Name" /></label>
+                    @if (!draft.SingleSession)
+                    {
                     <div class="draft-order-actions">
                         <button type="button" class="secondary-button move-session-up" aria-label="Monter @session.Name" disabled="@(sessionIndex == 0)" @onclick="() => Move(draft.Sessions, session, -1)">↑</button>
                         <button type="button" class="secondary-button move-session-down" aria-label="Descendre @session.Name" disabled="@(sessionIndex == draft.Sessions.Count - 1)" @onclick="() => Move(draft.Sessions, session, 1)">↓</button>
                         <button type="button" class="danger-button remove-draft-session" disabled="@(draft.Sessions.Count == 1)" @onclick="() => draft.Sessions.Remove(session)">Retirer la séance</button>
                     </div>
+                    }
                     @foreach (var plan in session.Exercises)
                     {
                         var exerciseIndex = session.Exercises.IndexOf(plan);
@@ -55,11 +61,14 @@
                     @if (candidates.Count == 12) { <p class="muted">12 premiers résultats · précise le nom ou le muscle pour affiner la recherche.</p> }
                 </section>
             }
-            <button type="button" class="secondary-button add-draft-session" disabled="@(draft.Sessions.Count >= 100)" @onclick="() => AddSession(draft)">＋ Ajouter une séance</button>
-            <label class="program-share-choice"><input type="checkbox" class="draft-favorite" @bind="draft.Favorite" /> Ajouter aux favoris</label>
+            @if (!draft.SingleSession)
+            {
+                <button type="button" class="secondary-button add-draft-session" disabled="@(draft.Sessions.Count >= 100)" @onclick="() => AddSession(draft)">＋ Ajouter une séance</button>
+                <label class="program-share-choice"><input type="checkbox" class="draft-favorite" @bind="draft.Favorite" /> Ajouter aux favoris</label>
+            }
         </fieldset>
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
-        <div class="settings-actions program-editor-actions"><button class="primary-button save-program" disabled="@_busy" @onclick="SaveAsync">@(_busy ? "Enregistrement…" : "Enregistrer le programme")</button><button class="secondary-button cancel-program" disabled="@_busy" @onclick="Close">Annuler</button></div>
+        <div class="settings-actions program-editor-actions"><button class="primary-button save-program" disabled="@_busy" @onclick="SaveAsync">@(_busy ? "Enregistrement…" : draft.SingleSession ? "Enregistrer la séance" : "Enregistrer le programme")</button><button class="secondary-button cancel-program" disabled="@_busy" @onclick="Close">Annuler</button></div>
     </section></div>
 }
 
@@ -73,10 +82,10 @@
     {
         if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation) _backRegistration = navigation.RegisterBackHandler(BackAsync, 10);
     }
-    public void Open()
+    public void Open(bool singleSession = false)
     {
         if (_busy || _draft is not null) return;
-        _draft = new ProgramDraft { Gym = WorkoutUi.Gyms.Contains(State.CurrentGym) ? State.CurrentGym : "One Air" };
+        _draft = new ProgramDraft { SingleSession = singleSession, Gym = WorkoutUi.Gyms.Contains(State.CurrentGym) ? State.CurrentGym : "One Air" };
         _message = "";
         StateHasChanged();
     }
@@ -109,12 +118,12 @@
     private async Task SaveAsync()
     {
         if (_busy || _draft is null) return;
-        _message = _draft.Validate(State.AllExercises);
+        _message = _draft.SingleSession ? _draft.ValidateSingleSession(State.AllExercises) : _draft.Validate(State.AllExercises);
         if (_message.Length > 0) return;
         _busy = true;
         try
         {
-            var result = await State.CreateProgramAsync(_draft.ToProgram(), _draft.Favorite);
+            var result = await PersistAsync(_draft);
             if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
             _draft = null; _message = "";
             await Changed.InvokeAsync();
@@ -122,6 +131,9 @@
         catch { _message = WorkoutUi.Error(null); }
         finally { _busy = false; }
     }
+    private Task<WorkoutResult> PersistAsync(ProgramDraft draft) => draft.SingleSession
+        ? State.CreateSessionAsync(draft.ToSession(draft.Sessions[0]), draft.Gym)
+        : State.CreateProgramAsync(draft.ToProgram(), draft.Favorite);
     private void Close() { if (!_busy) { _draft = null; _message = ""; } }
     private async Task<bool> BackAsync()
     {

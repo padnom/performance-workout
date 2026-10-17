@@ -66,7 +66,7 @@ dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   -p:PublishTrimmed=true
 ```
 
-Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.2.1, code Android 5**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.3.0, code Android 6**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
 
 `verify-debug-apk.py` reste disponible pour le format Debug. Le nouveau contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
 
@@ -152,3 +152,11 @@ Les fichiers de partage restent limités à 1 Mio. Un programme exceptionnelleme
 Une étoile ajoute ou retire un programme des Favoris, y compris les programmes intégrés et importés. Le choix « Ajouter aux favoris » dans l’éditeur est enregistré avec le nouveau programme. Les favoris sont personnels : conservés dans la sauvegarde complète, ils sont exclus des fichiers partagés avec les amis.
 
 Sur téléphone, vérifier la création de deux séances, l’ordre des exercices, le clavier, Annuler/Retour et la réouverture après enregistrement. Marquer un programme comme favori, redémarrer l’application et vérifier sa présence, puis exporter/importer le programme sur une autre installation : il doit être ajouté comme copie sans reprendre le favori personnel.
+
+## Partage de séances — 1.3.0
+
+Une séance de l’historique (séance libre comprise) ou une séance de programme ouverte avant démarrage peut être exportée en JSON `performance-session`, version 1, ou partagée en texte lisible. Le fichier contient uniquement la structure : exercices, ordre, séries, répétitions cibles, repos et salle. Il exclut charges, répétitions réalisées, RIR et historique. Depuis l’historique, le nombre de séries est celui réellement effectué.
+
+« Importer une séance » dans Programmes, ou l’ouverture d’un fichier `.json` reçu (WhatsApp, gestionnaire de fichiers), affiche un aperçu puis ajoute une copie dans le programme personnel « Mes séances », créé au besoin et limité à 100 séances. « Créer une séance » ouvre l’éditeur pour une seule séance enregistrée au même endroit. Un fichier reçu pendant une séance en cours attend la prochaine visite de Programmes.
+
+Sur téléphone, vérifier : envoi à soi-même sur WhatsApp du fichier et du texte ; ouverture du fichier reçu application fermée puis ouverte ; refus d’un JSON quelconque avec message ; démarrage et ajout à la semaine d’une séance de « Mes séances » ; mise à jour par-dessus 1.2.1 sans perte de données.

@@ -22,6 +22,8 @@ public static class WorkoutUi
         "NoOptionalExercises" => "Les exercices optionnels sont déjà ajoutés ou indisponibles.",
         "UnknownGymProgram" => "Aucun programme prévu pour cette salle. Choisis One Air ou Basic-Fit.",
         "InvalidProgramPackage" => "Fichier de programmes invalide. Tes données sont conservées.",
+        "InvalidSessionPackage" => "Fichier de séance invalide. Tes données sont conservées.",
+        "SessionsProgramFull" => "Mes séances contient déjà 100 séances. Crée un programme pour les suivantes.",
         "InvalidProgram" => "Renseigne le nom du programme et ajoute au moins une séance.",
         "InvalidProgramSession" => "Chaque séance doit avoir un nom et au moins un exercice.",
         "UnknownProgram" => "Ce programme n’est plus disponible.",

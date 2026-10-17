@@ -68,7 +68,7 @@ public static class ProgramPackageValidation
         && Text(program.Name, 300) && OptionalText(program.Description) && OptionalText(program.Gym, 200)
         && program.Sessions is { Count: >= 1 and <= 100 } && program.Sessions.All(ValidSession);
 
-    private static bool ValidSession(WorkoutSession? session) => session is not null && Text(session.Id, 200)
+    internal static bool ValidSession(WorkoutSession? session) => session is not null && Text(session.Id, 200)
         && Text(session.Name, 300) && OptionalText(session.Color, 50) && OptionalText(session.Focus)
         && session.Exercises is { Count: <= 80 } && session.OptionalExercises is { Count: <= 20 }
         && ValidPlans(session.Exercises.Concat(session.OptionalExercises));
@@ -82,7 +82,7 @@ public static class ProgramPackageValidation
             && items.Select(plan => plan.ExerciseId).Distinct(StringComparer.Ordinal).Count() == items.Length;
     }
 
-    private static bool ValidExercise(Exercise? exercise) => exercise is not null && Text(exercise.Id, 200)
+    internal static bool ValidExercise(Exercise? exercise) => exercise is not null && Text(exercise.Id, 200)
         && Text(exercise.Name, 300) && OptionalText(exercise.AlternativeName, 300)
         && BoundedText(exercise.MuscleGroup, 300) && BoundedText(exercise.RepTarget, 100)
         && BoundedText(exercise.Rest, 100) && exercise.Sets is >= 1 and <= 20 && SafeLink(exercise.Link)

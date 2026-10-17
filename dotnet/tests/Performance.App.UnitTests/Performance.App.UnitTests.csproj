@@ -26,6 +26,9 @@
     <RazorComponent Include="../../src/Performance.App/_Imports.razor" Link="_Imports.razor" />
     <Compile Include="../../src/Performance.App/Services/IBackupFiles.cs" Link="Services/IBackupFiles.cs" />
     <Compile Include="../../src/Performance.App/Services/IProgramFiles.cs" Link="Services/IProgramFiles.cs" />
+    <Compile Include="../../src/Performance.App/Services/BoundedTextReader.cs" Link="Services/BoundedTextReader.cs" />
+    <Compile Include="../../src/Performance.App/Services/ShareFileName.cs" Link="Services/ShareFileName.cs" />
+    <Compile Include="../../src/Performance.App/Services/IncomingShareService.cs" Link="Services/IncomingShareService.cs" />
     <Compile Include="../../src/Performance.App/Services/IWorkoutFeedback.cs" Link="Services/IWorkoutFeedback.cs" />
     <Compile Include="../../src/Performance.App/Services/AppNavigationService.cs" Link="Services/AppNavigationService.cs" />
     <Compile Include="../../src/Performance.App/Services/IRestNotificationScheduler.cs" Link="Services/IRestNotificationScheduler.cs" />

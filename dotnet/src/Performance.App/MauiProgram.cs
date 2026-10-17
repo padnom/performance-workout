@@ -28,6 +28,11 @@ public static class MauiProgram
         builder.Services.AddSingleton<IProgramPackageCodec, JsonProgramPackageCodec>();
         builder.Services.AddTransient<ImportWorkoutProgramsUseCase>();
         builder.Services.AddTransient<ExportWorkoutProgramsUseCase>();
+        builder.Services.AddSingleton<ISessionPackageCodec, JsonSessionPackageCodec>();
+        builder.Services.AddTransient<ImportWorkoutSessionUseCase>();
+        builder.Services.AddTransient<ExportWorkoutSessionUseCase>();
+        builder.Services.AddTransient<ReadSharedFileUseCase>();
+        builder.Services.AddSingleton<IncomingShareService>();
         builder.Services.AddSingleton<IWorkoutFeedback, MauiWorkoutFeedback>();
         builder.Services.AddSingleton<IRestNotificationScheduler, AndroidRestNotificationScheduler>();
         builder.Services.AddSingleton<RestNotificationCoordinator>();

@@ -358,6 +358,14 @@ public sealed class ProgramAuthoringUiTests : IDisposable
         public string? Shared { get; private set; }
         public Task<string?> PickProgramsAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
         public Task ShareProgramsAsync(string json, CancellationToken cancellationToken = default) { Shared = json; return Task.CompletedTask; }
+        public string? PickedSession { get; set; }
+        public string? SharedSessionJson { get; private set; }
+        public string? SharedSessionName { get; private set; }
+        public string? SharedText { get; private set; }
+        public string? SharedTextTitle { get; private set; }
+        public Task<string?> PickSessionAsync(CancellationToken cancellationToken = default) => Task.FromResult(PickedSession);
+        public Task ShareSessionAsync(string json, string name, CancellationToken cancellationToken = default) { SharedSessionJson = json; SharedSessionName = name; return Task.CompletedTask; }
+        public Task ShareTextAsync(string text, string title, CancellationToken cancellationToken = default) { SharedText = text; SharedTextTitle = title; return Task.CompletedTask; }
     }
     private sealed class Repository : IPerformanceDataRepository
     {

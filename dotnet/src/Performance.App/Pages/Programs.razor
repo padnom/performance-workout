@@ -15,6 +15,7 @@
         <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
     }
     <button class="primary-button create-program" disabled="@_busy" @onclick="() => _editor?.Open()">＋ Créer un programme</button>
+    <button class="secondary-button create-session" disabled="@_busy" @onclick="() => _editor?.Open(singleSession: true)">＋ Créer une séance</button>
     <PersonalPrograms FavoritesOnly="true" Snapshot="State.Data" Selected="SelectSession" Added="AddWeekAsync" Changed="Refresh" Disabled="_busy" />
     <GymProgram Snapshot="State.Data" Started="SelectSession" Changed="Refresh" />
     <WeeklyPlan Sessions="State.WeekSessions" Selected="SelectSession" Error="SetMessage" Disabled="_busy" />

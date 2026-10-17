@@ -26,9 +26,16 @@
     private bool IsWorkout => new Uri(Navigation.Uri).AbsolutePath == "/seance";
     private AppNavigationService? _navigation;
     private IDisposable? _backRegistration;
+    private IncomingShareService? _incomingShare;
     protected override void OnInitialized()
     {
         Navigation.LocationChanged += LocationChanged;
+        _incomingShare = Services.GetService(typeof(IncomingShareService)) as IncomingShareService;
+        if (_incomingShare is not null)
+        {
+            _incomingShare.Received += OpenPrograms;
+            if (_incomingShare.HasPending) OpenPrograms();
+        }
         _navigation = Services.GetService(typeof(AppNavigationService)) as AppNavigationService;
         if (_navigation is null) return;
         _backRegistration = _navigation.RegisterBackHandler(HandleBackAsync, 20);
@@ -36,6 +43,10 @@
         if (_navigation.ConsumeWorkoutRequest()) OpenWorkout();
     }
     private void OpenWorkout() => _ = InvokeAsync(() => Navigation.NavigateTo("/seance"));
+    private void OpenPrograms() => _ = InvokeAsync(() =>
+    {
+        if (!IsWorkout) Navigation.NavigateTo("/programmes");
+    });
     private void ClosePlus() => _plusOpen = false;
     private void LocationChanged(object? sender, LocationChangedEventArgs args) => _ = InvokeAsync(() => { ClosePlus(); StateHasChanged(); });
     private async Task<bool> HandleBackAsync()
@@ -47,6 +58,7 @@
     public void Dispose()
     {
         Navigation.LocationChanged -= LocationChanged;
+        if (_incomingShare is not null) _incomingShare.Received -= OpenPrograms;
         if (_navigation is not null) _navigation.WorkoutRequested -= OpenWorkout;
         _backRegistration?.Dispose();
     }

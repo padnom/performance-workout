@@ -15,7 +15,7 @@
             <label class="program-share-choice"><input type="checkbox" data-share-program="@program.Id" checked="@_selected.Contains(program.Id)" @onchange="args => Select(program.Id, args.Value is true)" /> @program.Name @(!string.IsNullOrEmpty(program.Gym) ? $"· {program.Gym}" : "")</label>
         }
     </fieldset>
-    <div class="settings-actions"><button class="secondary-button export-programs" disabled="@(_busy || (!_week && _selected.Count == 0))" @onclick="ShareAsync">Exporter / partager</button><button class="secondary-button import-programs" disabled="@_busy" @onclick="PickAsync">Importer des programmes</button></div>
+    <div class="settings-actions"><button class="secondary-button export-programs" disabled="@(_busy || (!_week && _selected.Count == 0))" @onclick="ShareAsync">Exporter / partager</button><button class="secondary-button import-programs" disabled="@_busy" @onclick="PickAsync">Importer des programmes</button><button class="secondary-button import-session" disabled="@_busy" @onclick="PickSessionAsync">Importer une séance</button></div>
     @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
 </section>
 @if (_preview is { } package)
@@ -29,6 +29,19 @@
     </section></div>
 }
 
+@if (_sessionPreview is { } sessionPackage)
+{
+    <div class="modal-backdrop"><section class="panel confirm-dialog session-import-preview" role="dialog" aria-modal="true" aria-labelledby="session-import-title">
+        <h2 id="session-import-title">Ajouter cette séance ?</h2><p>@sessionPackage.Session.Name</p>
+        <p>@sessionPackage.Session.Exercises.Count exercice(s)</p>
+        <ul>@foreach (var plan in sessionPackage.Session.Exercises) { <li>@ExerciseName(plan.ExerciseId, sessionPackage)</li> }</ul>
+        @if (sessionPackage.Session.OptionalExercises.Count > 0) { <p class="muted">+ @sessionPackage.Session.OptionalExercises.Count exercice(s) optionnel(s)</p> }
+        <p class="muted">Ajoutée dans Mes séances. Ta semaine, ta séance en cours et ton historique restent conservés.</p>
+        @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
+        <div class="settings-actions"><button class="primary-button confirm-session-import" disabled="@_busy" @onclick="ConfirmSessionAsync">Ajouter à Mes séances</button><button class="secondary-button cancel-session-import" disabled="@_busy" @onclick="() => _sessionPreview = null">Annuler</button></div>
+    </section></div>
+}
+
 @code {
     [Parameter] public EventCallback Changed { get; set; }
     [Parameter] public PerformanceData? Snapshot { get; set; }
@@ -36,10 +49,60 @@
     private bool _week, _busy;
     private string _message = "";
     private ProgramPackage? _preview;
+    private SessionPackage? _sessionPreview;
+    private IncomingShareService? _incoming;
     private IDisposable? _backRegistration;
     protected override void OnInitialized()
     {
         if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation) _backRegistration = navigation.RegisterBackHandler(BackAsync, 10);
+        _incoming = Services.GetService(typeof(IncomingShareService)) as IncomingShareService;
+        if (_incoming is null) return;
+        _incoming.Received += OnReceived;
+        Open(_incoming.Consume());
+    }
+    private void OnReceived() => _ = InvokeAsync(() => { Open(_incoming?.Consume()); StateHasChanged(); });
+    private void Open(IncomingShare? share)
+    {
+        if (share is null) return;
+        _message = "";
+        if (share.Error is not null) { _message = share.Error; return; }
+        try
+        {
+            var shared = Get<ReadSharedFileUseCase>().Execute(share.Json ?? "");
+            if (shared is SharedSession session) _sessionPreview = session.Package;
+            if (shared is SharedPrograms programs) _preview = programs.Package;
+        }
+        catch (FormatException exception) { _message = exception.Message; }
+        catch { _message = "Impossible de lire ce fichier. Réessaie."; }
+    }
+    private string ExerciseName(string id, SessionPackage package) =>
+        (State.AllExercises.FirstOrDefault(item => item.Id == id) ?? package.Exercises.FirstOrDefault(item => item.Id == id))?.Name ?? id;
+    private async Task PickSessionAsync()
+    {
+        if (_busy) return;
+        _busy = true; _message = "";
+        try
+        {
+            var json = await Get<IProgramFiles>().PickSessionAsync();
+            if (json is not null) _sessionPreview = Get<ImportWorkoutSessionUseCase>().Execute(json);
+        }
+        catch (FormatException exception) { _message = exception.Message; }
+        catch { _message = "Impossible de lire ce fichier de séance. Réessaie."; }
+        finally { _busy = false; }
+    }
+    private async Task ConfirmSessionAsync()
+    {
+        if (_busy || _sessionPreview is null) return;
+        _busy = true;
+        try
+        {
+            var result = await State.ImportSessionAsync(_sessionPreview);
+            if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
+            _sessionPreview = null; _message = "La séance a été ajoutée à Mes séances.";
+            await Changed.InvokeAsync();
+        }
+        catch { _message = WorkoutUi.Error(null); }
+        finally { _busy = false; }
     }
     private void Select(string id, bool value) { if (value) _selected.Add(id); else _selected.Remove(id); }
     private T Get<T>() where T : class => Services.GetService(typeof(T)) as T ?? throw new InvalidOperationException();
@@ -88,8 +151,12 @@
     }
     private async Task<bool> BackAsync()
     {
-        if (_preview is null) return false;
-        await InvokeAsync(() => { if (!_busy) _preview = null; StateHasChanged(); }); return true;
+        if (_preview is null && _sessionPreview is null) return false;
+        await InvokeAsync(() => { if (!_busy) { _preview = null; _sessionPreview = null; } StateHasChanged(); }); return true;
     }
-    public void Dispose() => _backRegistration?.Dispose();
+    public void Dispose()
+    {
+        _backRegistration?.Dispose();
+        if (_incoming is not null) _incoming.Received -= OnReceived;
+    }
 }

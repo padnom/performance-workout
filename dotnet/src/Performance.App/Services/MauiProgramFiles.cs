@@ -9,16 +9,8 @@ public sealed class MauiProgramFiles : IProgramFiles
         var file = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = "Choisir des programmes Performance (.json)" });
         if (file is null) return null;
         await using var stream = await file.OpenReadAsync();
-        using var reader = new StreamReader(stream);
-        const int maximumCharacters = 4_000_000;
-        var buffer = new char[8192];
-        var content = new System.Text.StringBuilder();
-        while (await reader.ReadAsync(buffer.AsMemory(), cancellationToken) is var count && count > 0)
-        {
-            if (content.Length + count > maximumCharacters) throw new FormatException("Ce fichier est trop volumineux pour des programmes.");
-            content.Append(buffer, 0, count);
-        }
-        return content.ToString();
+        try { return await BoundedTextReader.ReadAsync(stream, 4_000_000, cancellationToken); }
+        catch (FormatException) { throw new FormatException("Ce fichier est trop volumineux pour des programmes."); }
     }
 
     public async Task ShareProgramsAsync(string json, CancellationToken cancellationToken = default)
@@ -27,4 +19,22 @@ public sealed class MauiProgramFiles : IProgramFiles
         await File.WriteAllTextAsync(path, json, cancellationToken);
         await Share.Default.RequestAsync(new ShareFileRequest { Title = "Partager mes programmes Performance", File = new ShareFile(path) });
     }
+
+    public async Task<string?> PickSessionAsync(CancellationToken cancellationToken = default)
+    {
+        var file = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = "Choisir une séance Performance (.json)" });
+        if (file is null) return null;
+        await using var stream = await file.OpenReadAsync();
+        return await BoundedTextReader.ReadAsync(stream, 1_100_000, cancellationToken);
+    }
+
+    public async Task ShareSessionAsync(string json, string name, CancellationToken cancellationToken = default)
+    {
+        var path = Path.Combine(FileSystem.CacheDirectory, ShareFileName.ForSession(name, DateTime.UtcNow));
+        await File.WriteAllTextAsync(path, json, cancellationToken);
+        await Share.Default.RequestAsync(new ShareFileRequest { Title = "Partager ma séance Performance", File = new ShareFile(path) });
+    }
+
+    public Task ShareTextAsync(string text, string title, CancellationToken cancellationToken = default) =>
+        Share.Default.RequestAsync(new ShareTextRequest { Title = title, Text = text });
 }
