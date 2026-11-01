@@ -120,6 +120,13 @@ public sealed partial class WorkoutStateService(
         string? gym = null, CancellationToken cancellationToken = default) =>
         MutateAsync(() => UpdateSetValue(exerciseId, index, field, value, gym), cancellationToken);
 
+    public Task<WorkoutResult> AddSetAsync(string exerciseId, CancellationToken cancellationToken = default) =>
+        MutateAsync(() => ResizeSets(exerciseId, sets => sets.Count >= 20
+            ? null : [.. sets, new TrainingSet { Weight = sets.LastOrDefault()?.Weight ?? "" }], "SetLimit"), cancellationToken);
+
+    public Task<WorkoutResult> RemoveSetAsync(string exerciseId, int index, CancellationToken cancellationToken = default) =>
+        MutateAsync(() => RemoveSet(exerciseId, index), cancellationToken);
+
     public Task<WorkoutResult> SetRestDurationAsync(string exerciseId, int seconds, CancellationToken cancellationToken = default) =>
         MutateAsync(() => SetRestDuration(exerciseId, seconds), cancellationToken);
 
@@ -314,6 +321,25 @@ public sealed partial class WorkoutStateService(
         var updated = active with { Draft = draft, ExerciseGyms = gyms };
         if (startRest) updated = WithStartedRest(updated, exerciseId);
         return new(Data with { ActiveWorkout = updated });
+    }
+
+    private Change RemoveSet(string exerciseId, int index)
+    {
+        if (Data.ActiveWorkout?.Session?.Exercises.Any(item => item.ExerciseId == exerciseId) == true
+            && (index < 0 || index >= GetSets(exerciseId).Count)) return Change.Failure("InvalidSetIndex");
+        return ResizeSets(exerciseId, sets => sets.Count <= 1 ? null : sets.Where((_, position) => position != index).ToArray(), "LastSet");
+    }
+
+    private Change ResizeSets(string exerciseId, Func<IReadOnlyList<TrainingSet>, IReadOnlyList<TrainingSet>?> resize, string limitError)
+    {
+        var active = Data.ActiveWorkout;
+        if (active?.Session is null) return Change.Failure("NoActiveWorkout");
+        if (!active.Session.Exercises.Any(item => item.ExerciseId == exerciseId)) return Change.Failure("UnknownExercise");
+        var gym = ResolveGym(active, exerciseId);
+        if (resize(GetSets(exerciseId, gym)) is not { } sets) return Change.Failure(limitError);
+        var draft = CopyDraft(active);
+        draft[DraftKey(exerciseId, gym)] = sets;
+        return new(Data with { ActiveWorkout = active with { Draft = draft } });
     }
 
     private Change SetRestDuration(string exerciseId, int seconds)

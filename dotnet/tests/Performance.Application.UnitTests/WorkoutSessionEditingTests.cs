@@ -370,6 +370,102 @@ public sealed class WorkoutSessionEditingTests
         service.Data.Exercises.ShouldHaveSingleItem().Rest.ShouldBe("2–3 min");
     }
 
+    [Fact]
+    public async Task AddSetAsync_ShouldAppendSetWithLastWeightOnlyInSelectedGym()
+    {
+        // Arrange
+        var repository = new Repository(ActiveData());
+        var service = Create(repository);
+        await service.InitializeAsync();
+        var otherGymSets = service.GetSets("press", "Basic-Fit");
+
+        // Act
+        var result = await service.AddSetAsync("press");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        service.GetSets("press").ShouldBe([new TrainingSet { Weight = "40", Reps = "8", Rir = "2" },
+            new TrainingSet { Weight = "42", Reps = "9" }, new TrainingSet { Weight = "42" }]);
+        service.GetSets("press", "Basic-Fit").ShouldBe(otherGymSets);
+        repository.Stored.ShouldBeSameAs(service.Data);
+    }
+
+    [Fact]
+    public async Task AddSetAsync_AtTwentySets_ShouldRejectWithoutSaving()
+    {
+        // Arrange
+        var initial = ActiveData();
+        var draft = new Dictionary<string, IReadOnlyList<TrainingSet>>(initial.ActiveWorkout!.Draft)
+            { ["press"] = Enumerable.Range(0, 20).Select(_ => new TrainingSet()).ToArray() };
+        var repository = new Repository(initial with { ActiveWorkout = initial.ActiveWorkout with { Draft = draft } });
+        var service = Create(repository);
+        await service.InitializeAsync();
+        var previous = service.Data;
+
+        // Act
+        var result = await service.AddSetAsync("press");
+
+        // Assert
+        result.Error.ShouldBe("SetLimit");
+        service.Data.ShouldBeSameAs(previous);
+        repository.Writes.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RemoveSetAsync_ShouldRemoveOnlyTargetedSetInSelectedGym()
+    {
+        // Arrange
+        var repository = new Repository(ActiveData());
+        var service = Create(repository);
+        await service.InitializeAsync();
+        var otherGymSets = service.GetSets("press", "Basic-Fit");
+
+        // Act
+        var result = await service.RemoveSetAsync("press", 0);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        service.GetSets("press").ShouldBe([new TrainingSet { Weight = "42", Reps = "9" }]);
+        service.GetSets("press", "Basic-Fit").ShouldBe(otherGymSets);
+        repository.Stored.ShouldBeSameAs(service.Data);
+    }
+
+    [Theory]
+    [InlineData("other", 0, "LastSet")]
+    [InlineData("press", 2, "InvalidSetIndex")]
+    [InlineData("press", -1, "InvalidSetIndex")]
+    [InlineData("row", 0, "UnknownExercise")]
+    public async Task RemoveSetAsync_WithInvalidTarget_ShouldRejectWithoutSaving(string exerciseId, int index, string error)
+    {
+        // Arrange
+        var repository = new Repository(ActiveData());
+        var service = Create(repository);
+        await service.InitializeAsync();
+        var previous = service.Data;
+
+        // Act
+        var result = await service.RemoveSetAsync(exerciseId, index);
+
+        // Assert
+        result.Error.ShouldBe(error);
+        service.Data.ShouldBeSameAs(previous);
+        repository.Writes.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task AddSetAsync_WithUnknownExercise_ShouldReject()
+    {
+        // Arrange
+        var service = Create(new Repository(ActiveData()));
+        await service.InitializeAsync();
+
+        // Act
+        var result = await service.AddSetAsync("row");
+
+        // Assert
+        result.Error.ShouldBe("UnknownExercise");
+    }
+
     private static Task<WorkoutResult> EditOrCreate(WorkoutStateService service, string operation, Exercise exercise) =>
         operation == "edit" ? service.UpdateActiveExerciseAsync(exercise)
             : service.CreateAndAddExerciseAsync(exercise with { Id = "curl", Name = "Curl" });

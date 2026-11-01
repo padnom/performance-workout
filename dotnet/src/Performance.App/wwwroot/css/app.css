@@ -200,8 +200,11 @@ select { color-scheme: dark; }
 details { margin-top: 13px; }
 summary { cursor: pointer; color: var(--accent); font-size: 12px; padding: 8px 0; }
 details p { margin: 8px 0; }
-.set-grid { display: grid; grid-template-columns: 24px minmax(40px, .7fr) repeat(2, minmax(40px, 1fr)) 19px; gap: 6px; align-items: center; }
+.set-grid { display: grid; grid-template-columns: 24px minmax(40px, .7fr) repeat(2, minmax(40px, 1fr)) 19px 28px; gap: 6px; align-items: center; }
 .set-completed { color: var(--accent); font-size: 18px; }
+.remove-set { width: 28px; height: 28px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--muted); font-size: 16px; line-height: 1; }
+.remove-set:disabled { opacity: .35; }
+.add-set { width: 100%; margin: 2px 0 10px; }
 .set-labels { color: var(--muted); font-size: 10px; text-transform: uppercase; padding: 8px 0; text-align: center; }
 .set-row { margin-bottom: 8px; font-size: 12px; text-align: center; }
 .set-row input { min-width: 0; text-align: center; padding: 9px 2px; font-size: 14px; }

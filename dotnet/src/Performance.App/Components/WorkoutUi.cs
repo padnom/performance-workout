@@ -13,6 +13,8 @@ public static class WorkoutUi
         "ActiveWorkoutExists" => "Une séance est déjà en cours. Reprends-la ou abandonne-la avant d’en démarrer une autre.",
         "NoActiveWorkout" => "Aucune séance en cours.",
         "InvalidSetIndex" => "Cette série n’est plus disponible.",
+        "SetLimit" => "Un exercice peut compter 20 séries au maximum.",
+        "LastSet" => "Garde au moins une série, ou retire l’exercice.",
         "InvalidSet" => "Vérifie les valeurs : charge et répétitions positives.",
         "EmptyWorkout" => "Renseigne au moins une série avec des répétitions avant de terminer.",
         "UnknownExercise" => "Cet exercice n’est plus disponible.",
