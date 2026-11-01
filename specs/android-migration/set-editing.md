@@ -7,7 +7,7 @@ my log matches what I actually did without leaving the session.
 
 - Branch: `main`
 - Status: implemented and verified on the host (unit and bUnit tests). Android device QA pending.
-- GitHub issue: not yet created (no `gh` CLI or authorized GitHub connector on this machine).
+- Tracking: this spec only, no GitHub issue.
 - Updated: 2026-11-01
 
 ## Acceptance criteria
