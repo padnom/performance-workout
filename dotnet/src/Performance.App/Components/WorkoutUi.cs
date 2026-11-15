@@ -6,6 +6,8 @@ namespace Performance.App.Components;
 public static class WorkoutUi
 {
     public static readonly string[] Gyms = ["One Air", "Basic-Fit", "Toutes"];
+    /// <summary>Display name of a gym; stored values keep "One Air" so existing data and backups stay compatible.</summary>
+    public static string GymName(string? gym) => gym switch { "One Air" => "On Air", null => "", _ => gym };
     public static string Error(string? token) => token switch
     {
         "ActiveWorkoutExists" => "Une séance est déjà en cours. Reprends-la ou abandonne-la avant d’en démarrer une autre.",
@@ -18,9 +20,9 @@ public static class WorkoutUi
         "InvalidExercise" => "Renseigne un nom et un nombre de séries valide.",
         "ExerciseAlreadyExists" => "Un exercice portant ce nom existe déjà. Utilise-le depuis la recherche.",
         "InvalidGym" => "Choisis une salle disponible pour cet exercice.",
-        "IncompatibleGym" => "Ce programme ne correspond pas à la salle choisie. Choisis One Air ou Basic-Fit, ou remplace les exercices concernés.",
+        "IncompatibleGym" => "Ce programme ne correspond pas à la salle choisie. Choisis On Air ou Basic-Fit, ou remplace les exercices concernés.",
         "NoOptionalExercises" => "Les exercices optionnels sont déjà ajoutés ou indisponibles.",
-        "UnknownGymProgram" => "Aucun programme prévu pour cette salle. Choisis One Air ou Basic-Fit.",
+        "UnknownGymProgram" => "Aucun programme prévu pour cette salle. Choisis On Air ou Basic-Fit.",
         "InvalidProgramPackage" => "Fichier de programmes invalide. Tes données sont conservées.",
         "InvalidSessionPackage" => "Fichier de séance invalide. Tes données sont conservées.",
         "SessionsProgramFull" => "Mes séances contient déjà 100 séances. Crée un programme pour les suivantes.",

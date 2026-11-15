@@ -10,7 +10,7 @@ Version actuelle : **1.4.0**, code Android **7**.
 - Bibliothèque de programmes, variantes et démarrage rapide d’une séance libre.
 - Création de programmes personnels à plusieurs séances, réglage des exercices et favoris pour retrouver rapidement ses programmes.
 - Création d’une séance seule et partage d’une séance (historique ou programme) en fichier ou en texte, par exemple sur WhatsApp ; un fichier reçu s’ouvre directement dans l’application et s’ajoute à « Mes séances ».
-- Programme de quatre séances adapté à One Air ou Basic-Fit : Push, Pull, Jambes et Upper, en 4×10 modifiable. Deux exercices d’abdos peuvent être ajoutés volontairement en fin de séance.
+- Programme de quatre séances adapté à On Air ou Basic-Fit : Push, Pull, Jambes et Upper, en 4×10 modifiable. Deux exercices d’abdos peuvent être ajoutés volontairement en fin de séance.
 - Partage JSON de la semaine ou de programmes sélectionnés, et import de copies après aperçu, sans partager les charges ni l’historique personnel.
 - Charges et répétitions par salle, remplacement/modification des exercices et exercices personnalisés.
 - Sauvegarde et reprise de la séance en cours après interruption.
@@ -20,7 +20,7 @@ Version actuelle : **1.4.0**, code Android **7**.
 - Import/export des sauvegardes Android et de l’ancien site web.
 - Diagnostics locaux exportés uniquement à la demande.
 - Mise à jour depuis l’application : détection automatique des nouvelles versions publiées sur GitHub, téléchargement vérifié puis installation confirmée par Android.
-- Couleurs adaptées à la salle : rouge et noir One Air, orange Basic-Fit, selon la séance en cours ou la salle choisie.
+- Couleurs adaptées à la salle : rouge et noir On Air, orange Basic-Fit, selon la séance en cours ou la salle choisie.
 
 Le RIR, le poids cumulé soulevé et le temps cumulé en salle ne sont pas affichés. Les anciennes données restent compatibles avec les imports.
 

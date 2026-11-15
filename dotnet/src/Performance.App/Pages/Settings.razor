@@ -20,7 +20,7 @@
         <h2>Salle d’entraînement</h2><p class="muted">Utilisée par la séance en cours et les prochaines séances.</p>
         <label class="field">Salle
             <select value="@State.CurrentGym" disabled="@_busy" @onchange="ChangeGymAsync">
-                @foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }
+                @foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }
             </select>
         </label>
     </section>

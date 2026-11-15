@@ -17,7 +17,7 @@
     <div class="gym-history">
         <label>Salle
             <select aria-label="Salle de @Exercise.Name" value="@SelectedGym" disabled="@_busy" @onchange="SwitchGymAsync">
-                @foreach (var gym in WorkoutUi.ExerciseGyms(Exercise)) { <option>@gym</option> }
+                @foreach (var gym in WorkoutUi.ExerciseGyms(Exercise)) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }
             </select>
         </label>
         @if (Exercise.Variants.FirstOrDefault(variant => variant.Gym == SelectedGym)?.MachineName is { Length: > 0 } machine)
@@ -28,7 +28,7 @@
         @if (History.Any())
         {
             <details>
-                <summary>Dernières séances · @SelectedGym</summary>
+                <summary>Dernières séances · @WorkoutUi.GymName(SelectedGym)</summary>
                 @foreach (var item in History.Take(3))
                 {
                     <p class="muted">@item.Date.ToLocalTime().ToString("dd/MM/yyyy") : @HistorySummary(item)</p>

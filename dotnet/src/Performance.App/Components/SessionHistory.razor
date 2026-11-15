@@ -19,7 +19,7 @@
                 @foreach (var performance in performances)
                 {
                     <div class="history-exercise">
-                        <h3>@ExerciseName(performance.ExerciseId) <small>· @WorkoutUi.Gym(performance)</small></h3>
+                        <h3>@ExerciseName(performance.ExerciseId) <small>· @WorkoutUi.GymName(WorkoutUi.Gym(performance))</small></h3>
                         <div class="history-set-header"><span>Série</span><span>kg</span><span>Reps</span></div>
                         @foreach (var item in performance.Sets.Select((set, index) => new { Set = set, Index = index }).Where(item => HasData(item.Set)))
                         {

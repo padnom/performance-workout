@@ -34,7 +34,7 @@
     private WorkoutStateService? _state;
     private AppUpdateService? _updates;
     private string? Gym => _state is null ? null : GymTheme.CurrentGym(_state);
-    private string GymLabel => Gym switch { null => "LOCAL", "Toutes" => "TOUTES SALLES", var gym => gym.ToUpperInvariant() };
+    private string GymLabel => Gym switch { null => "LOCAL", "Toutes" => "TOUTES SALLES", var gym => WorkoutUi.GymName(gym).ToUpperInvariant() };
     protected override void OnInitialized()
     {
         Navigation.LocationChanged += LocationChanged;

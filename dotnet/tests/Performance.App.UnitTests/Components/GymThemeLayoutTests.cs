@@ -38,6 +38,14 @@ public sealed class GymThemeLayoutTests : IDisposable
     }
 
     [Fact]
+    public void GymName_ShowsOnAirButKeepsStoredValue()
+    {
+        WorkoutUi.GymName("One Air").ShouldBe("On Air");
+        WorkoutUi.GymName("Basic-Fit").ShouldBe("Basic-Fit");
+        WorkoutUi.Gyms.ShouldContain("One Air");
+    }
+
+    [Fact]
     public async Task Layout_FollowsSelectedGymLive()
     {
         var page = _context.Render<MainLayout>();

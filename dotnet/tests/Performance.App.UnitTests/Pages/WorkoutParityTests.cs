@@ -136,7 +136,7 @@ public sealed class WorkoutParityTests : IDisposable
 
         // Assert
         page.Find(".workout-history-dialog").TextContent.ShouldContain("42,5");
-        page.Find(".workout-history-dialog").TextContent.ShouldContain("One Air");
+        page.Find(".workout-history-dialog").TextContent.ShouldContain("On Air");
         page.Find("button[aria-label='Fermer l’historique']").Click();
         page.FindAll(".workout-history-dialog").ShouldBeEmpty();
         _state.GetSets(_exercise.Id)[0].Weight.ShouldBe("50");

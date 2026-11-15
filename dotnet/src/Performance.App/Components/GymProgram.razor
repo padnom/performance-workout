@@ -7,7 +7,7 @@
 
 <section class="gym-program" aria-label="Programme par salle">
     <p class="eyebrow">TON PROGRAMME</p>
-    <div class="card-heading"><h2>Ton programme — @_gym</h2><select aria-label="Salle du programme" value="@_gym" disabled="@_busy" @onchange="ChangeGym"><option>One Air</option><option>Basic-Fit</option></select></div>
+    <div class="card-heading"><h2>Ton programme — @WorkoutUi.GymName(_gym)</h2><select aria-label="Salle du programme" value="@_gym" disabled="@_busy" @onchange="ChangeGym"><option value="One Air">On Air</option><option>Basic-Fit</option></select></div>
     <p class="muted">4 séances · 4 × 10 · une séance jambes · épaules équilibrées</p>
     @if (_gym == "Basic-Fit") { <p class="muted gym-equipment-note">Matériel standard : remplace explicitement une machine si elle n’est pas disponible dans ta salle.</p> }
     @if (State.GetRecommendedProgram(_gym) is { } program)
@@ -28,7 +28,7 @@
 @if (_confirm)
 {
     <div class="modal-backdrop"><section class="panel confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="gym-week-title">
-        <h2 id="gym-week-title">Utiliser cette semaine — @_gym ?</h2>
+        <h2 id="gym-week-title">Utiliser cette semaine — @WorkoutUi.GymName(_gym) ?</h2>
         <p class="muted">Les quatre séances remplaceront ta semaine actuelle. Ta séance en cours et ton historique restent conservés.</p>
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
         <div class="settings-actions"><button class="primary-button confirm-gym-week" disabled="@_busy" @onclick="ApplyAsync">Confirmer</button><button class="secondary-button" disabled="@_busy" @onclick="() => _confirm = false">Annuler</button></div>
