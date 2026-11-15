@@ -16,6 +16,8 @@ public static partial class ReleaseChecks
     public const string ApplicationId = "fr.padnom.performance";
     public static readonly IReadOnlySet<string> Architectures = new HashSet<string> { "arm64-v8a", "x86_64" };
     public static readonly IReadOnlyList<string> Assemblies = ["App", "Application", "Domain", "Infrastructure"];
+    /// <summary>First bytes of every Android native library (0x7F followed by "ELF").</summary>
+    public static ReadOnlySpan<byte> ElfMagic => [0x7F, 0x45, 0x4C, 0x46];
     public static readonly IReadOnlyList<string> WebPayload =
         ["assets/wwwroot/index.html", "assets/wwwroot/css/app.css", "assets/wwwroot/_framework/blazor.webview.js"];
 
@@ -135,7 +137,7 @@ public static partial class ReleaseChecks
     {
         using var library = entry.Open();
         Span<byte> header = stackalloc byte[4];
-        return library.ReadAtLeast(header, 4, throwOnEndOfStream: false) == 4 && header.SequenceEqual("\x7fELF"u8);
+        return library.ReadAtLeast(header, 4, throwOnEndOfStream: false) == 4 && header.SequenceEqual(ElfMagic);
     }
 
     /// <summary>Reads every entry so damaged data or CRC mismatches are reported before distribution.</summary>

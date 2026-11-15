@@ -8,6 +8,7 @@ namespace Performance.ReleaseTools.UnitTests;
 public sealed class ReleaseChecksTests
 {
     private static readonly ProjectVersion V110 = new("1.1.0", 2);
+    private static readonly byte[] ElfLibrary = [0x7F, 0x45, 0x4C, 0x46, 0x02, 0x01, 0x01, 0x00];
 
     private static MemoryStream Apk(string? omit = null, string? invalidLibrary = null, string? extraArchitecture = null)
     {
@@ -24,9 +25,9 @@ public sealed class ReleaseChecksTests
             {
                 var libraries = ReleaseChecks.Assemblies.Select(assembly => $"lib/{arch}/libaot-Performance.{assembly}.dll.so").Prepend($"lib/{arch}/libassembly-store.so");
                 foreach (var entry in libraries.Where(entry => entry != omit))
-                    Write(entry, entry == invalidLibrary ? "broken"u8.ToArray() : "\x7fELFpayload"u8.ToArray());
+                    Write(entry, entry == invalidLibrary ? "broken"u8.ToArray() : ElfLibrary);
             }
-            if (extraArchitecture is not null) Write($"lib/{extraArchitecture}/libassembly-store.so", "\x7fELFpayload"u8.ToArray());
+            if (extraArchitecture is not null) Write($"lib/{extraArchitecture}/libassembly-store.so", ElfLibrary);
         }
         stream.Position = 0;
         return stream;
