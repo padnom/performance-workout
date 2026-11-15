@@ -39,6 +39,8 @@ def smoke(apk, output):
         adb('shell', 'uiautomator', 'dump', '/sdcard/performance-smoke.xml', check=False)
         ui = adb('shell', 'cat', '/sdcard/performance-smoke.xml', check=False).stdout
         (output / 'launch-ui.xml').write_text(ui)
+        if dismiss_system_anr(ui):
+            continue
         if PACKAGE in ui and 'Accueil' in ui and 'Programme actif' in ui:
             rendered = True
             break
@@ -56,6 +58,21 @@ def smoke(apk, output):
     print('Standalone Release APK installed; process and Blazor dashboard verified on emulator.')
 
 
+def dismiss_system_anr(ui):
+    """Overloaded CI emulators sometimes show "System UI isn't responding" above the app; choose "Wait"."""
+    if "isn't responding" not in ui and "ne répond pas" not in ui:
+        return False
+    match = re.search(r'text="(?:Wait|Attendre)"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+    if match:
+        left, top, right, bottom = map(int, match.groups())
+        adb('shell', 'input', 'tap', str((left + right) // 2), str((top + bottom) // 2), check=False)
+    else:
+        adb('shell', 'input', 'keyevent', 'KEYCODE_BACK', check=False)
+    print('Dismissed a system "not responding" dialog shown by the emulator.')
+    time.sleep(2)
+    return True
+
+
 def print_diagnostics(output):
     """Echo the visible text and relevant log lines so failures can be read from the job log."""
     try:
@@ -64,8 +81,10 @@ def print_diagnostics(output):
         print('--- Visible UI text ---')
         print(' | '.join(texts[:80]) or '(none)')
         log = adb('logcat', '-d', check=False).stdout.splitlines()
-        print('--- Relevant logcat (last 150 lines) ---')
-        print('\n'.join([line for line in log if LOG_PATTERN.search(line)][-150:]))
+        pid = adb('shell', 'pidof', PACKAGE, check=False).stdout.strip()
+        print(f'--- Application process: {pid or "not running"} ---')
+        print('--- Application logcat (last 150 lines) ---')
+        print('\n'.join([line for line in log if (pid and f' {pid} ' in line) or LOG_PATTERN.search(line) and ' E ' not in line][-150:]))
         print('--- Crash buffer ---')
         print(adb('logcat', '-b', 'crash', '-d', check=False).stdout[-4000:] or '(empty)')
     except (OSError, subprocess.SubprocessError) as error:

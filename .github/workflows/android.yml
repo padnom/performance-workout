@@ -106,6 +106,8 @@ jobs:
           arch: x86_64
           profile: pixel_2
           disk-size: 4096M
+          cores: 4
+          ram-size: 4096M
           disable-animations: true
           script: python3 dotnet/scripts/smoke-android.py "$RUNNER_TEMP/android-apk/performance-release-diagnostic.apk" --output "$RUNNER_TEMP/android-smoke"
       - name: Upload diagnostic Release APK
