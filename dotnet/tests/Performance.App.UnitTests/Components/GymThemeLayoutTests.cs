@@ -31,6 +31,13 @@ public sealed class GymThemeLayoutTests : IDisposable
     public void For_MapsGymToTheme(string? gym, string theme) => GymTheme.For(gym).ShouldBe(theme);
 
     [Fact]
+    public void Logo_OnlyForKnownGyms()
+    {
+        GymTheme.Logo("One Air").ShouldBe("img/gyms/one-air.png");
+        GymTheme.Logo("Toutes").ShouldBeNull();
+    }
+
+    [Fact]
     public async Task Layout_FollowsSelectedGymLive()
     {
         var page = _context.Render<MainLayout>();
@@ -42,6 +49,7 @@ public sealed class GymThemeLayoutTests : IDisposable
         {
             page.Find(".app-shell").GetAttribute("data-gym").ShouldBe("basic-fit");
             page.Find(".offline-pill").TextContent.ShouldContain("BASIC-FIT");
+            page.Find(".offline-pill .gym-logo").GetAttribute("src").ShouldBe("img/gyms/basic-fit.svg");
         });
     }
 

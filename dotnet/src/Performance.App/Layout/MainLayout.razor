@@ -6,7 +6,7 @@
 @inject NavigationManager Navigation
 
 <div class="app-shell" data-gym="@GymTheme.For(Gym)">
-    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><span class="offline-pill" title="Salle actuelle"><span></span> @GymLabel</span></header>
+    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><span class="offline-pill" title="Salle actuelle">@if (GymTheme.Logo(Gym) is { } logo) { <img class="gym-logo" src="@logo" alt="" width="20" height="20" /> } else { <span></span> } @GymLabel</span></header>
     <main class="content @(IsWorkout ? "workout-content" : "")" @key="Navigation.Uri">
         @if (!IsWorkout && _updates is { ShowBanner: true }) { <UpdateBanner Updates="_updates" /> }
         @Body

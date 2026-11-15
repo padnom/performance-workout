@@ -8,14 +8,14 @@
 }
 .app-shell[data-gym="one-air"] {
     --bg: #0b0b0b; --surface: #171515; --surface-2: #211d1d; --line: #352d2d;
-    --accent: #ff3b41; --accent-rgb: 255, 59, 65; --accent-ink: #120000; --accent-ink-muted: #5c0a0d;
+    --accent: #d8232a; --accent-rgb: 216, 35, 42; --accent-ink: #ffffff; --accent-ink-muted: #ffd0d2;
     --accent-line: #a8383b; --accent-line-dim: #6e2a2c; --accent-good: #94403f; --accent-text-soft: #f07a7d;
     --notice-bg: #2e1516; --notice-border: #5e2629; --notice-text: #ffd9da; --rest-bg: #3d1517;
     --hero-from: #351719; --hero-to: #1a1010; --hero-border: #4a2427; --orbit-line: #a0484b55;
     background: var(--bg);
 }
 .app-shell[data-gym="basic-fit"] {
-    --accent: #ff8a1f; --accent-rgb: 255, 138, 31; --accent-ink: #2b1400; --accent-ink-muted: #7a3a00;
+    --accent: #f37121; --accent-rgb: 243, 113, 33; --accent-ink: #2b1400; --accent-ink-muted: #7a3a00;
     --accent-line: #b8692a; --accent-line-dim: #7a4a24; --accent-good: #a8642e; --accent-text-soft: #f0a35e;
     --notice-bg: #3a2716; --notice-border: #6b4423; --notice-text: #ffe2c7; --rest-bg: #4a2e14;
     --hero-from: #3b2b1d; --hero-to: #2b2018; --hero-border: #4d3826; --orbit-line: #a8703f55;
@@ -388,3 +388,4 @@ details p { margin: 8px 0; }
 .update-actions button { padding: 9px 12px; }
 .update-progress { display: block; height: 5px; border-radius: 5px; background: var(--line); overflow: hidden; margin-top: 4px; }
 .update-progress span { display: block; height: 100%; background: var(--accent); }
+.gym-logo { display: block; width: 20px; height: 20px; object-fit: contain; }
