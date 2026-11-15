@@ -36,6 +36,8 @@
     <Compile Include="../../src/Performance.App/Services/IAppDiagnostics.cs" Link="Services/IAppDiagnostics.cs" />
     <Compile Include="../../src/Performance.App/Services/DiagnosticJournal.cs" Link="Services/DiagnosticJournal.cs" />
     <Compile Include="../../src/Performance.App/Services/DiagnosticPerformanceDataRepository.cs" Link="Services/DiagnosticPerformanceDataRepository.cs" />
+    <Compile Include="../../src/Performance.App/Services/IApkInstaller.cs" Link="Services/IApkInstaller.cs" />
+    <Compile Include="../../src/Performance.App/Services/AppUpdateService.cs" Link="Services/AppUpdateService.cs" />
     <Compile Include="../../src/Performance.App/Components/*.cs" Link="Components/%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

@@ -1,12 +1,16 @@
 @inherits LayoutComponentBase
 @implements IDisposable
 @using Performance.App.Services
+@using Performance.Application
 @inject IServiceProvider Services
 @inject NavigationManager Navigation
 
-<div class="app-shell">
-    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><span class="offline-pill"><span></span> LOCAL</span></header>
-    <main class="content @(IsWorkout ? "workout-content" : "")" @key="Navigation.Uri">@Body</main>
+<div class="app-shell" data-gym="@GymTheme.For(Gym)">
+    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><span class="offline-pill" title="Salle actuelle"><span></span> @GymLabel</span></header>
+    <main class="content @(IsWorkout ? "workout-content" : "")" @key="Navigation.Uri">
+        @if (!IsWorkout && _updates is { ShowBanner: true }) { <UpdateBanner Updates="_updates" /> }
+        @Body
+    </main>
     @if (_plusOpen)
     {
         <div class="plus-menu-backdrop" @onclick="ClosePlus"></div>
@@ -27,9 +31,17 @@
     private AppNavigationService? _navigation;
     private IDisposable? _backRegistration;
     private IncomingShareService? _incomingShare;
+    private WorkoutStateService? _state;
+    private AppUpdateService? _updates;
+    private string? Gym => _state is null ? null : GymTheme.CurrentGym(_state);
+    private string GymLabel => Gym switch { null => "LOCAL", "Toutes" => "TOUTES SALLES", var gym => gym.ToUpperInvariant() };
     protected override void OnInitialized()
     {
         Navigation.LocationChanged += LocationChanged;
+        _state = Services.GetService(typeof(WorkoutStateService)) as WorkoutStateService;
+        if (_state is not null) _state.DataChanged += Refresh;
+        _updates = Services.GetService(typeof(AppUpdateService)) as AppUpdateService;
+        if (_updates is not null) _updates.Changed += RefreshUpdates;
         _incomingShare = Services.GetService(typeof(IncomingShareService)) as IncomingShareService;
         if (_incomingShare is not null)
         {
@@ -42,6 +54,8 @@
         _navigation.WorkoutRequested += OpenWorkout;
         if (_navigation.ConsumeWorkoutRequest()) OpenWorkout();
     }
+    private void Refresh(PerformanceData data) => _ = InvokeAsync(StateHasChanged);
+    private void RefreshUpdates() => _ = InvokeAsync(StateHasChanged);
     private void OpenWorkout() => _ = InvokeAsync(() => Navigation.NavigateTo("/seance"));
     private void OpenPrograms() => _ = InvokeAsync(() =>
     {
@@ -58,6 +72,8 @@
     public void Dispose()
     {
         Navigation.LocationChanged -= LocationChanged;
+        if (_state is not null) _state.DataChanged -= Refresh;
+        if (_updates is not null) _updates.Changed -= RefreshUpdates;
         if (_incomingShare is not null) _incomingShare.Received -= OpenPrograms;
         if (_navigation is not null) _navigation.WorkoutRequested -= OpenWorkout;
         _backRegistration?.Dispose();

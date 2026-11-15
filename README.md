@@ -2,7 +2,7 @@
 
 Application de suivi de musculation en **C# / .NET 10 MAUI Blazor Hybrid**, utilisable hors connexion et sans hébergement. L’interface, le catalogue et les données sont embarqués dans l’APK.
 
-Version actuelle : **1.3.0**, code Android **6**.
+Version actuelle : **1.4.0**, code Android **7**.
 
 ## Fonctionnalités
 
@@ -19,6 +19,8 @@ Version actuelle : **1.3.0**, code Android **6**.
 - Historique, records par salle, graphiques de progression et répartition des séries par muscle.
 - Import/export des sauvegardes Android et de l’ancien site web.
 - Diagnostics locaux exportés uniquement à la demande.
+- Mise à jour depuis l’application : détection automatique des nouvelles versions publiées sur GitHub, téléchargement vérifié puis installation confirmée par Android.
+- Couleurs adaptées à la salle : vert One Air, orange Basic-Fit, selon la séance en cours ou la salle choisie.
 
 Le RIR, le poids cumulé soulevé et le temps cumulé en salle ne sont pas affichés. Les anciennes données restent compatibles avec les imports.
 
@@ -54,7 +56,7 @@ Voir [le projet Android](dotnet/README.md) et [la compilation, la signature et l
 
 ## Installer et livrer
 
-L’APK de cette version se trouve dans `outputs/performance-android-1.3.0.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
+L’APK de cette version se trouve dans `outputs/performance-android-1.4.0.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
 
 La CI vérifie les tests, les versions, un APK Release avec AOT/trimming et son lancement sur émulateur. Son APK de diagnostic utilise une clé jetable et ne met pas à jour l’installation existante. La distribution compatible nécessite les quatre secrets du certificat actuel dans l’environnement GitHub `android-release`, comme décrit dans le guide Android. Aucune clé privée ni APK n’est versionné.
 

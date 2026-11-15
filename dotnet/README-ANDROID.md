@@ -66,7 +66,7 @@ dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   -p:PublishTrimmed=true
 ```
 
-Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.3.0, code Android 6**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.4.0, code Android 7**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
 
 `verify-debug-apk.py` reste disponible pour le format Debug. Le nouveau contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
 
@@ -160,3 +160,13 @@ Une séance de l’historique (séance libre comprise) ou une séance de program
 « Importer une séance » dans Programmes, ou l’ouverture d’un fichier `.json` reçu (WhatsApp, gestionnaire de fichiers), affiche un aperçu puis ajoute une copie dans le programme personnel « Mes séances », créé au besoin et limité à 100 séances. « Créer une séance » ouvre l’éditeur pour une seule séance enregistrée au même endroit. Un fichier reçu pendant une séance en cours attend la prochaine visite de Programmes.
 
 Sur téléphone, vérifier : envoi à soi-même sur WhatsApp du fichier et du texte ; ouverture du fichier reçu application fermée puis ouverte ; refus d’un JSON quelconque avec message ; démarrage et ajout à la semaine d’une séance de « Mes séances » ; mise à jour par-dessus 1.2.1 sans perte de données.
+
+## Mise à jour automatique et thème par salle — 1.4.0
+
+**Mise à jour.** Au démarrage puis au retour au premier plan (au plus toutes les 6 h), l’application interroge `api.github.com/repos/padnom/performance-workout/releases/latest`. Si la version publiée est plus récente que la version installée, un bandeau « Nouvelle version » propose « Mettre à jour » ou « Plus tard » ; Réglages › Mises à jour permet aussi une recherche manuelle. L’APK est téléchargé dans le cache, sa taille et son empreinte SHA-256 (champ `digest` de GitHub) sont vérifiées, puis l’installateur Android s’ouvre. Android exige toujours une confirmation : une installation totalement silencieuse n’est pas possible hors Play Store. Au premier usage, Android demande d’autoriser « Performance » à installer des applications ; l’installation reprend au retour dans l’application. Hors connexion, la vérification échoue silencieusement. Permissions ajoutées : `INTERNET`, `REQUEST_INSTALL_PACKAGES`.
+
+**Publier une version.** Augmenter `ApplicationDisplayVersion` et `ApplicationVersion`, puis pousser le tag `android-v<version>` (par exemple `android-v1.4.0`). Le job `distribution` signe l’APK avec le certificat existant et crée la GitHub Release `performance-<version>.apk` lue par l’application. Le tag doit correspondre exactement à la version du projet. Seul un APK signé avec le même certificat peut s’installer par-dessus l’existant ; l’APK de diagnostic ne convient pas.
+
+**Thème par salle.** La couleur d’accent suit la salle de la séance en cours, sinon celle choisie dans Réglages : vert pour One Air (et « Toutes »), orange pour Basic-Fit. Le nom de la salle s’affiche en haut à droite. Les couleurs sont des variables CSS dans `wwwroot/css/app.css` (`.app-shell[data-gym=…]`) ; ajouter une salle = un bloc de variables et une entrée dans `GymTheme.For`.
+
+Sur téléphone, vérifier : bandeau après publication d’une release, refus puis octroi de l’autorisation d’installation, installation par-dessus 1.3.0 sans perte de données, absence de bandeau hors connexion ; passage One Air ↔ Basic-Fit dans Réglages et dans la séance en cours.

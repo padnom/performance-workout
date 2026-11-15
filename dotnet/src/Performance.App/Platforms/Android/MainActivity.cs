@@ -76,6 +76,8 @@ public class MainActivity : MauiAppCompatActivity
         var coordinator = IPlatformApplication.Current?.Services.GetService<RestNotificationCoordinator>();
         if (coordinator is not null) _ = coordinator.ResumeAsync();
         OfferPendingShare();
+        var updates = IPlatformApplication.Current?.Services.GetService<AppUpdateService>();
+        if (updates is not null) _ = updates.ResumeAsync();
     }
     protected override void OnPostResume()
     {

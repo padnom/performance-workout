@@ -1,0 +1,17 @@
+@using Performance.App.Services
+<section class="update-banner" role="status" aria-label="Mise à jour de l’application">
+    <div>
+        <strong>Nouvelle version @Updates.Available?.Version</strong>
+        <span>@(Updates.Status == AppUpdateStatus.Downloading ? $"Téléchargement… {Updates.Progress:P0}" : Updates.Message)</span>
+        @if (Updates.Status == AppUpdateStatus.Downloading) { <span class="update-progress"><span style="width: @((Updates.Progress * 100).ToString("0", System.Globalization.CultureInfo.InvariantCulture))%"></span></span> }
+    </div>
+    <div class="update-actions">
+        <button class="primary-button" disabled="@Updates.Busy" @onclick="InstallAsync">@(Updates.Status == AppUpdateStatus.PermissionRequired ? "Réessayer" : "Mettre à jour")</button>
+        <button class="secondary-button" disabled="@Updates.Busy" @onclick="Updates.Dismiss">Plus tard</button>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public AppUpdateService Updates { get; set; } = default!;
+    private Task InstallAsync() => Updates.InstallAsync();
+}
