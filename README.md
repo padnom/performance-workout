@@ -49,7 +49,7 @@ dotnet test dotnet/tests/Performance.Application.UnitTests/Performance.Applicati
 dotnet test dotnet/tests/Performance.Infrastructure.UnitTests/Performance.Infrastructure.UnitTests.csproj -c Release
 dotnet test dotnet/tests/Performance.Infrastructure.IntegrationTests/Performance.Infrastructure.IntegrationTests.csproj -c Release
 dotnet test dotnet/tests/Performance.App.UnitTests/Performance.App.UnitTests.csproj -c Release
-python3 -m unittest discover -s dotnet/scripts/tests -v
+dotnet test dotnet/tests/Performance.ReleaseTools.UnitTests/Performance.ReleaseTools.UnitTests.csproj -c Release
 ```
 
 Voir [le projet Android](dotnet/README.md) et [la compilation, la signature et les essais](dotnet/README-ANDROID.md).
