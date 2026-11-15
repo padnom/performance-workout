@@ -20,7 +20,7 @@ Version actuelle : **1.4.0**, code Android **7**.
 - Import/export des sauvegardes Android et de l’ancien site web.
 - Diagnostics locaux exportés uniquement à la demande.
 - Mise à jour depuis l’application : détection automatique des nouvelles versions publiées sur GitHub, téléchargement vérifié puis installation confirmée par Android.
-- Couleurs adaptées à la salle : vert One Air, orange Basic-Fit, selon la séance en cours ou la salle choisie.
+- Couleurs adaptées à la salle : rouge et noir One Air, orange Basic-Fit, selon la séance en cours ou la salle choisie.
 
 Le RIR, le poids cumulé soulevé et le temps cumulé en salle ne sont pas affichés. Les anciennes données restent compatibles avec les imports.
 

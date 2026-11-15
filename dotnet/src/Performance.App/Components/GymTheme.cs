@@ -5,7 +5,7 @@ namespace Performance.App.Components;
 /// <summary>Maps the gym the user trains in to the colour theme applied on the app shell.</summary>
 public static class GymTheme
 {
-    public const string Default = "one-air";
+    public const string Default = "all";
 
     public static string For(string? gym) => gym switch
     {

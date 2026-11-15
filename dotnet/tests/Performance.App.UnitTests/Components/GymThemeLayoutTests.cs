@@ -26,8 +26,8 @@ public sealed class GymThemeLayoutTests : IDisposable
     [Theory]
     [InlineData("Basic-Fit", "basic-fit")]
     [InlineData("One Air", "one-air")]
-    [InlineData("Toutes", "one-air")]
-    [InlineData(null, "one-air")]
+    [InlineData("Toutes", "all")]
+    [InlineData(null, "all")]
     public void For_MapsGymToTheme(string? gym, string theme) => GymTheme.For(gym).ShouldBe(theme);
 
     [Fact]

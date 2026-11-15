@@ -1,10 +1,18 @@
 :root { color-scheme: dark; --bg: #101512; --surface: #1a211d; --surface-2: #222b25; --line: #303a33; --text: #f3f6f2; --muted: #9ba89e; }
-/* Gym themes: every accent-derived colour comes from these tokens. One Air (and "Toutes") keep the original green. */
-:root, .app-shell[data-gym="one-air"] {
+/* Gym themes: every accent-derived colour comes from these tokens. "Toutes" keeps the original green. */
+:root {
     --accent: #b7f36b; --accent-rgb: 183, 243, 107; --accent-ink: #14200e; --accent-ink-muted: #435e2c;
     --accent-line: #72974e; --accent-line-dim: #577144; --accent-good: #668948; --accent-text-soft: #8cae5e;
     --notice-bg: #273623; --notice-border: #45603c; --notice-text: #d9edca; --rest-bg: #34482a;
     --hero-from: #27392b; --hero-to: #1b2b20; --hero-border: #354639; --orbit-line: #617b5b55;
+}
+.app-shell[data-gym="one-air"] {
+    --bg: #0b0b0b; --surface: #171515; --surface-2: #211d1d; --line: #352d2d;
+    --accent: #ff3b41; --accent-rgb: 255, 59, 65; --accent-ink: #120000; --accent-ink-muted: #5c0a0d;
+    --accent-line: #a8383b; --accent-line-dim: #6e2a2c; --accent-good: #94403f; --accent-text-soft: #f07a7d;
+    --notice-bg: #2e1516; --notice-border: #5e2629; --notice-text: #ffd9da; --rest-bg: #3d1517;
+    --hero-from: #351719; --hero-to: #1a1010; --hero-border: #4a2427; --orbit-line: #a0484b55;
+    background: var(--bg);
 }
 .app-shell[data-gym="basic-fit"] {
     --accent: #ff8a1f; --accent-rgb: 255, 138, 31; --accent-ink: #2b1400; --accent-ink-muted: #7a3a00;
