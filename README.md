@@ -2,7 +2,7 @@
 
 Application de suivi de musculation en **C# / .NET 10 MAUI Blazor Hybrid**, utilisable hors connexion et sans hébergement. L’interface, le catalogue et les données sont embarqués dans l’APK.
 
-Version actuelle : **1.5.1**, code Android **9**.
+Version actuelle : **1.5.2**, code Android **10**.
 
 ## Fonctionnalités
 
@@ -56,7 +56,7 @@ Voir [le projet Android](dotnet/README.md) et [la compilation, la signature et l
 
 ## Installer et livrer
 
-L’APK de cette version se trouve dans `outputs/performance-android-1.5.1.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
+L’APK de cette version se trouve dans `outputs/performance-android-1.5.2.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
 
 La CI vérifie les tests, les versions, un APK Release avec AOT/trimming et son lancement sur émulateur. Son APK de diagnostic utilise une clé jetable et ne met pas à jour l’installation existante. La distribution compatible nécessite les quatre secrets du certificat actuel dans l’environnement GitHub `android-release`, comme décrit dans le guide Android. Aucune clé privée ni APK n’est versionné.
 

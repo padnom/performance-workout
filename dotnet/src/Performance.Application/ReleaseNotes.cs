@@ -19,6 +19,11 @@ public static class ReleaseNotes
 
     public static IReadOnlyList<ReleaseNote> All { get; } =
     [
+        new(new Version(1, 5, 2),
+        [
+            "Change de salle (et de thème) directement depuis le bouton en haut à droite, sans passer par les réglages.",
+            "Pendant une séance, ce bouton change la salle de la séance en cours.",
+        ]),
         new(new Version(1, 5, 1),
         [
             "Fenêtre « Nouveautés » : après chaque mise à jour, l’application résume ce qui a changé.",

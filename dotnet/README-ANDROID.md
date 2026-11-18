@@ -66,7 +66,7 @@ dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   -p:PublishTrimmed=true
 ```
 
-Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.5.1, code Android 9**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.5.2, code Android 10**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
 
 Les contrôles de livraison sont écrits en C# dans `dotnet/tools/Performance.ReleaseTools` (outil console `performance-release`, testé par `dotnet/tests/Performance.ReleaseTools.UnitTests`). `verify-debug-apk` reste disponible pour le format Debug. Le contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
 
@@ -173,4 +173,4 @@ Sur téléphone, vérifier : envoi à soi-même sur WhatsApp du fichier et du te
 
 **Thème par salle.** La couleur d’accent suit la salle de la séance en cours, sinon celle choisie dans Réglages : rouge et noir pour On Air, orange pour Basic-Fit, vert d’origine pour « Toutes ». Le logo et le nom de la salle s’affichent en haut à droite (`wwwroot/img/gyms/` : logo On Air, monogramme « BF » pour Basic-Fit). La salle s’affiche « On Air » ; la valeur enregistrée reste `One Air` pour garder la compatibilité des données et sauvegardes. Couleurs relevées sur les logos : On Air `#AE1D22` (accent éclairci `#D8232A` pour rester lisible sur fond noir), Basic-Fit `#F37121`. Les couleurs sont des variables CSS dans `wwwroot/css/app.css` (`.app-shell[data-gym=…]`) ; ajouter une salle = un bloc de variables et une entrée dans `GymTheme.For`.
 
-Sur téléphone, vérifier : bandeau après publication d’une release, refus puis octroi de l’autorisation d’installation, installation par-dessus 1.3.0 sans perte de données, absence de bandeau hors connexion ; passage One Air ↔ Basic-Fit dans Réglages et dans la séance en cours.
+Sur téléphone, vérifier : bandeau après publication d’une release, refus puis octroi de l’autorisation d’installation, installation par-dessus 1.3.0 sans perte de données, absence de bandeau hors connexion ; passage One Air ↔ Basic-Fit dans Réglages, depuis le bouton de salle en haut à droite (hors séance et pendant une séance) et dans la séance en cours.

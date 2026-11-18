@@ -6,7 +6,19 @@
 @inject NavigationManager Navigation
 
 <div class="app-shell" data-gym="@GymTheme.For(Gym)">
-    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><span class="offline-pill" title="Salle actuelle">@if (GymTheme.Logo(Gym) is { } logo) { <img class="gym-logo" src="@logo" alt="" width="20" height="20" /> } else { <span></span> } @GymLabel</span></header>
+    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><button class="offline-pill gym-switch" title="Changer de salle" aria-label="Salle actuelle : @GymLabel. Changer de salle" aria-haspopup="menu" aria-expanded="@(_gymOpen ? "true" : "false")" disabled="@(_state is null || _gymBusy)" @onclick="ToggleGym">@if (GymTheme.Logo(Gym) is { } logo) { <img class="gym-logo" src="@logo" alt="" width="20" height="20" /> } else { <span></span> } @GymLabel <b aria-hidden="true">▾</b></button></header>
+    @if (_gymOpen)
+    {
+        <div class="plus-menu-backdrop" @onclick="CloseGym"></div>
+        <section class="panel gym-menu" role="menu" aria-label="Choisir la salle">
+            <p class="eyebrow">@(_state?.Data.ActiveWorkout is null ? "SALLE" : "SALLE DE LA SÉANCE EN COURS")</p>
+            @foreach (var gym in WorkoutUi.Gyms)
+            {
+                <button role="menuitemradio" aria-checked="@(gym == Gym ? "true" : "false")" class="@(gym == Gym ? "active" : "")" data-gym="@gym" disabled="@_gymBusy" @onclick="() => SelectGymAsync(gym)">@if (GymTheme.Logo(gym) is { } icon) { <img src="@icon" alt="" width="20" height="20" /> } else { <span class="gym-dot"></span> }@WorkoutUi.GymName(gym)@if (gym == Gym) { <b aria-hidden="true">✓</b> }</button>
+            }
+            @if (_gymError.Length > 0) { <p class="notice" role="alert">@_gymError</p> }
+        </section>
+    }
     <main class="content @(IsWorkout ? "workout-content" : "")" @key="Navigation.Uri">
         @if (!IsWorkout && _updates is { ShowBanner: true }) { <UpdateBanner Updates="_updates" /> }
         @Body
@@ -22,12 +34,15 @@
         <NavLink href="/programmes" Match="NavLinkMatch.All"><span class="nav-icon">▦</span><span>Programmes</span></NavLink>
         <NavLink href="/progres"><span class="nav-icon">↗</span><span>Progrès</span></NavLink>
         <NavLink href="/historique"><span class="nav-icon">◷</span><span>Historique</span></NavLink>
-        <button class="@(_plusOpen ? "active" : "")" aria-expanded="@(_plusOpen ? "true" : "false")" aria-label="Plus" @onclick="() => _plusOpen = !_plusOpen"><span class="nav-icon">•••</span><span>Plus</span></button>
+        <button class="@(_plusOpen ? "active" : "")" aria-expanded="@(_plusOpen ? "true" : "false")" aria-label="Plus" @onclick="() => { _gymOpen = false; _plusOpen = !_plusOpen; }"><span class="nav-icon">•••</span><span>Plus</span></button>
     </nav>
 </div>
 
 @code {
     private bool _plusOpen;
+    private bool _gymOpen;
+    private bool _gymBusy;
+    private string _gymError = "";
     private bool IsWorkout => new Uri(Navigation.Uri).AbsolutePath == "/seance";
     private AppNavigationService? _navigation;
     private IDisposable? _backRegistration;
@@ -82,12 +97,32 @@
         if (!IsWorkout) Navigation.NavigateTo("/programmes");
     });
     private void ClosePlus() => _plusOpen = false;
-    private void LocationChanged(object? sender, LocationChangedEventArgs args) => _ = InvokeAsync(() => { ClosePlus(); StateHasChanged(); });
+    private void ToggleGym() { _plusOpen = false; _gymError = ""; _gymOpen = !_gymOpen; }
+    private void CloseGym() => _gymOpen = false;
+    private async Task SelectGymAsync(string gym)
+    {
+        if (_state is null || _gymBusy) return;
+        if (gym == Gym) { CloseGym(); return; }
+        _gymBusy = true; _gymError = "";
+        try
+        {
+            var result = _state.Data.ActiveWorkout is null ? await _state.SetGymAsync(gym) : await _state.SetActiveWorkoutGymAsync(gym);
+            if (result.IsSuccess) CloseGym(); else _gymError = WorkoutUi.Error(result.Error);
+        }
+        catch { _gymError = WorkoutUi.Error(null); }
+        finally { _gymBusy = false; }
+    }
+    private void LocationChanged(object? sender, LocationChangedEventArgs args) => _ = InvokeAsync(() => { ClosePlus(); CloseGym(); StateHasChanged(); });
     private async Task<bool> HandleBackAsync()
     {
         if (!_plusOpen && _releaseNotes.Count > 0 && !IsWorkout)
         {
             await InvokeAsync(CloseReleaseNotesAsync);
+            return true;
+        }
+        if (_gymOpen)
+        {
+            await InvokeAsync(() => { CloseGym(); StateHasChanged(); });
             return true;
         }
         if (!_plusOpen) return false;
