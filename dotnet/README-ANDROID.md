@@ -46,7 +46,7 @@ L’APK installable est `fr.padnom.performance-Signed.apk`, sous `dotnet/src/Per
 Vérifier le paquet, puis le lancer sur un appareil ou émulateur connecté :
 
 ```bash
-python3 dotnet/scripts/verify-debug-apk.py chemin/vers/fr.padnom.performance-Signed.apk
+dotnet run --project dotnet/tools/Performance.ReleaseTools -- verify-debug-apk chemin/vers/fr.padnom.performance-Signed.apk
 dotnet run --project dotnet/src/Performance.App/Performance.App.csproj \
   --framework net10.0-android --device emulator-5554
 ```
@@ -66,16 +66,16 @@ dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   -p:PublishTrimmed=true
 ```
 
-Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.3.0, code Android 6**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.4.0, code Android 7**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
 
-`verify-debug-apk.py` reste disponible pour le format Debug. Le nouveau contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
+Les contrôles de livraison sont écrits en C# dans `dotnet/tools/Performance.ReleaseTools` (outil console `performance-release`, testé par `dotnet/tests/Performance.ReleaseTools.UnitTests`). `verify-debug-apk` reste disponible pour le format Debug. Le contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
 
 ```bash
-python3 dotnet/scripts/verify-release-apk.py \
+dotnet run --project dotnet/tools/Performance.ReleaseTools -- verify-release-apk \
   dotnet/src/Performance.App/bin/Release/net10.0-android/fr.padnom.performance-Signed.apk \
   --project dotnet/src/Performance.App/Performance.App.csproj \
   --build-tools "$ANDROID_HOME/build-tools/36.0.0"
-python3 dotnet/scripts/smoke-android.py \
+dotnet run --project dotnet/tools/Performance.ReleaseTools -- smoke-android \
   dotnet/src/Performance.App/bin/Release/net10.0-android/fr.padnom.performance-Signed.apk \
   --output /tmp/performance-android-smoke
 ```
@@ -90,11 +90,11 @@ Le job de vérification utilise un certificat de diagnostic jetable généré su
 
 La signature de mise à jour est un job séparé, exécuté après les vérifications uniquement pour un tag `android-v*` ou un lancement manuel avec `distribute=true`. Configurer dans l’environnement GitHub **android-release** les secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` et `ANDROID_KEY_PASSWORD`, provenant du **certificat déjà utilisé pour l’application installée**. Ne pas générer une nouvelle clé pour cette mise à jour. Les mots de passe restent dans l’environnement, le keystore temporaire est supprimé et aucune clé n’est incluse dans les artefacts. Sans ces quatre secrets, le job de distribution échoue explicitement ; la validation de diagnostic reste disponible.
 
-L’artefact `performance-release-update` n’est distribué qu’après vérification de signature, contenu, version et concordance avec l’empreinte publique du certificat actuel (`dotnet/scripts/android-signing-certificate.sha256`). Une clé différente provoque un échec avant diffusion. Ce fichier ne contient aucune clé privée. Le job signe le même paquet optimisé déjà testé ; il ne recompilera pas un paquet différent. Protéger l’environnement et les tags de livraison selon les droits souhaités dans GitHub. Aucune publication GitHub Release ou Google Play n’est effectuée.
+L’artefact `performance-release-update` n’est distribué qu’après vérification de signature, contenu, version et concordance avec l’empreinte publique du certificat actuel (`dotnet/tools/android-signing-certificate.sha256`). Une clé différente provoque un échec avant diffusion. Ce fichier ne contient aucune clé privée. Le job signe le même paquet optimisé déjà testé ; il ne recompilera pas un paquet différent. Protéger l’environnement et les tags de livraison selon les droits souhaités dans GitHub. Le job publie ensuite la GitHub Release lue par la mise à jour intégrée ; aucune publication Google Play n’est effectuée. En local, sans configuration de signature dans le projet, .NET signe avec le keystore de débogage du PC (`~/.local/share/Xamarin/Mono for Android/debug.keystore`, alias `androiddebugkey`, mots de passe `android`) : ce sont ces valeurs qu’il faut copier dans les secrets.
 
-Le dépôt peut rester privé : le workflow demande uniquement `contents: read`. Les artefacts de diagnostic/preuves sont conservés sept jours, celui de mise à jour quatorze jours. Seules les personnes ayant accès au dépôt peuvent télécharger les artefacts.
+Le dépôt doit être public : la mise à jour intégrée lit `releases/latest` sans authentification, et un dépôt privé lui répond 404. Le job de vérification demande uniquement `contents: read`. Les artefacts de diagnostic/preuves sont conservés sept jours, celui de mise à jour quatorze jours. Seules les personnes ayant accès au dépôt peuvent télécharger les artefacts.
 
-La version est déclarée dans le projet et n’est jamais réécrite automatiquement par une compilation. `verify-version.py` refuse toute régression et impose un code Android supérieur pour une distribution. En vérification ordinaire, une version inchangée est autorisée. Le job de distribution compare au précédent tag `android-v*` ; pour une livraison manuelle, `previous_release_ref` permet de désigner le dernier commit/tag effectivement distribué. Sans tag initial, la référence de début du dépôt correspond à la première version Android 1.0/code 1. Taguer chaque livraison distribuée pour maintenir cette référence ; ne pas réutiliser le code 2 pour la suivante.
+La version est déclarée dans le projet et n’est jamais réécrite automatiquement par une compilation. `verify-version` refuse toute régression et impose un code Android supérieur pour une distribution. En vérification ordinaire, une version inchangée est autorisée. Le job de distribution compare au précédent tag `android-v*` ; pour une livraison manuelle, `previous_release_ref` permet de désigner le dernier commit/tag effectivement distribué. Sans tag initial, la référence de début du dépôt correspond à la première version Android 1.0/code 1. Taguer chaque livraison distribuée pour maintenir cette référence ; ne pas réutiliser le code 2 pour la suivante.
 
 Le workflow doit être poussé pour s’exécuter sur GitHub. Les vérifications locales ne prouvent ni l’exécution CI ni la configuration des secrets GitHub.
 
@@ -160,3 +160,13 @@ Une séance de l’historique (séance libre comprise) ou une séance de program
 « Importer une séance » dans Programmes, ou l’ouverture d’un fichier `.json` reçu (WhatsApp, gestionnaire de fichiers), affiche un aperçu puis ajoute une copie dans le programme personnel « Mes séances », créé au besoin et limité à 100 séances. « Créer une séance » ouvre l’éditeur pour une seule séance enregistrée au même endroit. Un fichier reçu pendant une séance en cours attend la prochaine visite de Programmes.
 
 Sur téléphone, vérifier : envoi à soi-même sur WhatsApp du fichier et du texte ; ouverture du fichier reçu application fermée puis ouverte ; refus d’un JSON quelconque avec message ; démarrage et ajout à la semaine d’une séance de « Mes séances » ; mise à jour par-dessus 1.2.1 sans perte de données.
+
+## Mise à jour automatique et thème par salle — 1.4.0
+
+**Mise à jour.** Au démarrage puis au retour au premier plan (au plus toutes les 6 h), l’application interroge `api.github.com/repos/padnom/performance-workout/releases/latest`. Si la version publiée est plus récente que la version installée, un bandeau « Nouvelle version » propose « Mettre à jour » ou « Plus tard » ; Réglages › Mises à jour permet aussi une recherche manuelle. L’APK est téléchargé dans le cache, sa taille et son empreinte SHA-256 (champ `digest` de GitHub) sont vérifiées, puis l’installateur Android s’ouvre. Android exige toujours une confirmation : une installation totalement silencieuse n’est pas possible hors Play Store. Au premier usage, Android demande d’autoriser « Performance » à installer des applications ; l’installation reprend au retour dans l’application. Hors connexion, la vérification échoue silencieusement. Permissions ajoutées : `INTERNET`, `REQUEST_INSTALL_PACKAGES`.
+
+**Publier une version.** Augmenter `ApplicationDisplayVersion` et `ApplicationVersion`, puis pousser le tag `android-v<version>` (par exemple `android-v1.4.0`). Le job `distribution` signe l’APK avec le certificat existant et crée la GitHub Release `performance-<version>.apk` lue par l’application. Le tag doit correspondre exactement à la version du projet. Variante sans tag : lancer manuellement le workflow « Android Release APK » avec `distribute` coché ; il crée alors le tag `android-v<version>` et la Release sur le commit choisi. Seul un APK signé avec le même certificat peut s’installer par-dessus l’existant ; l’APK de diagnostic ne convient pas.
+
+**Thème par salle.** La couleur d’accent suit la salle de la séance en cours, sinon celle choisie dans Réglages : rouge et noir pour On Air, orange pour Basic-Fit, vert d’origine pour « Toutes ». Le logo et le nom de la salle s’affichent en haut à droite (`wwwroot/img/gyms/` : logo On Air, monogramme « BF » pour Basic-Fit). La salle s’affiche « On Air » ; la valeur enregistrée reste `One Air` pour garder la compatibilité des données et sauvegardes. Couleurs relevées sur les logos : On Air `#AE1D22` (accent éclairci `#D8232A` pour rester lisible sur fond noir), Basic-Fit `#F37121`. Les couleurs sont des variables CSS dans `wwwroot/css/app.css` (`.app-shell[data-gym=…]`) ; ajouter une salle = un bloc de variables et une entrée dans `GymTheme.For`.
+
+Sur téléphone, vérifier : bandeau après publication d’une release, refus puis octroi de l’autorisation d’installation, installation par-dessus 1.3.0 sans perte de données, absence de bandeau hors connexion ; passage One Air ↔ Basic-Fit dans Réglages et dans la séance en cours.

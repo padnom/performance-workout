@@ -51,17 +51,23 @@ jobs:
           dotnet-version: "10.0.x"
       - name: Install workload
         run: dotnet workload install maui-android
-      - name: Verify packaging scripts and version
+      - name: Publish release tools
+        # Self-contained so the emulator step still runs it after the .NET SDK is removed to free disk space.
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet publish dotnet/tools/Performance.ReleaseTools --configuration Release --runtime linux-x64 --self-contained -p:PublishSingleFile=true --output "$RUNNER_TEMP/release-tools"
+          echo "RELEASE_TOOLS=$RUNNER_TEMP/release-tools/performance-release" >> "$GITHUB_ENV"
+      - name: Verify version
         shell: bash
         env:
           PR_BASE_REF: ${{ github.event.pull_request.base.sha }}
           PUSH_BEFORE_REF: ${{ github.event.before }}
         run: |
           set -euo pipefail
-          python3 -m unittest discover -s dotnet/scripts/tests -v
           baseline="${PR_BASE_REF:-${PUSH_BEFORE_REF:-HEAD}}"
           if [[ "$baseline" =~ ^0+$ ]]; then baseline="HEAD"; fi
-          python3 dotnet/scripts/verify-version.py --baseline-ref "$baseline"
+          "$RELEASE_TOOLS" verify-version --baseline-ref "$baseline"
       - name: Restore and test Release
         shell: bash
         run: |
@@ -81,8 +87,18 @@ jobs:
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/android-apk"
           apk="dotnet/src/Performance.App/bin/Release/$ANDROID_FRAMEWORK/fr.padnom.performance-Signed.apk"
-          python3 dotnet/scripts/verify-release-apk.py "$apk" --project "$ANDROID_PROJECT" --build-tools "$ANDROID_HOME/build-tools/36.0.0"
+          "$RELEASE_TOOLS" verify-release-apk "$apk" --project "$ANDROID_PROJECT" --build-tools "$ANDROID_HOME/build-tools/36.0.0"
           cp "$apk" "$RUNNER_TEMP/android-apk/performance-release-diagnostic.apk"
+      - name: Free disk space for the emulator
+        # The emulator needs ~7 GB for its data partition; MAUI workloads, NuGet and AOT outputs leave ~2.7 GB.
+        shell: bash
+        run: |
+          set -euo pipefail
+          df -h /
+          rm -rf dotnet/src/*/bin dotnet/src/*/obj dotnet/tests/*/bin dotnet/tests/*/obj ~/.nuget/packages
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc /usr/local/.ghcup /usr/share/swift \
+            /usr/local/share/boost /opt/hostedtoolcache/CodeQL /usr/local/lib/node_modules /usr/local/share/powershell
+          df -h /
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -95,8 +111,11 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_2
+          disk-size: 4096M
+          cores: 4
+          ram-size: 4096M
           disable-animations: true
-          script: python3 dotnet/scripts/smoke-android.py "$RUNNER_TEMP/android-apk/performance-release-diagnostic.apk" --output "$RUNNER_TEMP/android-smoke"
+          script: $RELEASE_TOOLS smoke-android $RUNNER_TEMP/android-apk/performance-release-diagnostic.apk --output $RUNNER_TEMP/android-smoke
       - name: Upload diagnostic Release APK
         uses: actions/upload-artifact@v4
         with:
@@ -120,6 +139,8 @@ jobs:
     environment: android-release
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -128,6 +149,16 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Publish release tools
+        # Self-contained so the emulator step still runs it after the .NET SDK is removed to free disk space.
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet publish dotnet/tools/Performance.ReleaseTools --configuration Release --runtime linux-x64 --self-contained -p:PublishSingleFile=true --output "$RUNNER_TEMP/release-tools"
+          echo "RELEASE_TOOLS=$RUNNER_TEMP/release-tools/performance-release" >> "$GITHUB_ENV"
       - name: Verify release version increases
         shell: bash
         env:
@@ -139,7 +170,7 @@ jobs:
             baseline="$(git describe --tags --match 'android-v*' --abbrev=0 HEAD^ 2>/dev/null || true)"
           fi
           if [[ -z "$baseline" ]]; then baseline="$(git rev-list --max-parents=0 HEAD | head -n 1)"; fi
-          python3 dotnet/scripts/verify-version.py --baseline-ref "$baseline" --require-increase
+          "$RELEASE_TOOLS" verify-version --baseline-ref "$baseline" --require-increase
       - uses: actions/download-artifact@v4
         with:
           name: performance-release-diagnostic-not-an-update
@@ -155,22 +186,21 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import base64, os
-          from pathlib import Path
-          required = ('ANDROID_KEYSTORE_BASE64', 'ANDROID_KEYSTORE_PASSWORD', 'ANDROID_KEY_ALIAS', 'ANDROID_KEY_PASSWORD')
-          if any(not os.environ.get(name) for name in required):
-              raise SystemExit('Distribution blocked: configure all four existing-certificate secrets in android-release.')
-          key = Path(os.environ['RUNNER_TEMP']) / 'android-signing.keystore'
-          key.write_bytes(base64.b64decode(os.environ['ANDROID_KEYSTORE_BASE64'], validate=True))
-          key.chmod(0o600)
-          PY
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "Distribution blocked: configure all four existing-certificate secrets in android-release." >&2
+              exit 1
+            fi
+          done
+          umask 077
+          # Line breaks or spaces pasted into the secret are ignored; any other non-base64 character fails here.
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '[:space:]' | base64 --decode > "$RUNNER_TEMP/android-signing.keystore"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" sign \
             --ks "$RUNNER_TEMP/android-signing.keystore" --ks-key-alias "$ANDROID_KEY_ALIAS" \
             --ks-pass env:ANDROID_KEYSTORE_PASSWORD --key-pass env:ANDROID_KEY_PASSWORD \
             --out "$RUNNER_TEMP/android-apk/performance-release-update.apk" \
             "$RUNNER_TEMP/android-apk/performance-release-diagnostic.apk"
-          python3 dotnet/scripts/verify-release-apk.py "$RUNNER_TEMP/android-apk/performance-release-update.apk" --project "$ANDROID_PROJECT" --build-tools "$ANDROID_HOME/build-tools/36.0.0" --expected-certificate dotnet/scripts/android-signing-certificate.sha256
+          "$RELEASE_TOOLS" verify-release-apk "$RUNNER_TEMP/android-apk/performance-release-update.apk" --project "$ANDROID_PROJECT" --build-tools "$ANDROID_HOME/build-tools/36.0.0" --expected-certificate dotnet/tools/android-signing-certificate.sha256
       - name: Remove transient key
         if: always()
         run: rm -f "$RUNNER_TEMP/android-signing.keystore"
@@ -181,3 +211,28 @@ jobs:
           path: ${{ runner.temp }}/android-apk/performance-release-update.apk
           if-no-files-found: error
           retention-days: 14
+      - name: Prepare in-app update asset
+        if: github.event_name == 'workflow_dispatch' && inputs.distribute || github.event_name == 'push' && startsWith(github.ref, 'refs/tags/android-v')
+        id: release_asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$("$RELEASE_TOOLS" project-version)"
+          echo "tag=android-v${version}" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF_TYPE" == "tag" && "${GITHUB_REF_NAME}" != "android-v${version}" ]]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match project version ${version}." >&2
+            exit 1
+          fi
+          cp "$RUNNER_TEMP/android-apk/performance-release-update.apk" "$RUNNER_TEMP/android-apk/performance-${version}.apk"
+          echo "path=$RUNNER_TEMP/android-apk/performance-${version}.apk" >> "$GITHUB_OUTPUT"
+      - name: Publish GitHub release (read by the in-app updater)
+        if: github.event_name == 'workflow_dispatch' && inputs.distribute || github.event_name == 'push' && startsWith(github.ref, 'refs/tags/android-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_asset.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: Performance ${{ steps.release_asset.outputs.tag }}
+          files: ${{ steps.release_asset.outputs.path }}
+          generate_release_notes: true
+          make_latest: "true"
+          fail_on_unmatched_files: true

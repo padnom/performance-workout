@@ -2,7 +2,7 @@
 @using Performance.Application
 @using Microsoft.AspNetCore.Components.Web
 
-<section class="panel progress-chart" aria-label="Progression de @ExerciseName dans la salle @Gym">
+<section class="panel progress-chart" aria-label="Progression de @ExerciseName dans la salle @WorkoutUi.GymName(Gym)">
     <div class="chart-head"><div><p class="eyebrow">CHARGE MAXIMALE</p><h3 class="chart-latest">@WorkoutUi.Decimal(Latest) <small>kg</small></h3></div><span class="count">@_points.Length séance(s)</span></div>
     @if (_points.Length < 2)
     {
@@ -11,7 +11,7 @@
     else
     {
         <svg class="progress-spark" viewBox="0 0 360 150" role="img" aria-labelledby="@(_id + "-title") @(_id + "-description")">
-            <title id="@(_id + "-title")">Charge maximale de @ExerciseName · @Gym</title>
+            <title id="@(_id + "-title")">Charge maximale de @ExerciseName · @WorkoutUi.GymName(Gym)</title>
             <desc id="@(_id + "-description")">De @WorkoutUi.Decimal(_points[0].Weight) kg à @WorkoutUi.Decimal(Latest) kg sur @_points.Length séances. Les valeurs datées sont disponibles sous le graphique.</desc>
             <line x1="32" y1="24" x2="346" y2="24" class="chart-guide" />
             <line x1="32" y1="118" x2="346" y2="118" class="chart-guide" />
@@ -37,7 +37,7 @@
     @if (_points.Length > 0)
     {
         <details class="chart-values"><summary>Voir les valeurs datées</summary>
-            <table><caption class="sr-only">Charges maximales par séance pour @ExerciseName dans @Gym</caption><thead><tr><th>Date</th><th>Charge maximale</th></tr></thead>
+            <table><caption class="sr-only">Charges maximales par séance pour @ExerciseName dans @WorkoutUi.GymName(Gym)</caption><thead><tr><th>Date</th><th>Charge maximale</th></tr></thead>
                 <tbody>@foreach (var point in _points) { <tr><td>@Date(point.Date)</td><td>@WorkoutUi.Decimal(point.Weight) kg</td></tr> }</tbody>
             </table>
         </details>

@@ -14,7 +14,7 @@
 @if (!_loading)
 {
     <input class="search-input" aria-label="Rechercher par nom, muscle ou tag" placeholder="Nom, muscle, tag…" @bind="_search" @bind:event="oninput" />
-    <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+    <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
     <p class="muted results-count">@FilteredExercises.Count() exercice(s)</p>
     <div class="card-list">
     @foreach (var exercise in FilteredExercises)
@@ -23,7 +23,7 @@
             <h2>@exercise.Name</h2>
             <p class="muted">@exercise.MuscleGroup · @exercise.Sets séries · @exercise.RepTarget · repos @exercise.Rest</p>
             <div class="tag-list">
-                @foreach (var gym in exercise.Variants.Select(variant => variant.Gym).Distinct()) { <b>@gym</b> }
+                @foreach (var gym in exercise.Variants.Select(variant => variant.Gym).Distinct()) { <b>@WorkoutUi.GymName(gym)</b> }
                 @foreach (var tag in exercise.Tags) { <span>#@tag</span> }
                 @if (exercise.IsCustom) { <span>Personnel</span> }
             </div>
@@ -51,7 +51,7 @@
                 <legend>Salles disponibles</legend>
                 @foreach (var gym in WorkoutUi.Gyms)
                 {
-                    <label><input type="checkbox" checked="@_selectedGyms.Contains(gym)" @onchange="() => ToggleGym(gym)" />@gym</label>
+                    <label><input type="checkbox" checked="@_selectedGyms.Contains(gym)" @onchange="() => ToggleGym(gym)" />@WorkoutUi.GymName(gym)</label>
                 }
             </fieldset>
             @if (SimilarExercises.Any())

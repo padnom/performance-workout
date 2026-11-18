@@ -16,7 +16,7 @@
                 <label class="field">Nom du programme<input class="program-name" maxlength="160" @bind="draft.Name" /></label>
                 <label class="field">Description (facultative)<textarea class="program-description" maxlength="2000" @bind="draft.Description"></textarea></label>
             }
-            <label class="field">Salle du programme<select class="program-gym" @bind="draft.Gym">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+            <label class="field">Salle du programme<select class="program-gym" @bind="draft.Gym">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
             @foreach (var session in draft.Sessions)
             {
                 var sessionIndex = draft.Sessions.IndexOf(session);

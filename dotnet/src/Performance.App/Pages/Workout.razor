@@ -29,7 +29,7 @@
         <div class="page-heading workout-page-heading"><div><p class="eyebrow">SÉANCE EN COURS</p><h1>@session.Name</h1></div>
             <button class="secondary-button" aria-label="Consulter l’historique sans quitter la séance" @onclick="() => _historyOpen = true">◷ Historique</button>
         </div>
-        <label class="field gym-field">Salle de cette séance<select value="@Active.DefaultGym" disabled="@_busy" @onchange="ChangeGymAsync">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+        <label class="field gym-field">Salle de cette séance<select value="@Active.DefaultGym" disabled="@_busy" @onchange="ChangeGymAsync">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
         @foreach (var plan in session.Exercises.OrderBy(exercise => exercise.Order))
         {
             var exercise = State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId);

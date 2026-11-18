@@ -22,7 +22,7 @@
 {
     <div class="modal-backdrop"><section class="panel confirm-dialog program-import-preview" role="dialog" aria-modal="true" aria-labelledby="program-import-title">
         <h2 id="program-import-title">Ajouter ces programmes ?</h2><p>@package.Programs.Count programme(s) · @package.Programs.Sum(program => program.Sessions.Count) séance(s) · @package.Exercises.Count exercice(s)</p>
-        <ul>@foreach (var program in package.Programs) { <li>@program.Name @program.Gym</li> }</ul>
+        <ul>@foreach (var program in package.Programs) { <li>@program.Name @WorkoutUi.GymName(program.Gym)</li> }</ul>
         <p class="muted">Ajout de copies. Ta semaine, ta séance en cours et ton historique restent conservés.</p>
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
         <div class="settings-actions"><button class="primary-button confirm-program-import" disabled="@_busy" @onclick="ConfirmAsync">Ajouter les copies</button><button class="secondary-button cancel-program-import" disabled="@_busy" @onclick="() => _preview = null">Annuler</button></div>

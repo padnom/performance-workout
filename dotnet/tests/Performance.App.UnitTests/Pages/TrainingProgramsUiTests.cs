@@ -44,7 +44,7 @@ public sealed class TrainingProgramsUiTests : IDisposable
 
         // Assert
         page.FindAll(".gym-session").Count.ShouldBe(4);
-        page.Find(".gym-program h2").TextContent.ShouldBe("Ton programme — One Air");
+        page.Find(".gym-program h2").TextContent.ShouldBe("Ton programme — On Air");
         page.Find(".other-programs").HasAttribute("open").ShouldBeFalse();
         page.FindAll(".category-filter").Count.ShouldBe(6);
 

@@ -46,8 +46,10 @@ public sealed class WorkoutParityTests : IDisposable
         page.WaitForAssertion(() => page.Find(".rest-banner strong").TextContent.ShouldContain("2:00"));
         page.Find(".workout-toolbar [aria-label='Arrêter le repos']").Click();
         page.WaitForAssertion(() => page.FindAll(".rest-banner").ShouldBeEmpty());
+        // Stopping the rest saves asynchronously; the finish button stays disabled until then.
+        page.WaitForAssertion(() => page.Find(".workout-toolbar .finish-workout").HasAttribute("disabled").ShouldBeFalse());
         page.Find(".workout-toolbar .finish-workout").Click();
-        page.Find("[role=dialog]").TextContent.ShouldContain("Terminer la séance ?");
+        page.WaitForAssertion(() => page.Find("[role=dialog]").TextContent.ShouldContain("Terminer la séance ?"));
     }
 
     [Fact]
@@ -134,7 +136,7 @@ public sealed class WorkoutParityTests : IDisposable
 
         // Assert
         page.Find(".workout-history-dialog").TextContent.ShouldContain("42,5");
-        page.Find(".workout-history-dialog").TextContent.ShouldContain("One Air");
+        page.Find(".workout-history-dialog").TextContent.ShouldContain("On Air");
         page.Find("button[aria-label='Fermer l’historique']").Click();
         page.FindAll(".workout-history-dialog").ShouldBeEmpty();
         _state.GetSets(_exercise.Id)[0].Weight.ShouldBe("50");

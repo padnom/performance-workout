@@ -12,7 +12,7 @@
     <div class="modal-backdrop"><section class="panel confirm-dialog @(_preview ? "start-preview" : "")" role="dialog" aria-modal="true" aria-labelledby="start-title">
         <h2 id="start-title">@(_preview ? session.Name : "Démarrer la séance ?")</h2>
         <p class="muted">@(_preview ? session.Focus : $"{session.Name}. Le chronomètre démarrera après confirmation.")</p>
-        <label class="field gym-field">Salle de cette séance<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+        <label class="field gym-field">Salle de cette séance<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
         @if (_preview)
         {
             <ol>@foreach (var plan in selectedSession.Exercises)

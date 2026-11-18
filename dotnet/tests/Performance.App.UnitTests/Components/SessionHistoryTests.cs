@@ -50,7 +50,7 @@ public sealed class SessionHistoryTests : IDisposable
         component.Markup.ShouldNotContain("kg de volume");
         component.FindAll(".history-exercise").Count.ShouldBe(2);
         component.FindAll(".history-exercise h3").ShouldAllBe(heading => heading.TextContent.Contains(exercise.Name));
-        component.FindAll(".history-exercise small").Select(label => label.TextContent.Trim()).ShouldBe(["· One Air", "· Basic-Fit"]);
+        component.FindAll(".history-exercise small").Select(label => label.TextContent.Trim()).ShouldBe(["· On Air", "· Basic-Fit"]);
         component.FindAll(".history-set").Count.ShouldBe(2);
         component.FindAll(".history-set")[0].QuerySelectorAll("span").Select(cell => cell.TextContent).ShouldBe(["42,5", "8"]);
         component.Markup.ShouldNotContain("RIR");
@@ -73,7 +73,7 @@ public sealed class SessionHistoryTests : IDisposable
 
         component.Find("h2").TextContent.ShouldBe("Séance");
         component.Find(".history-exercise h3").TextContent.ShouldContain("Exercice inconnu");
-        component.Find(".history-exercise small").TextContent.ShouldContain("One Air");
+        component.Find(".history-exercise small").TextContent.ShouldContain("On Air");
         component.Find(".history-set").QuerySelectorAll("span").Select(cell => cell.TextContent).ShouldBe(["—", "8"]);
     }
 

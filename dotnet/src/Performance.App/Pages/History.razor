@@ -11,7 +11,7 @@
 @if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
 @if (!_loading)
 {
-    <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+    <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
     <SessionHistory Gym="@_gym" Replay="ReplaySession" />
     <SessionStart @ref="_starter" />
 }

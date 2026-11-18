@@ -14,7 +14,7 @@
 @if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
 @if (!_loading)
 {
-    <label class="field gym-field">Filtrer le bilan par salle<select @bind="_gym" @bind:after="Refresh"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
+    <label class="field gym-field">Filtrer le bilan par salle<select @bind="_gym" @bind:after="Refresh"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
     <div class="progress-summary">
         <section class="panel"><strong>@_summary.Sessions</strong><span>Séances</span></section>
         <section class="panel"><strong>@_summary.EnteredSets</strong><span>Séries saisies</span></section>
@@ -46,10 +46,10 @@
     <div class="section-heading"><div><p class="eyebrow">DÉTAIL</p><h2>Progression par exercice</h2></div></div>
     <div class="progress-selectors">
         <label class="field progress-exercise">Exercice<select @bind="_selected" @bind:after="RefreshCurve">@foreach (var exercise in State.AllExercises) { <option value="@exercise.Id">@exercise.Name</option> }</select></label>
-        <label class="field exercise-progress-gym">Salle de la courbe<select @bind="_exerciseGym" @bind:after="RefreshCurve">@foreach (var gym in CurveGyms) { <option>@gym</option> }</select></label>
+        <label class="field exercise-progress-gym">Salle de la courbe<select @bind="_exerciseGym" @bind:after="RefreshCurve">@foreach (var gym in CurveGyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
     </div>
     <ProgressChart History="_history" ExerciseName="@ExerciseName(_selected)" Gym="@_exerciseGym" />
-    <section class="panel personal-record"><span aria-hidden="true">🏆</span><div><p class="eyebrow">RECORD PERSONNEL · @_exerciseGym</p><h3>@ExerciseName(_selected)</h3><strong>@WorkoutUi.Decimal(_history.SelectMany(entry => entry.Performance.Sets).Select(set => WorkoutUi.Number(set.Weight)).DefaultIfEmpty(0).Max()) kg</strong></div></section>
+    <section class="panel personal-record"><span aria-hidden="true">🏆</span><div><p class="eyebrow">RECORD PERSONNEL · @WorkoutUi.GymName(_exerciseGym)</p><h3>@ExerciseName(_selected)</h3><strong>@WorkoutUi.Decimal(_history.SelectMany(entry => entry.Performance.Sets).Select(set => WorkoutUi.Number(set.Weight)).DefaultIfEmpty(0).Max()) kg</strong></div></section>
     <details class="progress-all-records"><summary>Tous les records par exercice et salle</summary>
         <input class="search-input" aria-label="Rechercher un record par exercice" placeholder="Rechercher un exercice…" @bind="_search" @bind:event="oninput" />
         <div class="card-list records-list">
@@ -58,7 +58,7 @@
                 var rows = group.SelectMany(performance => performance.Sets).Where(set => WorkoutUi.Number(set.Reps) > 0).ToArray();
                 @if (rows.Length > 0)
                 {
-                    <section class="panel record-card"><h3>@group.Key.Name</h3><p class="eyebrow">@group.Key.Gym</p><div class="record-metrics"><div><strong>@WorkoutUi.Decimal(rows.Max(set => WorkoutUi.Number(set.Weight))) kg</strong><span>Meilleure charge</span></div><div><strong>@rows.Length</strong><span>Séries</span></div></div></section>
+                    <section class="panel record-card"><h3>@group.Key.Name</h3><p class="eyebrow">@WorkoutUi.GymName(group.Key.Gym)</p><div class="record-metrics"><div><strong>@WorkoutUi.Decimal(rows.Max(set => WorkoutUi.Number(set.Weight))) kg</strong><span>Meilleure charge</span></div><div><strong>@rows.Length</strong><span>Séries</span></div></div></section>
                 }
             }
         </div>

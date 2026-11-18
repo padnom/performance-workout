@@ -25,7 +25,7 @@
         <label class="field">Autres tags (facultatif)<input aria-label="Tags séparés par des virgules" @bind="_tags" placeholder="prise neutre, convergente…" /></label>
         <fieldset class="gym-checkboxes"><legend>Salles disponibles</legend>
             @foreach (var gym in WorkoutUi.Gyms)
-            { <label><input type="checkbox" checked="@_gyms.Contains(gym)" @onchange="() => ToggleGym(gym)" />@gym</label> }
+            { <label><input type="checkbox" checked="@_gyms.Contains(gym)" @onchange="() => ToggleGym(gym)" />@WorkoutUi.GymName(gym)</label> }
         </fieldset>
         @if (Original is null && SimilarExercises.Any())
         {

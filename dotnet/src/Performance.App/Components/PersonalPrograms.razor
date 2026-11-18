@@ -12,7 +12,7 @@
         @foreach (var program in Programs)
         {
             <article class="panel personal-program" data-personal-program="@program.Id" @key="program.Id">
-                <div class="card-heading"><div><h3>@program.Name</h3><p class="muted">@program.Gym · @program.Sessions.Count séance(s)</p></div><ProgramFavoriteButton Snapshot="State.Data" ProgramId="@program.Id" ProgramName="@program.Name" Disabled="Disabled" Changed="Changed" /></div>
+                <div class="card-heading"><div><h3>@program.Name</h3><p class="muted">@WorkoutUi.GymName(program.Gym) · @program.Sessions.Count séance(s)</p></div><ProgramFavoriteButton Snapshot="State.Data" ProgramId="@program.Id" ProgramName="@program.Name" Disabled="Disabled" Changed="Changed" /></div>
                 @if (!string.IsNullOrWhiteSpace(program.Description)) { <p class="muted">@program.Description</p> }
                 <div class="session-list">
                     @foreach (var session in program.Sessions)
