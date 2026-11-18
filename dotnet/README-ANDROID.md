@@ -66,7 +66,7 @@ dotnet build dotnet/src/Performance.App/Performance.App.csproj \
   -p:PublishTrimmed=true
 ```
 
-Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.4.0, code Android 7**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
+Le fichier signé se trouve sous `dotnet/src/Performance.App/bin/Release/net10.0-android/`. La version cible est **1.5.0, code Android 8**. Le certificat local actuel est conservé : utiliser le même environnement de signature pour installer par-dessus l’application existante et conserver son stockage. Ne pas désinstaller pour effectuer cette mise à jour.
 
 Les contrôles de livraison sont écrits en C# dans `dotnet/tools/Performance.ReleaseTools` (outil console `performance-release`, testé par `dotnet/tests/Performance.ReleaseTools.UnitTests`). `verify-debug-apk` reste disponible pour le format Debug. Le contrôle Release vérifie les bibliothèques AOT et le stockage des assemblies pour arm64-v8a/x86_64, l’interface embarquée, l’intégrité du ZIP, la signature Android, l’absence du drapeau Debug et la concordance des versions :
 
@@ -156,6 +156,8 @@ Sur téléphone, vérifier la création de deux séances, l’ordre des exercice
 ## Partage de séances — 1.3.0
 
 Une séance de l’historique (séance libre comprise) ou une séance de programme ouverte avant démarrage peut être exportée en JSON `performance-session`, version 1, ou partagée en texte lisible. Le fichier contient uniquement la structure : exercices, ordre, séries, répétitions cibles, repos et salle. Il exclut charges, répétitions réalisées, RIR et historique. Depuis l’historique, le nombre de séries est celui réellement effectué.
+
+« Refaire cette séance » (Historique) relance une séance terminée avec les mêmes exercices, dans le même ordre et avec le même nombre de séries, via la fenêtre de démarrage habituelle (salle présélectionnée sur celle utilisée). Les charges sont pré-remplies avec la dernière performance. Les séances terminées conservent désormais leur nom dans l’historique.
 
 « Importer une séance » dans Programmes, ou l’ouverture d’un fichier `.json` reçu (WhatsApp, gestionnaire de fichiers), affiche un aperçu puis ajoute une copie dans le programme personnel « Mes séances », créé au besoin et limité à 100 séances. « Créer une séance » ouvre l’éditeur pour une seule séance enregistrée au même endroit. Un fichier reçu pendant une séance en cours attend la prochaine visite de Programmes.
 
