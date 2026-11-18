@@ -10,6 +10,9 @@
     <AssemblyName>performance-release</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/Performance.Application/Performance.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <InternalsVisibleTo Include="Performance.ReleaseTools.UnitTests" />
   </ItemGroup>
 </Project>

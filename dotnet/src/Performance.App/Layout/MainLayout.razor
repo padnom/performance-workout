@@ -11,6 +11,7 @@
         @if (!IsWorkout && _updates is { ShowBanner: true }) { <UpdateBanner Updates="_updates" /> }
         @Body
     </main>
+    @if (!IsWorkout && _releaseNotes.Count > 0) { <ReleaseNotesDialog Notes="_releaseNotes" Busy="_closingNotes" Closed="CloseReleaseNotesAsync" /> }
     @if (_plusOpen)
     {
         <div class="plus-menu-backdrop" @onclick="ClosePlus"></div>
@@ -33,6 +34,10 @@
     private IncomingShareService? _incomingShare;
     private WorkoutStateService? _state;
     private AppUpdateService? _updates;
+    private IApkInstaller? _installer;
+    private IReadOnlyList<ReleaseNote> _releaseNotes = [];
+    private bool _releaseNotesChecked;
+    private bool _closingNotes;
     private string? Gym => _state is null ? null : GymTheme.CurrentGym(_state);
     private string GymLabel => Gym switch { null => "LOCAL", "Toutes" => "TOUTES SALLES", var gym => WorkoutUi.GymName(gym).ToUpperInvariant() };
     protected override void OnInitialized()
@@ -40,6 +45,8 @@
         Navigation.LocationChanged += LocationChanged;
         _state = Services.GetService(typeof(WorkoutStateService)) as WorkoutStateService;
         if (_state is not null) _state.DataChanged += Refresh;
+        _installer = Services.GetService(typeof(IApkInstaller)) as IApkInstaller;
+        CheckReleaseNotes();
         _updates = Services.GetService(typeof(AppUpdateService)) as AppUpdateService;
         if (_updates is not null) _updates.Changed += RefreshUpdates;
         _incomingShare = Services.GetService(typeof(IncomingShareService)) as IncomingShareService;
@@ -54,7 +61,20 @@
         _navigation.WorkoutRequested += OpenWorkout;
         if (_navigation.ConsumeWorkoutRequest()) OpenWorkout();
     }
-    private void Refresh(PerformanceData data) => _ = InvokeAsync(StateHasChanged);
+    private void Refresh(PerformanceData data) => _ = InvokeAsync(() => { CheckReleaseNotes(); StateHasChanged(); });
+    private void CheckReleaseNotes()
+    {
+        if (_releaseNotesChecked || _state is not { IsInitialized: true } || _installer is null) return;
+        _releaseNotesChecked = true;
+        _releaseNotes = ReleaseNotes.Unseen(_state.ReleaseNotesSeenVersion, _installer.InstalledVersion);
+    }
+    private async Task CloseReleaseNotesAsync()
+    {
+        if (_closingNotes || _state is null || _installer is null) return;
+        _closingNotes = true;
+        try { await _state.MarkReleaseNotesSeenAsync(_installer.InstalledVersion); }
+        finally { _closingNotes = false; _releaseNotes = []; }
+    }
     private void RefreshUpdates() => _ = InvokeAsync(StateHasChanged);
     private void OpenWorkout() => _ = InvokeAsync(() => Navigation.NavigateTo("/seance"));
     private void OpenPrograms() => _ = InvokeAsync(() =>
@@ -65,6 +85,11 @@
     private void LocationChanged(object? sender, LocationChangedEventArgs args) => _ = InvokeAsync(() => { ClosePlus(); StateHasChanged(); });
     private async Task<bool> HandleBackAsync()
     {
+        if (!_plusOpen && _releaseNotes.Count > 0 && !IsWorkout)
+        {
+            await InvokeAsync(CloseReleaseNotesAsync);
+            return true;
+        }
         if (!_plusOpen) return false;
         await InvokeAsync(() => { ClosePlus(); StateHasChanged(); });
         return true;

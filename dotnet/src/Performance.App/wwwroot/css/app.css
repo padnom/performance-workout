@@ -384,6 +384,8 @@ details p { margin: 8px 0; }
 .update-banner { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: space-between; margin: -12px 0 20px; padding: 12px 14px; border-radius: 14px; background: var(--notice-bg); border: 1px solid var(--notice-border); color: var(--notice-text); font-size: 12px; }
 .update-banner > div:first-child { display: grid; gap: 3px; min-width: 0; flex: 1 1 180px; }
 .update-banner strong { color: var(--accent); font-size: 13px; }
+.release-notes ul { margin: 0 0 16px; padding-left: 20px; display: grid; gap: 8px; line-height: 1.45; }
+.release-notes h3 { margin: 4px 0 8px; font-size: 14px; color: var(--accent); }
 .update-actions { display: flex; gap: 8px; }
 .update-actions button { padding: 9px 12px; }
 .update-progress { display: block; height: 5px; border-radius: 5px; background: var(--line); overflow: hidden; margin-top: 4px; }

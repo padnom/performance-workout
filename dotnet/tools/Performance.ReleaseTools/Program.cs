@@ -8,6 +8,7 @@ const string Usage = """
       verify-debug-apk <apk>
       verify-version [--repo <dir>] [--baseline-ref <ref>] [--require-increase]
       project-version [--project <csproj>]
+      release-notes [--project <csproj>] [--output <file>]
       smoke-android <apk> --output <dir>
     """;
 
@@ -51,6 +52,14 @@ try
         case "project-version":
             Console.WriteLine(ReleaseChecks.ParseProjectVersion(File.ReadAllText(options.Value("--project") ?? ReleaseChecks.Project)).Display);
             break;
+        case "release-notes":
+        {
+            var version = ReleaseChecks.ParseProjectVersion(File.ReadAllText(options.Value("--project") ?? ReleaseChecks.Project)).Display;
+            var markdown = ReleaseNotesCommand.Markdown(version);
+            if (options.Value("--output") is { } output) File.WriteAllText(output, markdown);
+            else Console.Write(markdown);
+            break;
+        }
         case "smoke-android":
         {
             var smoke = new AndroidSmoke(runner, options.Required("--output"));

@@ -143,6 +143,13 @@ public sealed partial class WorkoutStateService(
         MutateAsync(() => new(Data with { Settings = new Dictionary<string, string>(Data.Settings, StringComparer.Ordinal)
             { [RestNotificationSetting] = enabled.ToString(CultureInfo.InvariantCulture) } }), cancellationToken);
 
+    public bool IsInitialized => _initialized;
+    public string? ReleaseNotesSeenVersion => Data.Settings.GetValueOrDefault(ReleaseNotes.SeenSetting);
+
+    public Task<WorkoutResult> MarkReleaseNotesSeenAsync(string version, CancellationToken cancellationToken = default) =>
+        MutateAsync(() => new(Data with { Settings = new Dictionary<string, string>(Data.Settings, StringComparer.Ordinal)
+            { [ReleaseNotes.SeenSetting] = version } }), cancellationToken);
+
     public Task<WorkoutResult> FinishAsync(CancellationToken cancellationToken = default) => MutateAsync(Finish, cancellationToken);
 
     public Task<WorkoutResult> AddExerciseAsync(string exerciseId, CancellationToken cancellationToken = default) =>
