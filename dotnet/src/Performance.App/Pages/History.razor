@@ -12,13 +12,16 @@
 @if (!_loading)
 {
     <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option>@gym</option> }</select></label>
-    <SessionHistory Gym="@_gym" />
+    <SessionHistory Gym="@_gym" Replay="ReplaySession" />
+    <SessionStart @ref="_starter" />
 }
 
 @code {
     private bool _loading = true;
     private string _message = "";
     private string _gym = "";
+    private SessionStart? _starter;
+    private void ReplaySession(WorkoutSession session) => _starter?.Select(session, preferPlanGym: true);
     protected override async Task OnInitializedAsync()
     {
         try { await State.InitializeAsync(); }

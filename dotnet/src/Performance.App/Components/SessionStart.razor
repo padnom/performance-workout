@@ -46,13 +46,13 @@
         if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation)
             _backRegistration = navigation.RegisterBackHandler(HandleBackAsync, 10);
     }
-    public void Select(WorkoutSession session, bool confirmOnly = false)
+    public void Select(WorkoutSession session, bool confirmOnly = false, bool preferPlanGym = false)
     {
         if (State.Data.ActiveWorkout is not null) return;
         _pending = session;
         var programGym = State.Programs.FirstOrDefault(program => (program.Gym is "One Air" or "Basic-Fit" or "Basic Fit")
             && program.Sessions.Any(candidate => candidate.Id == session.Id))?.Gym;
-        var selectedGym = programGym ?? SessionsProgramGym(session) ?? State.CurrentGym;
+        var selectedGym = programGym ?? (preferPlanGym ? PlanGym(session) : SessionsProgramGym(session)) ?? State.CurrentGym;
         _gym = selectedGym.Trim() == "Basic Fit" ? "Basic-Fit" : selectedGym;
         _preview = !confirmOnly; _message = "";
         StateHasChanged();

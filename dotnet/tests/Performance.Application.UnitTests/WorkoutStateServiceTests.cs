@@ -92,6 +92,7 @@ public sealed class WorkoutStateServiceTests
         var log = repository.Stored.History.ShouldHaveSingleItem();
         log.DurationMinutes.ShouldBe(42);
         log.Date.ShouldBe(clock.GetUtcNow());
+        log.Name.ShouldBe("Upper");
         log.Exercises.ShouldHaveSingleItem().ShouldBe(new ExercisePerformance
         {
             ExerciseId = "press", Gym = "Basic Fit", Sets = log.Exercises[0].Sets

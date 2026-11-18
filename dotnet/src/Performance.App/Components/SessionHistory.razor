@@ -10,7 +10,7 @@
         var performances = Performances(log).ToArray();
         <section class="panel history-card" @key="log.Id">
             <div class="card-heading">
-                <div><p class="eyebrow">@log.Date.ToLocalTime().ToString("dd/MM/yyyy · HH:mm")</p><h2>@SessionName(log.SessionId)</h2></div>
+                <div><p class="eyebrow">@log.Date.ToLocalTime().ToString("dd/MM/yyyy · HH:mm")</p><h2>@SessionName(log)</h2></div>
                 <span class="count">@log.DurationMinutes min</span>
             </div>
             <p class="muted">@performances.Length exercice(s) · @performances.SelectMany(performance => performance.Sets).Count(set => WorkoutUi.Number(set.Reps) > 0) séries</p>
@@ -32,6 +32,13 @@
                     </div>
                 }
             </details>
+            @if (Replay.HasDelegate)
+            {
+                <div class="settings-actions">
+                    <button class="primary-button replay-session" data-log="@log.Id" disabled="@(_busy || State.Data.ActiveWorkout is not null)" @onclick="() => ReplayAsync(log)">Refaire cette séance</button>
+                </div>
+                @if (State.Data.ActiveWorkout is not null) { <p class="muted replay-blocked">Termine d’abord la séance en cours pour la refaire.</p> }
+            }
             <div class="settings-actions">
                 <button class="secondary-button export-session" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareFileAsync)">Exporter la séance</button>
                 <button class="secondary-button share-session-text" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareTextAsync)">Partager en texte</button>
@@ -48,6 +55,7 @@
 @code {
     [Parameter] public string Gym { get; set; } = "";
     [Parameter] public int? RecentLimit { get; set; }
+    [Parameter] public EventCallback<WorkoutSession> Replay { get; set; }
 
     private bool _busy;
     private string _message = "";
@@ -65,13 +73,24 @@
     }
     private IEnumerable<ExercisePerformance> Performances(TrainingSessionLog log) => log.Exercises
         .Where(performance => string.IsNullOrEmpty(Gym) || WorkoutUi.Gym(performance) == Gym);
+    private string SessionName(TrainingSessionLog log) => string.IsNullOrWhiteSpace(log.Name) ? SessionName(log.SessionId) : log.Name.Trim();
     private string SessionName(string id) => State.Programs.SelectMany(program => program.Sessions)
         .FirstOrDefault(session => session.Id == id)?.Name ?? (id == "free" ? "Séance libre" : "Séance");
     private string ExerciseName(string id) => State.AllExercises.FirstOrDefault(exercise => exercise.Id == id)?.Name ?? "Exercice inconnu";
-    private WorkoutSession ExportSession(TrainingSessionLog log)
+    private WorkoutSession ExportSession(TrainingSessionLog log) => SessionFromLog(log, $"{SessionName(log)} · {log.Date.ToLocalTime():dd/MM}");
+    private WorkoutSession SessionFromLog(TrainingSessionLog log, string name)
     {
         var planned = State.Programs.SelectMany(program => program.Sessions).FirstOrDefault(session => session.Id == log.SessionId);
-        return SessionExport.FromLog(log, planned, $"{SessionName(log.SessionId)} · {log.Date.ToLocalTime():dd/MM}", State.AllExercises);
+        return SessionExport.FromLog(log, planned, name, State.AllExercises);
+    }
+    private async Task ReplayAsync(TrainingSessionLog log)
+    {
+        if (_busy || State.Data.ActiveWorkout is not null) return;
+        _messageLogId = log.Id; _message = "";
+        WorkoutSession session;
+        try { session = SessionFromLog(log, SessionName(log)); }
+        catch (FormatException) { _message = "Cette séance ne peut pas être refaite : ses exercices n’existent plus."; return; }
+        await Replay.InvokeAsync(session);
     }
     private async Task ShareAsync(TrainingSessionLog log, Func<Func<WorkoutSession>, Task<string>> share)
     {

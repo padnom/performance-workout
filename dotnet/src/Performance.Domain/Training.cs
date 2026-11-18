@@ -48,6 +48,7 @@ public sealed record TrainingSessionLog
     public required string Id { get; init; }
     public DateTimeOffset Date { get; init; }
     public required string SessionId { get; init; }
+    public string? Name { get; init; }
     public int DurationMinutes { get; init; }
     public IReadOnlyList<ExercisePerformance> Exercises { get; init; } = [];
 }

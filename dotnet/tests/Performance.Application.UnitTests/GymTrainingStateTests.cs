@@ -250,6 +250,39 @@ public sealed class GymTrainingStateTests
         service.Data.ActiveWorkout.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task ReplayFromHistory_RecommendedSession_KeepsLoggedExercisesAndName()
+    {
+        // Arrange
+        var log = new TrainingSessionLog
+        {
+            Id = "done", SessionId = "one-air-push", Name = "push", Date = new DateTimeOffset(2026, 10, 2, 10, 0, 0, TimeSpan.Zero),
+            Exercises =
+            [
+                new ExercisePerformance { ExerciseId = "cable-crunch", Gym = "One Air", Sets = [new TrainingSet { Weight = "20", Reps = "12" }, new TrainingSet { Weight = "20", Reps = "12" }, new TrainingSet { Weight = "20", Reps = "10" }] },
+                new ExercisePerformance { ExerciseId = "one-press", Gym = "One Air", Sets = [new TrainingSet { Weight = "90", Reps = "8" }] }
+            ]
+        };
+        var repository = new FakeRepository(new PerformanceData { History = [log] });
+        var service = Create(repository);
+        await service.InitializeAsync();
+        var planned = service.Programs.SelectMany(program => program.Sessions).Single(session => session.Id == log.SessionId);
+        var replay = SessionExport.FromLog(log, planned, "push", service.AllExercises);
+
+        // Act
+        var started = await service.StartAsync(replay, "One Air");
+        await service.UpdateSetAsync("one-press", 0, new TrainingSet { Weight = "92", Reps = "8" });
+        var finished = await service.FinishAsync();
+
+        // Assert
+        started.IsSuccess.ShouldBeTrue();
+        finished.IsSuccess.ShouldBeTrue();
+        replay.Exercises.Select(plan => (plan.ExerciseId, plan.Sets)).ShouldBe([("cable-crunch", (int?)3), ("one-press", (int?)1)]);
+        var replayed = repository.Stored.History.Last();
+        replayed.Name.ShouldBe("push");
+        replayed.Exercises.Select(performance => performance.ExerciseId).ShouldContain("one-press");
+    }
+
     private static WorkoutStateService Create(FakeRepository repository) => new(repository, new FakeCatalog(),
         new FakeTimeProvider(new DateTimeOffset(2026, 10, 3, 10, 0, 0, TimeSpan.Zero)));
 

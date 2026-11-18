@@ -127,6 +127,73 @@ public sealed class SessionHistoryTests : IDisposable
     }
 
     [Fact]
+    public async Task Replay_WithoutCallback_HidesButton_AndStoredNameWins()
+    {
+        await _state.ReplaceDataAsync(new PerformanceData { History = [ReplayLog(_state.AllExercises.First().Id) with { Name = "Jambes du lundi" }] });
+
+        var component = _context.Render<SessionHistory>();
+
+        component.FindAll(".replay-session").ShouldBeEmpty();
+        component.Find("h2").TextContent.ShouldBe("Jambes du lundi");
+    }
+
+    [Fact]
+    public async Task Replay_Click_SendsSessionBuiltFromLoggedExercises()
+    {
+        var exercises = _state.AllExercises.Take(2).ToArray();
+        var log = ReplayLog(exercises[1].Id) with
+        {
+            Exercises =
+            [
+                new ExercisePerformance { ExerciseId = exercises[1].Id, Gym = "Basic-Fit", Sets = [new TrainingSet { Weight = "50", Reps = "8" }, new TrainingSet { Weight = "50", Reps = "8" }] },
+                new ExercisePerformance { ExerciseId = exercises[0].Id, Gym = "Basic-Fit", Sets = [new TrainingSet { Weight = "30", Reps = "12" }] }
+            ]
+        };
+        await _state.ReplaceDataAsync(new PerformanceData { History = [log] });
+        WorkoutSession? received = null;
+
+        var component = _context.Render<SessionHistory>(parameters => parameters.Add(value => value.Replay, (WorkoutSession session) => received = session));
+        component.Find(".replay-session").Click();
+
+        received.ShouldNotBeNull();
+        received.Name.ShouldBe("Séance libre");
+        received.Exercises.Select(plan => (plan.ExerciseId, plan.Sets, plan.Gym)).ShouldBe(
+            [(exercises[1].Id, (int?)2, "Basic-Fit"), (exercises[0].Id, (int?)1, "Basic-Fit")]);
+    }
+
+    [Fact]
+    public async Task Replay_WithUnknownExercisesOnly_ShowsMessageWithoutCallback()
+    {
+        await _state.ReplaceDataAsync(new PerformanceData { History = [ReplayLog("removed-exercise")] });
+        var called = false;
+
+        var component = _context.Render<SessionHistory>(parameters => parameters.Add(value => value.Replay, (WorkoutSession _) => called = true));
+        component.Find(".replay-session").Click();
+
+        called.ShouldBeFalse();
+        component.Find(".notice").TextContent.ShouldContain("ne peut pas être refaite");
+    }
+
+    [Fact]
+    public async Task Replay_WhileWorkoutActive_IsDisabled()
+    {
+        var exercise = _state.AllExercises.First();
+        await _state.ReplaceDataAsync(new PerformanceData { History = [ReplayLog(exercise.Id)] });
+        (await _state.StartAsync(new WorkoutSession { Id = "free", Name = "Séance libre" }, "One Air")).IsSuccess.ShouldBeTrue();
+
+        var component = _context.Render<SessionHistory>(parameters => parameters.Add(value => value.Replay, (WorkoutSession _) => { }));
+
+        component.Find(".replay-session").HasAttribute("disabled").ShouldBeTrue();
+        component.Find(".replay-blocked").TextContent.ShouldContain("séance en cours");
+    }
+
+    private static TrainingSessionLog ReplayLog(string exerciseId) => new()
+    {
+        Id = "replay", SessionId = "free", Date = DateTimeOffset.Parse("2026-10-02T10:00:00Z"),
+        Exercises = [new ExercisePerformance { ExerciseId = exerciseId, Gym = "One Air", Sets = [new TrainingSet { Weight = "40", Reps = "10" }] }]
+    };
+
+    [Fact]
     public void EmptyHistory_ShowsAnExplicitEmptyState()
     {
         var component = _context.Render<SessionHistory>();

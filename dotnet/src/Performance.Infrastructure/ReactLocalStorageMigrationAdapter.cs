@@ -182,7 +182,7 @@ public sealed class ReactLocalStorageMigrationAdapter(ITrainingCatalog? catalog 
                     rows.Add(new ExercisePerformance { ExerciseId = exerciseId, Gym = gym, Sets = sets });
                 }
             DateTimeOffset.TryParse(Text(item, "date"), CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var date);
-            output.Add(new TrainingSessionLog { Id = id, Date = date, SessionId = Text(item, "sessionId"), DurationMinutes = Number(item, "duration", 0), Exercises = rows });
+            output.Add(new TrainingSessionLog { Id = id, Date = date, SessionId = Text(item, "sessionId"), Name = Text(item, "name") is { Length: > 0 } name ? name : null, DurationMinutes = Number(item, "duration", 0), Exercises = rows });
         }
         return output;
     }
@@ -243,7 +243,7 @@ public sealed class ReactLocalStorageMigrationAdapter(ITrainingCatalog? catalog 
     private static IReadOnlyList<string> ParseStringArray(string? json) => Array(json, out var value) ? value.EnumerateArray().Where(x => x.ValueKind == JsonValueKind.String).Select(x => x.GetString()!).ToArray() : [];
     private static IReadOnlyList<TrainingSet> ParseSets(JsonElement value) => value.ValueKind == JsonValueKind.Array ? value.EnumerateArray().Where(x => x.ValueKind == JsonValueKind.Object).Select(x => new TrainingSet { Weight = Text(x, "weight"), Reps = Text(x, "reps"), Rir = Text(x, "rir") }).ToArray() : [];
     private static object ToReactExercise(Exercise x) => new { x.Id, x.Name, alt = x.AlternativeName, target = x.RepTarget, x.Rest, x.Sets, group = x.MuscleGroup, x.Link, x.Tags, gyms = x.Variants.Select(v => v.Gym).Distinct().ToArray(), gym = x.Variants.FirstOrDefault()?.Gym };
-    private static object ToReactLog(TrainingSessionLog x) => new { x.Id, date = x.Date.ToString("O", CultureInfo.InvariantCulture), sessionId = x.SessionId, duration = x.DurationMinutes, entries = x.Exercises.ToDictionary(e => e.Gym is null ? e.ExerciseId : $"{e.ExerciseId}@@{e.Gym}", e => e.Sets.Select(s => new { s.Weight, s.Reps, s.Rir }).ToArray(), StringComparer.Ordinal) };
+    private static object ToReactLog(TrainingSessionLog x) => new { x.Id, date = x.Date.ToString("O", CultureInfo.InvariantCulture), sessionId = x.SessionId, name = x.Name, duration = x.DurationMinutes, entries = x.Exercises.ToDictionary(e => e.Gym is null ? e.ExerciseId : $"{e.ExerciseId}@@{e.Gym}", e => e.Sets.Select(s => new { s.Weight, s.Reps, s.Rir }).ToArray(), StringComparer.Ordinal) };
     private static (string Id, string? Gym) SplitId(string value) { var at = value.LastIndexOf("@@", StringComparison.Ordinal); return at < 0 ? (value, null) : (value[..at], value[(at + 2)..]); }
     private static bool Array(string? json, out JsonElement value) { value = default; try { using var doc = JsonDocument.Parse(json ?? ""); if (doc.RootElement.ValueKind != JsonValueKind.Array) return false; value = doc.RootElement.Clone(); return true; } catch (JsonException) { return false; } }
     private static bool Object(string? json, out JsonElement value) { value = default; try { using var doc = JsonDocument.Parse(json ?? ""); if (doc.RootElement.ValueKind != JsonValueKind.Object) return false; value = doc.RootElement.Clone(); return true; } catch (JsonException) { return false; } }

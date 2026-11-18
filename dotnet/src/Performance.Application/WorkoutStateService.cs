@@ -359,7 +359,7 @@ public sealed partial class WorkoutStateService(
         if (performances.Length == 0) return Change.Failure("EmptyWorkout");
         var now = timeProvider.GetUtcNow();
         var elapsed = active.StartedAt == DateTimeOffset.MinValue ? 0 : Math.Max(0, (now - active.StartedAt).TotalMinutes);
-        var log = new TrainingSessionLog { Id = Guid.NewGuid().ToString("N"), Date = now, SessionId = active.Session.Id,
+        var log = new TrainingSessionLog { Id = Guid.NewGuid().ToString("N"), Date = now, SessionId = active.Session.Id, Name = active.Session.Name,
             DurationMinutes = (int)Math.Min(int.MaxValue, elapsed), Exercises = performances };
         return new(Data with { History = Data.History.Append(log).ToArray(), ActiveWorkout = null });
     }
