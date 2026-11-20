@@ -1,0 +1,297 @@
+{
+  "kind": "performance-session",
+  "schemaVersion": 1,
+  "session": {
+    "id": "seance-full-upper-one-air",
+    "name": "Full Upper · One Air",
+    "color": "#5279ff",
+    "focus": "Pecs, dos, épaules, bras — samedi 21/11",
+    "exercises": [
+      {
+        "exerciseId": "custom-61695583e5ab4dccb72bb41d974ea61f",
+        "order": 0,
+        "sets": 4,
+        "repTarget": "4 × 10 · 35–40 kg",
+        "rest": "2:00",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "pulldown-u",
+        "order": 1,
+        "sets": 4,
+        "repTarget": "4 × 10 · 40–42,5 kg",
+        "rest": "2:00",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "lf-row",
+        "order": 2,
+        "sets": 3,
+        "repTarget": "3 × 10 · 55 kg",
+        "rest": "2:00",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "lf-shoulder-press",
+        "order": 3,
+        "sets": 3,
+        "repTarget": "3 × 10 · 30–35 kg",
+        "rest": "1:30",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "lf-lateral-raise",
+        "order": 4,
+        "sets": 3,
+        "repTarget": "3 × 12 · 30 kg",
+        "rest": "1:00",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "rear",
+        "order": 5,
+        "sets": 3,
+        "repTarget": "3 × 12 · 80 kg",
+        "rest": "1:00",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "dip",
+        "order": 6,
+        "sets": 3,
+        "repTarget": "3 × 10 · 80 kg (superset curl)",
+        "rest": "0:30",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "custom-b6b2332cfb6f4461835c5a19479ef2d5",
+        "order": 7,
+        "sets": 3,
+        "repTarget": "3 × 10 · 35 kg (superset dips)",
+        "rest": "1:30",
+        "gym": "One Air"
+      }
+    ],
+    "optionalExercises": [
+      {
+        "exerciseId": "abs",
+        "order": 0,
+        "sets": 2,
+        "repTarget": "2 × 30 · 65 kg",
+        "rest": "1:00",
+        "gym": "One Air"
+      }
+    ]
+  },
+  "exercises": [
+    {
+      "id": "custom-61695583e5ab4dccb72bb41d974ea61f",
+      "name": "Hammer Iso-Lateral bench press",
+      "muscleGroup": "Pectoraux",
+      "repTarget": "8–12",
+      "sets": 4,
+      "rest": "1:30",
+      "tags": [
+        "Pectoraux",
+        "Machine",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air"
+        }
+      ],
+      "isCustom": true
+    },
+    {
+      "id": "pulldown-u",
+      "name": "Hammer Front Lat Pulldown",
+      "alternativeName": "Life Fitness Pulldown / tractions",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-wide-pulldown",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Poulie",
+        "Polyarticulaire",
+        "Tirage vertical"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Front Lat Pulldown"
+        }
+      ]
+    },
+    {
+      "id": "lf-row",
+      "name": "Diverging Seated Row",
+      "alternativeName": "Rowing poulie basse",
+      "muscleGroup": "Dos",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2:00",
+      "tags": [
+        "Dos",
+        "Machine",
+        "Polyarticulaire",
+        "Tirage horizontal"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Seated Row"
+        },
+        {
+          "gym": "Basic-Fit"
+        },
+        {
+          "gym": "Toutes"
+        }
+      ],
+      "isCustom": true
+    },
+    {
+      "id": "lf-shoulder-press",
+      "name": "Life Fitness Shoulder Press",
+      "alternativeName": "Développé épaules haltères",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2 min",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Polyarticulaire",
+        "Poussée"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Shoulder Press"
+        }
+      ]
+    },
+    {
+      "id": "lf-lateral-raise",
+      "name": "Life Fitness Lateral Raise",
+      "alternativeName": "Élévations latérales haltères",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Isolation",
+        "Élévation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Lateral Raise"
+        }
+      ]
+    },
+    {
+      "id": "rear",
+      "name": "Rear Deltoid",
+      "alternativeName": "Reverse Fly poulie",
+      "muscleGroup": "Épaules",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1:30",
+      "tags": [
+        "Épaules",
+        "Machine",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Rear Deltoid"
+        },
+        {
+          "gym": "Basic-Fit"
+        },
+        {
+          "gym": "Toutes"
+        }
+      ],
+      "isCustom": true
+    },
+    {
+      "id": "dip",
+      "name": "Hammer Seated Dip",
+      "alternativeName": "Dips poids du corps",
+      "muscleGroup": "Triceps",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2:00",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-seated-dip",
+      "tags": [],
+      "variants": [
+        {
+          "gym": "Basic-Fit",
+          "photoUrl": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-seated-dip"
+        },
+        {
+          "gym": "Toutes",
+          "photoUrl": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-seated-dip"
+        },
+        {
+          "gym": "One Air",
+          "photoUrl": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-seated-dip"
+        }
+      ],
+      "isCustom": true
+    },
+    {
+      "id": "custom-b6b2332cfb6f4461835c5a19479ef2d5",
+      "name": "Curl barre",
+      "muscleGroup": "Biceps",
+      "repTarget": "10",
+      "sets": 4,
+      "rest": "1:30",
+      "tags": [
+        "Biceps"
+      ],
+      "variants": [
+        {
+          "gym": "One Air"
+        },
+        {
+          "gym": "Basic-Fit"
+        },
+        {
+          "gym": "Toutes"
+        }
+      ],
+      "isCustom": true
+    },
+    {
+      "id": "abs",
+      "name": "Life Fitness Abdominal",
+      "alternativeName": "Crunch poulie",
+      "muscleGroup": "Abdominaux",
+      "repTarget": "30",
+      "sets": 4,
+      "rest": "1:00",
+      "tags": [
+        "Abdominaux",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Abdominal"
+        }
+      ],
+      "isCustom": true
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "kind": "performance-session",
+  "schemaVersion": 1,
+  "session": {
+    "id": "seance-jambes-one-air",
+    "name": "Jambes · One Air",
+    "color": "#b8f343",
+    "focus": "Quadriceps, ischios, mollets — dimanche 22/11",
+    "exercises": [
+      {
+        "exerciseId": "squat",
+        "order": 0,
+        "sets": 4,
+        "repTarget": "4 × 10 · 25 kg",
+        "rest": "2:30",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "rdl",
+        "order": 1,
+        "sets": 4,
+        "repTarget": "4 × 8 · 75–80 kg",
+        "rest": "3:00",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "lf-seated-leg-curl",
+        "order": 2,
+        "sets": 4,
+        "repTarget": "4 × 10 · 55 kg",
+        "rest": "1:30",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "legext",
+        "order": 3,
+        "sets": 4,
+        "repTarget": "4 × 10 · 57,5–60 kg",
+        "rest": "1:30",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "calf",
+        "order": 4,
+        "sets": 4,
+        "repTarget": "4 × 12 · 24–26 kg",
+        "rest": "1:30",
+        "gym": "One Air"
+      }
+    ],
+    "optionalExercises": [
+      {
+        "exerciseId": "hipthrust",
+        "order": 0,
+        "sets": 3,
+        "repTarget": "3 × 12",
+        "rest": "1:30",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "abduction",
+        "order": 1,
+        "sets": 3,
+        "repTarget": "3 × 12",
+        "rest": "1:00",
+        "gym": "One Air"
+      },
+      {
+        "exerciseId": "abs",
+        "order": 2,
+        "sets": 3,
+        "repTarget": "3 × 30 · 65 kg",
+        "rest": "1:00",
+        "gym": "One Air"
+      }
+    ]
+  },
+  "exercises": [
+    {
+      "id": "squat",
+      "name": "Hammer Pendulum-X Squat",
+      "alternativeName": "Life Fitness Leg Press",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 6–10",
+      "sets": 4,
+      "rest": "2–3 min",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-pendulum-x-squat",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Pendulum-X Squat"
+        }
+      ]
+    },
+    {
+      "id": "rdl",
+      "name": "Soulevé de terre roumain barre",
+      "alternativeName": "Soulevé de terre roumain haltères",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 8–10",
+      "sets": 4,
+      "rest": "2–3 min",
+      "tags": [
+        "Jambes",
+        "Barre",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Soulevé de terre roumain barre"
+        }
+      ]
+    },
+    {
+      "id": "lf-seated-leg-curl",
+      "name": "Life Fitness Seated Leg Curl",
+      "alternativeName": "Leg curl allongé",
+      "muscleGroup": "Ischio-jambiers",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "1 min 30",
+      "tags": [
+        "Ischio-jambiers",
+        "Machine",
+        "Isolation",
+        "Flexion"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Seated Leg Curl"
+        }
+      ]
+    },
+    {
+      "id": "legext",
+      "name": "Hammer Iso-Lateral Leg Extension",
+      "alternativeName": "Leg Extension plate-loaded",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 12–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-leg-extension",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Unilatéral",
+        "Isolation",
+        "Extension"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Iso-Lateral Leg Extension"
+        }
+      ]
+    },
+    {
+      "id": "calf",
+      "name": "Hammer Seated Calf Raise",
+      "alternativeName": "Mollets debout",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 10–15",
+      "sets": 4,
+      "rest": "1 min 30",
+      "link": "https://shop.lifefitness.com/products/hammer-strength-plate-loaded-seated-calf-raise",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Isolation"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Hammer Seated Calf Raise"
+        }
+      ]
+    },
+    {
+      "id": "hipthrust",
+      "name": "Hip thrust",
+      "alternativeName": "Glute Drive",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 8–12",
+      "sets": 4,
+      "rest": "2:00",
+      "tags": [
+        "Jambes",
+        "Polyarticulaire",
+        "Machine"
+      ],
+      "variants": [
+        {
+          "gym": "Toutes",
+          "machineName": "Hip thrust barre"
+        },
+        {
+          "gym": "Basic-Fit"
+        },
+        {
+          "gym": "One Air"
+        }
+      ],
+      "isCustom": true
+    },
+    {
+      "id": "abduction",
+      "name": "Hip Abduction",
+      "muscleGroup": "Jambes",
+      "repTarget": "4 × 12–20",
+      "sets": 4,
+      "rest": "1:00",
+      "tags": [
+        "Jambes",
+        "Machine",
+        "Isolation",
+        "Fessiers"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Hip Abduction"
+        },
+        {
+          "gym": "Basic-Fit"
+        },
+        {
+          "gym": "Toutes"
+        }
+      ],
+      "isCustom": true
+    },
+    {
+      "id": "abs",
+      "name": "Life Fitness Abdominal",
+      "alternativeName": "Crunch poulie",
+      "muscleGroup": "Abdominaux",
+      "repTarget": "30",
+      "sets": 4,
+      "rest": "1:00",
+      "tags": [
+        "Abdominaux",
+        "Machine",
+        "Polyarticulaire"
+      ],
+      "variants": [
+        {
+          "gym": "One Air",
+          "machineName": "Life Fitness Abdominal"
+        }
+      ],
+      "isCustom": true
+    }
+  ]
+}
