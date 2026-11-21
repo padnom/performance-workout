@@ -1,5 +1,6 @@
 using System.Globalization;
 using Performance.Domain;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Components;
 
@@ -29,13 +30,13 @@ public sealed class ProgramDraft
     };
 
     public string ValidateSingleSession(IReadOnlyList<Exercise> catalog) =>
-        Sessions.Count == 1 ? ValidateSession(Sessions[0], catalog) : "Une seule séance peut être créée à la fois.";
+        Sessions.Count == 1 ? ValidateSession(Sessions[0], catalog) : T("ProgramDraft.OneSessionOnly");
 
     public string Validate(IReadOnlyList<Exercise> catalog)
     {
-        if (string.IsNullOrWhiteSpace(Name) || Name.Length > 160) return "Renseigne un nom de programme de 1 à 160 caractères.";
-        if (Description.Length > 2000) return "La description du programme est limitée à 2 000 caractères.";
-        if (Sessions.Count is < 1 or > 100) return "Ajoute de 1 à 100 séances au programme.";
+        if (string.IsNullOrWhiteSpace(Name) || Name.Length > 160) return T("ProgramDraft.ProgramName");
+        if (Description.Length > 2000) return T("ProgramDraft.DescriptionLimit");
+        if (Sessions.Count is < 1 or > 100) return T("ProgramDraft.SessionCount");
         foreach (var session in Sessions)
         {
             var message = ValidateSession(session, catalog);
@@ -46,9 +47,9 @@ public sealed class ProgramDraft
 
     private string ValidateSession(ProgramSessionDraft session, IReadOnlyList<Exercise> catalog)
     {
-        if (string.IsNullOrWhiteSpace(session.Name) || session.Name.Length > 160) return "Renseigne un nom de 1 à 160 caractères pour chaque séance.";
-        if (session.Exercises.Count is < 1 or > 80) return "Ajoute de 1 à 80 exercices dans chaque séance.";
-        if (session.Exercises.Select(exercise => exercise.ExerciseId).Distinct().Count() != session.Exercises.Count) return "Un exercice ne peut apparaître qu’une fois dans une séance.";
+        if (string.IsNullOrWhiteSpace(session.Name) || session.Name.Length > 160) return T("ProgramDraft.SessionName");
+        if (session.Exercises.Count is < 1 or > 80) return T("ProgramDraft.ExerciseCount");
+        if (session.Exercises.Select(exercise => exercise.ExerciseId).Distinct().Count() != session.Exercises.Count) return T("ProgramDraft.ExerciseDuplicate");
         foreach (var exercise in session.Exercises)
         {
             var message = ValidateExercise(exercise, catalog);
@@ -60,10 +61,10 @@ public sealed class ProgramDraft
     private string ValidateExercise(ProgramExerciseDraft exercise, IReadOnlyList<Exercise> catalog)
     {
         var definition = catalog.FirstOrDefault(item => item.Id == exercise.ExerciseId);
-        if (definition is null || !Compatible(definition, Gym)) return "Un exercice ne correspond pas à cette salle. Choisis une autre salle ou retire cet exercice.";
-        if (exercise.Sets is < 1 or > 20) return "Choisis de 1 à 20 séries pour chaque exercice.";
-        if (string.IsNullOrWhiteSpace(exercise.Repetitions) || exercise.Repetitions.Length > 100) return "Renseigne les répétitions de chaque exercice (100 caractères maximum).";
-        return ValidRest(exercise.Rest) ? "" : "Renseigne un repos au format M:ss entre 0:15 et 10:00 (100 caractères maximum).";
+        if (definition is null || !Compatible(definition, Gym)) return T("ProgramDraft.ExerciseGym");
+        if (exercise.Sets is < 1 or > 20) return T("ProgramDraft.Sets");
+        if (string.IsNullOrWhiteSpace(exercise.Repetitions) || exercise.Repetitions.Length > 100) return T("ProgramDraft.Reps");
+        return ValidRest(exercise.Rest) ? "" : T("ProgramDraft.Rest");
     }
 
     public static bool Compatible(Exercise exercise, string gym) => gym == "Toutes" || exercise.Variants.Count == 0
@@ -87,7 +88,7 @@ public sealed class ProgramDraft
 public sealed class ProgramSessionDraft
 {
     public string Key { get; } = Guid.NewGuid().ToString("N");
-    public string Name { get; set; } = "Séance 1";
+    public string Name { get; set; } = T("ProgramDraft.DefaultSessionName", 1);
     public string Search { get; set; } = "";
     public List<ProgramExerciseDraft> Exercises { get; } = [];
 }

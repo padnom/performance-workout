@@ -2,7 +2,7 @@
 @using Performance.Domain
 @inject WorkoutStateService State
 
-<button class="secondary-button program-favorite" data-favorite-program="@ProgramId" aria-pressed="@(Favorite ? "true" : "false")" aria-label="@(Favorite ? $"Retirer {ProgramName} des favoris" : $"Ajouter {ProgramName} aux favoris")" aria-busy="@(_busy ? "true" : "false")" disabled="@(_busy || Disabled)" @onclick="ToggleAsync"><span aria-hidden="true">@(Favorite ? "★" : "☆")</span></button>
+<button class="secondary-button program-favorite" data-favorite-program="@ProgramId" aria-pressed="@(Favorite ? "true" : "false")" aria-label="@(Favorite ? T("Favorite.Remove", ProgramName) : T("Favorite.Add", ProgramName))" aria-busy="@(_busy ? "true" : "false")" disabled="@(_busy || Disabled)" @onclick="ToggleAsync"><span aria-hidden="true">@(Favorite ? "★" : "☆")</span></button>
 @if (_message.Length > 0) { <p class="notice favorite-error" role="alert">@_message</p> }
 
 @code {

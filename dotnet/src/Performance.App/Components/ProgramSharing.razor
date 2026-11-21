@@ -9,39 +9,39 @@
 @if (_exportOpen)
 {
     <div class="modal-backdrop sheet-backdrop" @onclick="CloseExport"><section class="panel sheet program-sharing" role="dialog" aria-modal="true" aria-labelledby="program-sharing-title" @onclick:stopPropagation="true">
-        <h2 id="program-sharing-title">Exporter / partager</h2>
-        <p class="muted">Fichier JSON avec les exercices et les consignes. Aucune charge personnelle ni historique.</p>
-        <fieldset disabled="@_busy"><legend>Programmes à partager</legend>
+        <h2 id="program-sharing-title">@T("Sharing.ExportTitle")</h2>
+        <p class="muted">@T("Sharing.ExportIntro")</p>
+        <fieldset disabled="@_busy"><legend>@T("Sharing.ProgramsLegend")</legend>
             @foreach (var program in State.Programs.Where(program => program.Id != "react-week-plan"))
             {
-                <label class="program-share-choice"><input type="checkbox" data-share-program="@program.Id" checked="@_selected.Contains(program.Id)" @onchange="args => Select(program.Id, args.Value is true)" /> @program.Name @(!string.IsNullOrEmpty(program.Gym) ? $"· {program.Gym}" : "")</label>
+                <label class="program-share-choice"><input type="checkbox" data-share-program="@program.Id" checked="@_selected.Contains(program.Id)" @onchange="args => Select(program.Id, args.Value is true)" /> @ProgramLibrary.DisplayName(program) @(!string.IsNullOrEmpty(program.Gym) ? $"· {WorkoutUi.GymName(program.Gym)}" : "")</label>
             }
         </fieldset>
         @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
-        <div class="settings-actions"><button class="primary-button export-programs" disabled="@(_busy || _selected.Count == 0)" @onclick="ShareAsync">Exporter / partager</button><button class="secondary-button close-program-sharing" disabled="@_busy" @onclick="CloseExport">Fermer</button></div>
+        <div class="settings-actions"><button class="primary-button export-programs" disabled="@(_busy || _selected.Count == 0)" @onclick="ShareAsync">@T("Sharing.ExportTitle")</button><button class="secondary-button close-program-sharing" disabled="@_busy" @onclick="CloseExport">Fermer</button></div>
     </section></div>
 }
 @if (_preview is { } package)
 {
     <div class="modal-backdrop"><section class="panel confirm-dialog program-import-preview" role="dialog" aria-modal="true" aria-labelledby="program-import-title">
-        <h2 id="program-import-title">Ajouter ces programmes ?</h2><p>@package.Programs.Count programme(s) · @package.Programs.Sum(program => program.Sessions.Count) séance(s) · @package.Exercises.Count exercice(s)</p>
+        <h2 id="program-import-title">@T("Sharing.ImportProgramsTitle")</h2><p>@T("Sharing.ImportCounts", package.Programs.Count, package.Programs.Sum(program => program.Sessions.Count), package.Exercises.Count)</p>
         <ul>@foreach (var program in package.Programs) { <li>@program.Name @WorkoutUi.GymName(program.Gym)</li> }</ul>
-        <p class="muted">Ajout de copies. Ta semaine, ta séance en cours et ton historique restent conservés.</p>
+        <p class="muted">@T("Sharing.CopiesNote")</p>
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
-        <div class="settings-actions"><button class="primary-button confirm-program-import" disabled="@_busy" @onclick="ConfirmAsync">Ajouter les copies</button><button class="secondary-button cancel-program-import" disabled="@_busy" @onclick="() => _preview = null">Annuler</button></div>
+        <div class="settings-actions"><button class="primary-button confirm-program-import" disabled="@_busy" @onclick="ConfirmAsync">@T("Sharing.AddCopies")</button><button class="secondary-button cancel-program-import" disabled="@_busy" @onclick="() => _preview = null">@T("Sharing.Cancel")</button></div>
     </section></div>
 }
 
 @if (_sessionPreview is { } sessionPackage)
 {
     <div class="modal-backdrop"><section class="panel confirm-dialog session-import-preview" role="dialog" aria-modal="true" aria-labelledby="session-import-title">
-        <h2 id="session-import-title">Ajouter cette séance ?</h2><p>@sessionPackage.Session.Name</p>
-        <p>@sessionPackage.Session.Exercises.Count exercice(s)</p>
+        <h2 id="session-import-title">@T("Sharing.ImportSessionTitle")</h2><p>@sessionPackage.Session.Name</p>
+        <p>@T("Sharing.ExerciseCount", sessionPackage.Session.Exercises.Count)</p>
         <ul>@foreach (var plan in sessionPackage.Session.Exercises) { <li>@ExerciseName(plan.ExerciseId, sessionPackage)</li> }</ul>
-        @if (sessionPackage.Session.OptionalExercises.Count > 0) { <p class="muted">+ @sessionPackage.Session.OptionalExercises.Count exercice(s) optionnel(s)</p> }
-        <p class="muted">Ajoutée dans Mes séances. Ta semaine, ta séance en cours et ton historique restent conservés.</p>
+        @if (sessionPackage.Session.OptionalExercises.Count > 0) { <p class="muted">@T("Sharing.OptionalCount", sessionPackage.Session.OptionalExercises.Count)</p> }
+        <p class="muted">@T("Sharing.AddedInMyWorkouts")</p>
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
-        <div class="settings-actions"><button class="primary-button confirm-session-import" disabled="@_busy" @onclick="ConfirmSessionAsync">Ajouter à Mes séances</button><button class="secondary-button cancel-session-import" disabled="@_busy" @onclick="() => _sessionPreview = null">Annuler</button></div>
+        <div class="settings-actions"><button class="primary-button confirm-session-import" disabled="@_busy" @onclick="ConfirmSessionAsync">@T("Sharing.AddToMyWorkouts")</button><button class="secondary-button cancel-session-import" disabled="@_busy" @onclick="() => _sessionPreview = null">@T("Sharing.Cancel")</button></div>
     </section></div>
 }
 
@@ -76,7 +76,7 @@
             if (shared is SharedPrograms programs) _preview = programs.Package;
         }
         catch (FormatException exception) { _message = exception.Message; }
-        catch { _message = "Impossible de lire ce fichier. Réessaie."; }
+        catch { _message = T("Sharing.ReadFailed"); }
     }
     private string ExerciseName(string id, SessionPackage package) =>
         (State.AllExercises.FirstOrDefault(item => item.Id == id) ?? package.Exercises.FirstOrDefault(item => item.Id == id))?.Name ?? id;
@@ -91,7 +91,7 @@
             if (json is not null) _sessionPreview = Get<ImportWorkoutSessionUseCase>().Execute(json);
         }
         catch (FormatException exception) { _message = exception.Message; }
-        catch { _message = "Impossible de lire ce fichier de séance. Réessaie."; }
+        catch { _message = T("Sharing.ReadSessionFailed"); }
         finally { _busy = false; StateHasChanged(); }
     }
     private async Task ConfirmSessionAsync()
@@ -102,7 +102,7 @@
         {
             var result = await State.ImportSessionAsync(_sessionPreview);
             if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
-            _sessionPreview = null; _message = "La séance a été ajoutée à Mes séances.";
+            _sessionPreview = null; _message = T("Sharing.SessionAdded");
             await Changed.InvokeAsync();
         }
         catch { _message = WorkoutUi.Error(null); }
@@ -121,10 +121,10 @@
             var programs = State.Programs.Where(program => _selected.Contains(program.Id)).ToList();
             var json = Get<ExportWorkoutProgramsUseCase>().Execute(programs, State.AllExercises);
             await Get<IProgramFiles>().ShareProgramsAsync(json);
-            _message = "Fichier de programmes prêt à partager.";
+            _message = T("Sharing.ExportReady");
         }
         catch (FormatException exception) { _message = exception.Message; }
-        catch { _message = "Impossible de partager le fichier de programmes. Réessaie."; }
+        catch { _message = T("Sharing.ShareFailed"); }
         finally { _busy = false; }
     }
     public async Task PickAsync()
@@ -137,7 +137,7 @@
             if (json is not null) _preview = Get<ImportWorkoutProgramsUseCase>().Execute(json);
         }
         catch (FormatException exception) { _message = exception.Message; }
-        catch { _message = "Impossible de lire ce fichier de programmes. Réessaie."; }
+        catch { _message = T("Sharing.ReadProgramsFailed"); }
         finally { _busy = false; StateHasChanged(); }
     }
     private async Task ConfirmAsync()
@@ -148,7 +148,7 @@
         {
             var result = await State.ImportProgramsAsync(_preview);
             if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
-            _preview = null; _message = "Les copies ont été ajoutées à la bibliothèque, filtre « Mes séances ».";
+            _preview = null; _message = T("Sharing.CopiesAdded");
             await Changed.InvokeAsync();
         }
         catch { _message = WorkoutUi.Error(null); }

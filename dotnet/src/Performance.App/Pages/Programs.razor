@@ -3,9 +3,9 @@
 @using Performance.Domain
 @inject WorkoutStateService State
 
-<PageTitle>Programmes · Performance</PageTitle>
+<PageTitle>@T("Programs.PageTitle")</PageTitle>
 <div class="page-heading programs-heading">
-    <div><p class="eyebrow library-heading">BIBLIOTHÈQUE · @LibraryCount séances</p><h1>Choisis ta séance</h1><p class="muted">Ouvre une séance pour voir ses exercices, ou ▶&#xFE0E; pour la démarrer.</p></div>
+    <div><p class="eyebrow library-heading">@T("Programs.LibraryHeading", LibraryCount)</p><h1>@T("Programs.Title")</h1><p class="muted">@T("Programs.Intro")</p></div>
     @if (!_loading)
     {
         <ProgramsMenu Disabled="_busy" CreateProgram="() => _editor?.Open()" CreateSession="() => _editor?.Open(singleSession: true)"
@@ -13,13 +13,13 @@
             Export="() => _sharing?.OpenExport()" />
     }
 </div>
-@if (_loading) { <p class="loading" role="status">Chargement de tes données…</p> }
+@if (_loading) { <p class="loading" role="status">@T("Programs.Loading")</p> }
 @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
 @if (!_loading)
 {
     @if (State.Data.ActiveWorkout?.Session is { } active)
     {
-        <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
+        <a class="resume-workout" href="/seance"><span>@T("Programs.ActiveWorkout")<strong>@active.Name</strong></span><b>@T("Programs.ResumeWorkout")</b></a>
     }
     <ProgramLibrary Snapshot="State.Data" Selected="SelectSession" Started="StartSession" Changed="Refresh" Disabled="_busy" />
     <ProgramSharing @ref="_sharing" Snapshot="State.Data" Changed="Refresh" />
@@ -38,7 +38,7 @@
     protected override async Task OnInitializedAsync()
     {
         try { await State.InitializeAsync(); }
-        catch { _message = "Impossible de charger les données. Rouvre l’application pour réessayer."; }
+        catch { _message = T("Programs.LoadFailed"); }
         finally { _loading = false; }
     }
     private void Refresh() => StateHasChanged();

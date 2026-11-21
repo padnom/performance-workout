@@ -6,9 +6,9 @@
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
             <section class="panel empty-state">
-                <p class="eyebrow">PAGE INTROUVABLE</p>
-                <h1>Cette page n’existe pas</h1>
-                <a class="action-link" href="/">Retour à l’accueil</a>
+                <p class="eyebrow">@T("Routes.NotFoundEyebrow")</p>
+                <h1>@T("Routes.NotFoundTitle")</h1>
+                <a class="action-link" href="/">@T("Routes.BackHome")</a>
             </section>
         </LayoutView>
     </NotFound>

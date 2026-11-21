@@ -1,6 +1,7 @@
 using Performance.Application;
 using Performance.App.Services;
 using Performance.Domain;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Components;
 
@@ -20,7 +21,7 @@ public sealed class SessionSharer(IServiceProvider services, WorkoutStateService
         try
         {
             await share(build());
-            return "Séance prête à partager.";
+            return T("SessionSharer.Ready");
         }
         catch (FormatException exception)
         {
@@ -29,7 +30,7 @@ public sealed class SessionSharer(IServiceProvider services, WorkoutStateService
         catch (Exception exception)
         {
             (services.GetService(typeof(IAppDiagnostics)) as IAppDiagnostics)?.Record("session.share", TimeSpan.Zero, exception);
-            return "Impossible de partager cette séance. Réessaie.";
+            return T("SessionSharer.Failed");
         }
     }
 

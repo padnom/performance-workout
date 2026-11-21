@@ -8,27 +8,27 @@
 @if (_draft is { } draft)
 {
     <div class="modal-backdrop"><section class="panel editor-dialog program-editor" role="dialog" aria-modal="true" aria-labelledby="program-editor-title" aria-busy="@Pressed(_busy)">
-        <h2 id="program-editor-title">@(draft.SingleSession ? "Créer une séance" : "Créer un programme")</h2>
-        <p class="muted">Compose tes séances avec les exercices du catalogue.</p>
+        <h2 id="program-editor-title">@T(draft.SingleSession ? "ProgramEditor.TitleSession" : "ProgramEditor.TitleProgram")</h2>
+        <p class="muted">@T("ProgramEditor.Intro")</p>
         <fieldset disabled="@_busy" class="program-editor-fields">
             @if (!draft.SingleSession)
             {
-                <label class="field">Nom du programme<input class="program-name" maxlength="160" @bind="draft.Name" /></label>
-                <label class="field">Description (facultative)<textarea class="program-description" maxlength="2000" @bind="draft.Description"></textarea></label>
+                <label class="field">@T("ProgramEditor.ProgramName")<input class="program-name" maxlength="160" @bind="draft.Name" /></label>
+                <label class="field">@T("ProgramEditor.Description")<textarea class="program-description" maxlength="2000" @bind="draft.Description"></textarea></label>
             }
-            <label class="field">Salle du programme<select class="program-gym" @bind="draft.Gym">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
+            <label class="field">@T("ProgramEditor.Gym")<select class="program-gym" @bind="draft.Gym">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
             @foreach (var session in draft.Sessions)
             {
                 var sessionIndex = draft.Sessions.IndexOf(session);
                 var candidates = Candidates(session, draft.Gym);
                 <section class="draft-session" data-draft-session="@session.Key" @key="session.Key">
-                    <label class="field">Nom de la séance @(sessionIndex + 1)<input class="draft-session-name" maxlength="160" @bind="session.Name" /></label>
+                    <label class="field">@T("ProgramEditor.SessionName", sessionIndex + 1)<input class="draft-session-name" maxlength="160" @bind="session.Name" /></label>
                     @if (!draft.SingleSession)
                     {
                     <div class="draft-order-actions">
-                        <button type="button" class="secondary-button move-session-up" aria-label="Monter @session.Name" disabled="@(sessionIndex == 0)" @onclick="() => Move(draft.Sessions, session, -1)">↑</button>
-                        <button type="button" class="secondary-button move-session-down" aria-label="Descendre @session.Name" disabled="@(sessionIndex == draft.Sessions.Count - 1)" @onclick="() => Move(draft.Sessions, session, 1)">↓</button>
-                        <button type="button" class="danger-button remove-draft-session" disabled="@(draft.Sessions.Count == 1)" @onclick="() => draft.Sessions.Remove(session)">Retirer la séance</button>
+                        <button type="button" class="secondary-button move-session-up" aria-label="@T("ProgramEditor.MoveUp", session.Name)" disabled="@(sessionIndex == 0)" @onclick="() => Move(draft.Sessions, session, -1)">↑</button>
+                        <button type="button" class="secondary-button move-session-down" aria-label="@T("ProgramEditor.MoveDown", session.Name)" disabled="@(sessionIndex == draft.Sessions.Count - 1)" @onclick="() => Move(draft.Sessions, session, 1)">↓</button>
+                        <button type="button" class="danger-button remove-draft-session" disabled="@(draft.Sessions.Count == 1)" @onclick="() => draft.Sessions.Remove(session)">@T("ProgramEditor.RemoveSession")</button>
                     </div>
                     }
                     @foreach (var plan in session.Exercises)
@@ -37,38 +37,38 @@
                         var exercise = State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId);
                         <article class="draft-exercise" data-draft-exercise="@plan.ExerciseId" @key="plan.ExerciseId">
                             <strong>@(exercise?.Name ?? plan.ExerciseId)</strong>
-                            @if (exercise is null || !ProgramDraft.Compatible(exercise, draft.Gym)) { <p class="notice">Exercice indisponible pour cette salle.</p> }
+                            @if (exercise is null || !ProgramDraft.Compatible(exercise, draft.Gym)) { <p class="notice">@T("ProgramEditor.ExerciseUnavailable")</p> }
                             <div class="draft-prescription">
-                                <label class="field">Séries<input class="draft-sets" type="number" min="1" max="20" @bind="plan.Sets" /></label>
-                                <label class="field">Répétitions<input class="draft-repetitions" maxlength="100" @bind="plan.Repetitions" /></label>
-                                <label class="field">Repos (M:ss)<input class="draft-rest" maxlength="100" placeholder="1:30" @bind="plan.Rest" /></label>
+                                <label class="field">@T("ProgramEditor.Sets")<input class="draft-sets" type="number" min="1" max="20" @bind="plan.Sets" /></label>
+                                <label class="field">@T("ProgramEditor.Reps")<input class="draft-repetitions" maxlength="100" @bind="plan.Repetitions" /></label>
+                                <label class="field">@T("ProgramEditor.Rest")<input class="draft-rest" maxlength="100" placeholder="1:30" @bind="plan.Rest" /></label>
                             </div>
                             <div class="draft-order-actions">
-                                <button type="button" class="secondary-button move-exercise-up" aria-label="Monter @(exercise?.Name ?? plan.ExerciseId)" disabled="@(exerciseIndex == 0)" @onclick="() => Move(session.Exercises, plan, -1)">↑</button>
-                                <button type="button" class="secondary-button move-exercise-down" aria-label="Descendre @(exercise?.Name ?? plan.ExerciseId)" disabled="@(exerciseIndex == session.Exercises.Count - 1)" @onclick="() => Move(session.Exercises, plan, 1)">↓</button>
-                                <button type="button" class="danger-button remove-draft-exercise" aria-label="Retirer @(exercise?.Name ?? plan.ExerciseId)" @onclick="() => session.Exercises.Remove(plan)">Retirer</button>
+                                <button type="button" class="secondary-button move-exercise-up" aria-label="@T("ProgramEditor.MoveUp", exercise?.Name ?? plan.ExerciseId)" disabled="@(exerciseIndex == 0)" @onclick="() => Move(session.Exercises, plan, -1)">↑</button>
+                                <button type="button" class="secondary-button move-exercise-down" aria-label="@T("ProgramEditor.MoveDown", exercise?.Name ?? plan.ExerciseId)" disabled="@(exerciseIndex == session.Exercises.Count - 1)" @onclick="() => Move(session.Exercises, plan, 1)">↓</button>
+                                <button type="button" class="danger-button remove-draft-exercise" aria-label="@T("ProgramEditor.RemoveExercise", exercise?.Name ?? plan.ExerciseId)" @onclick="() => session.Exercises.Remove(plan)">@T("ProgramEditor.Remove")</button>
                             </div>
                         </article>
                     }
-                    <label class="field">Ajouter un exercice<input class="draft-exercise-search" placeholder="Nom ou muscle…" @bind="session.Search" @bind:event="oninput" /></label>
-                    <div class="picker-list draft-exercise-picker" aria-label="Exercices disponibles pour @session.Name">
+                    <label class="field">@T("ProgramEditor.AddExercise")<input class="draft-exercise-search" placeholder="@T("ProgramEditor.SearchPlaceholder")" @bind="session.Search" @bind:event="oninput" /></label>
+                    <div class="picker-list draft-exercise-picker" aria-label="@T("ProgramEditor.AvailableExercises", session.Name)">
                         @foreach (var exercise in candidates)
                         {
                             <button type="button" class="picker-item" data-add-exercise="@exercise.Id" disabled="@(session.Exercises.Count >= 80)" @onclick="() => AddExercise(session, exercise.Id)"><span>@exercise.Name<small>@ExerciseMuscles.Primary(exercise)</small></span><b aria-hidden="true">＋</b></button>
                         }
-                        @if (candidates.Count == 0) { <p class="muted">Aucun exercice disponible pour cette recherche.</p> }
+                        @if (candidates.Count == 0) { <p class="muted">@T("ProgramEditor.NoExercise")</p> }
                     </div>
-                    @if (candidates.Count == 12) { <p class="muted">12 premiers résultats · précise le nom ou le muscle pour affiner la recherche.</p> }
+                    @if (candidates.Count == 12) { <p class="muted">@T("ProgramEditor.FirstResults")</p> }
                 </section>
             }
             @if (!draft.SingleSession)
             {
-                <button type="button" class="secondary-button add-draft-session" disabled="@(draft.Sessions.Count >= 100)" @onclick="() => AddSession(draft)">＋ Ajouter une séance</button>
-                <label class="program-share-choice"><input type="checkbox" class="draft-favorite" @bind="draft.Favorite" /> Ajouter aux favoris</label>
+                <button type="button" class="secondary-button add-draft-session" disabled="@(draft.Sessions.Count >= 100)" @onclick="() => AddSession(draft)">@T("ProgramEditor.AddSession")</button>
+                <label class="program-share-choice"><input type="checkbox" class="draft-favorite" @bind="draft.Favorite" />@T("ProgramEditor.AddFavorite")</label>
             }
         </fieldset>
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
-        <div class="settings-actions program-editor-actions"><button class="primary-button save-program" disabled="@_busy" @onclick="SaveAsync">@(_busy ? "Enregistrement…" : draft.SingleSession ? "Enregistrer la séance" : "Enregistrer le programme")</button><button class="secondary-button cancel-program" disabled="@_busy" @onclick="Close">Annuler</button></div>
+        <div class="settings-actions program-editor-actions"><button class="primary-button save-program" disabled="@_busy" @onclick="SaveAsync">@T(_busy ? "ProgramEditor.Saving" : draft.SingleSession ? "ProgramEditor.SaveSession" : "ProgramEditor.SaveProgram")</button><button class="secondary-button cancel-program" disabled="@_busy" @onclick="Close">@T("ProgramEditor.Cancel")</button></div>
     </section></div>
 }
 
@@ -106,7 +106,7 @@
     }
     private static void AddSession(ProgramDraft draft)
     {
-        if (draft.Sessions.Count < 100) draft.Sessions.Add(new ProgramSessionDraft { Name = $"Séance {draft.Sessions.Count + 1}" });
+        if (draft.Sessions.Count < 100) draft.Sessions.Add(new ProgramSessionDraft { Name = T("ProgramDraft.DefaultSessionName", draft.Sessions.Count + 1) });
     }
     private static void Move<T>(List<T> items, T item, int direction)
     {

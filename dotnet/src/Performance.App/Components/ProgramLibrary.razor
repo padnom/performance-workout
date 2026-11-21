@@ -2,10 +2,10 @@
 @using Performance.Domain
 @inject WorkoutStateService State
 
-<section class="program-library" aria-label="Bibliothèque des séances">
-    <input class="search-input library-search" type="search" aria-label="Rechercher une séance" placeholder="Rechercher : push, dos, presse…"
+<section class="program-library" aria-label="@T("Library.AriaLabel")">
+    <input class="search-input library-search" type="search" aria-label="@T("Library.SearchLabel")" placeholder="@T("Library.SearchPlaceholder")"
         value="@_search" @oninput="args => _search = args.Value?.ToString() ?? string.Empty" />
-    <div class="library-filters" role="group" aria-label="Filtrer les séances">
+    <div class="library-filters" role="group" aria-label="@T("Library.FilterLabel")">
         @foreach (var filter in Filters)
         {
             <button type="button" class="secondary-button library-filter" data-filter="@filter.Key" aria-pressed="@Pressed(_filter == filter.Key)" disabled="@Disabled" @onclick="() => _filter = filter.Key">@filter.Label</button>
@@ -26,10 +26,10 @@
             @foreach (var session in sessions)
             {
                 <div class="library-row" data-session="@session.Id" @key="session.Id">
-                    <button type="button" class="library-open" disabled="@Disabled" aria-label="Afficher @session.Name" @onclick="() => Selected.InvokeAsync(session)">
+                    <button type="button" class="library-open" disabled="@Disabled" aria-label="@T("Library.Show", session.Name)" @onclick="() => Selected.InvokeAsync(session)">
                         <strong>@session.Name</strong><small>@Summary(session)</small>
                     </button>
-                    <button type="button" class="secondary-button library-start" disabled="@Disabled" aria-label="Démarrer @session.Name" @onclick="() => Started.InvokeAsync(session)"><span aria-hidden="true">▶&#xFE0E;</span></button>
+                    <button type="button" class="secondary-button library-start" disabled="@Disabled" aria-label="@T("Library.Start", session.Name)" @onclick="() => Started.InvokeAsync(session)"><span aria-hidden="true">▶&#xFE0E;</span></button>
                 </div>
             }
         </section>
@@ -50,6 +50,9 @@
     private string _filter = AllFilter;
     private string _search = "";
 
+    /// <summary>The stored name of the personal workouts program is French; it is displayed in the current language.</summary>
+    public static string DisplayName(WorkoutProgram program) => program.Id == WorkoutStateService.SessionsProgramId ? T("Library.MyWorkouts") : program.Name;
+
     public sealed record LibraryGroup(WorkoutProgram Program, string Name, string Family, IReadOnlyList<WorkoutSession> Sessions);
 
     /// <summary>
@@ -60,13 +63,13 @@
     {
         var programs = state.Programs;
         var mine = programs.Where(program => !HiddenIds.Contains(program.Id) && !ClassicIds.Contains(program.Id) && !TargetedIds.Contains(program.Id))
-            .Select(program => new LibraryGroup(program, program.Name, MineFilter, program.Sessions));
+            .Select(program => new LibraryGroup(program, DisplayName(program), MineFilter, program.Sessions));
         var gym = state.GetRecommendedProgram(state.CurrentGym) is { } recommended
-            ? [new LibraryGroup(recommended, $"Programme {WorkoutUi.GymName(recommended.Gym)}", GymFilter, recommended.Sessions)]
+            ? [new LibraryGroup(recommended, T("Library.GymProgram", WorkoutUi.GymName(recommended.Gym)), GymFilter, recommended.Sessions)]
             : Array.Empty<LibraryGroup>();
         var families = programs.Where(program => ClassicIds.Contains(program.Id) || TargetedIds.Contains(program.Id))
             .OrderBy(program => TargetedIds.Contains(program.Id))
-            .Select(program => new LibraryGroup(program, program.Name, ClassicIds.Contains(program.Id) ? ClassicFilter : TargetedFilter, VariantsFor(program)));
+            .Select(program => new LibraryGroup(program, DisplayName(program), ClassicIds.Contains(program.Id) ? ClassicFilter : TargetedFilter, VariantsFor(program)));
         return mine.Concat(gym).Concat(families).Where(group => group.Sessions.Count > 0).ToArray();
     }
 
@@ -79,12 +82,12 @@
     {
         get
         {
-            yield return (AllFilter, "Tous");
-            yield return (FavoritesFilter, "★ Favoris");
-            yield return (MineFilter, "Mes séances");
+            yield return (AllFilter, T("Library.All"));
+            yield return (FavoritesFilter, T("Library.Favorites"));
+            yield return (MineFilter, T("Library.MyWorkouts"));
             if (State.GetRecommendedProgram(State.CurrentGym) is { } program) yield return (GymFilter, WorkoutUi.GymName(program.Gym));
-            yield return (ClassicFilter, "Classiques");
-            yield return (TargetedFilter, "Ciblées");
+            yield return (ClassicFilter, T("Library.Classic"));
+            yield return (TargetedFilter, T("Library.Targeted"));
         }
     }
 
@@ -116,12 +119,12 @@
     private string Summary(WorkoutSession session)
     {
         var muscles = Definitions(session).Select(ExerciseMuscles.Primary).Where(muscle => muscle.Length > 0).Distinct().Take(3);
-        return string.Join(" · ", muscles.Append($"{session.Exercises.Count} exercices"));
+        return string.Join(" · ", muscles.Append(T("Library.ExerciseCount", session.Exercises.Count)));
     }
 
     private string EmptyMessage => _filter == FavoritesFilter && _search.Length == 0
-        ? "Aucun favori pour l’instant. Touche l’étoile d’un programme pour le retrouver ici."
-        : "Aucune séance ne correspond. Essaie un autre mot ou un autre filtre.";
+        ? T("Library.NoFavorites")
+        : T("Library.NoMatch");
 
     private static string Pressed(bool selected) => selected ? "true" : "false";
 }
