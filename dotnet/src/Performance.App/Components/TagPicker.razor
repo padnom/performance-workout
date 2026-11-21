@@ -1,0 +1,40 @@
+@using Performance.Domain
+
+<fieldset class="tag-picker"><legend>Tags</legend>
+    <p class="muted tag-hint">Choisis au moins un muscle. Le premier muscle choisi est le muscle principal.</p>
+    @foreach (var group in Groups)
+    {
+        <div class="tag-category"><span>@group.Label</span><div>
+            @foreach (var tag in group.Tags)
+            { <button class="secondary-button" type="button" aria-pressed="@(Has(tag) ? "true" : "false")" disabled="@Disabled" @onclick="() => ToggleAsync(tag)">@tag</button> }
+        </div></div>
+    }
+</fieldset>
+<label class="field">Tags (modifiables, séparés par des virgules)<input aria-label="Tags séparés par des virgules" value="@Value" disabled="@Disabled"
+    @onchange="args => ValueChanged.InvokeAsync(args.Value?.ToString() ?? string.Empty)" placeholder="prise neutre, convergente…" /></label>
+
+@code {
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+
+    public static readonly (string Label, string[] Tags)[] Groups =
+    [
+        ("Muscle", ["Pectoraux", "Dos", "Grand dorsal", "Trapèzes", "Épaules", "Biceps", "Triceps", "Quadriceps", "Ischio-jambiers", "Fessiers", "Mollets", "Abdominaux"]),
+        ("Type", ["Polyarticulaire", "Isolation", "Unilatéral"]),
+        ("Équipement", ["Machine", "Poulie", "Haltères", "Barre", "Poids du corps"]),
+        ("Mouvement", ["Poussée", "Tirage vertical", "Tirage horizontal", "Flexion", "Extension", "Élévation"])
+    ];
+
+    public static IReadOnlyList<string> Parse(string value) => value
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .GroupBy(WorkoutUi.NormalizeName).Select(group => group.First()).ToArray();
+
+    public static string Format(IEnumerable<string> tags) => string.Join(", ", tags);
+
+    private bool Has(string tag) => Parse(Value).Any(item => WorkoutUi.NormalizeName(item) == WorkoutUi.NormalizeName(tag));
+
+    private Task ToggleAsync(string tag) => ValueChanged.InvokeAsync(Format(Has(tag)
+        ? Parse(Value).Where(item => WorkoutUi.NormalizeName(item) != WorkoutUi.NormalizeName(tag))
+        : Parse(Value).Append(tag)));
+}

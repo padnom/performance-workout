@@ -262,7 +262,7 @@ public sealed class WorkoutProgressTests
     public void Summarize_WithSecondaryTags_ShouldCountOnlyPrimaryArea()
     {
         // Arrange
-        var exercise = Press with { Tags = ["Triceps", "Épaules"] };
+        var exercise = Press with { Tags = ["Pectoraux", "Triceps", "Épaules"] };
 
         // Act
         var summary = WorkoutProgress.Summarize([Log()], [exercise], [], Now);
@@ -271,6 +271,27 @@ public sealed class WorkoutProgressTests
         summary.Areas.Single(area => area.Name == "Pectoraux").Count.ShouldBe(1);
         summary.Areas.Single(area => area.Name == "Triceps").Count.ShouldBe(0);
         summary.Areas.Single(area => area.Name == "Épaules").Count.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(new[] { "Machine", "Épaules", "Triceps" }, "", "Épaules")]
+    [InlineData(new[] { "biceps", "Dos" }, "Biceps", "Biceps")]
+    [InlineData(new[] { "Jambes", "Machine", "Ischio-jambiers" }, "", "Ischios / fessiers")]
+    [InlineData(new[] { "Grand dorsal" }, "Pectoraux", "Dos")]
+    [InlineData(new string[0], "Epaile", "Épaules")]
+    [InlineData(new string[0], "Haut pectoraux", "Pectoraux")]
+    public void Summarize_WithMuscleTags_ShouldTakeAreaFromTags(string[] tags, string stored, string expected)
+    {
+        // Arrange
+        var exercise = new Exercise { Id = "custom", Name = "Movement", MuscleGroup = stored, Tags = tags };
+        var history = new[] { Log() with { Exercises = [Performance("custom", null, "10", "10")] } };
+
+        // Act
+        var summary = WorkoutProgress.Summarize(history, [exercise], [], Now);
+
+        // Assert
+        summary.Areas.Single(area => area.Name == expected).Count.ShouldBe(1);
+        summary.Areas.Sum(area => area.Count).ShouldBe(1);
     }
 
     [Theory]

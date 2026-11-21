@@ -59,9 +59,14 @@ public static class WorkoutProgress
         if (Regex.IsMatch(exercise.Id, "rdl|legcurl|glute|hipthrust|backext|abduction", RegexOptions.CultureInvariant))
             return "Ischios / fessiers";
         if (Regex.IsMatch(exercise.Id, "squat|legpress|legext|split|goblet", RegexOptions.CultureInvariant)) return "Quadriceps";
-        if (exercise.MuscleGroup is "Jambes" or "Mollets") return "Quadriceps";
-        if (Regex.IsMatch(exercise.MuscleGroup, "Ischio|Fessier|Lombaire", RegexOptions.CultureInvariant)) return "Ischios / fessiers";
-        return AreaNames.Contains(exercise.MuscleGroup, StringComparer.Ordinal) ? exercise.MuscleGroup : null;
+        return ExerciseMuscles.Primary(exercise) switch
+        {
+            "Jambes" or "Mollets" or "Quadriceps" => "Quadriceps",
+            "Ischio-jambiers" or "Fessiers" or "Lombaires" => "Ischios / fessiers",
+            "Grand dorsal" or "Trapèzes" => "Dos",
+            "Arrière d’épaule" => "Épaules",
+            var muscle => AreaNames.Contains(muscle, StringComparer.Ordinal) ? muscle : null
+        };
     }
 
     private static bool MatchesGym(ExercisePerformance performance, string? gym) => gym is null || (performance.Gym ?? "One Air") == gym;
