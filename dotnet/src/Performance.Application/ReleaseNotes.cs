@@ -19,6 +19,14 @@ public static class ReleaseNotes
 
     public static IReadOnlyList<ReleaseNote> All { get; } =
     [
+        new(new Version(1, 6, 0),
+        [
+            "Programmes devient une bibliothèque : cherche une séance par nom, exercice ou muscle, filtre-la (favoris, mes séances, ta salle, classiques, ciblées) et démarre-la avec ▶.",
+            "Créer, importer et exporter des programmes sont regroupés dans le menu ⋯ de la page Programmes.",
+            "La semaine planifiée n’est plus affichée, sur l’Accueil comme dans Programmes. Tes données restent conservées.",
+            "Pendant une séance, ajoute ou supprime une série sur chaque exercice.",
+            "Exercices : le muscle se choisit avec les tags ; le champ « Muscle principal » disparaît et les fautes de frappe existantes sont reconnues.",
+        ]),
         new(new Version(1, 5, 2),
         [
             "Change de salle (et de thème) directement depuis le bouton en haut à droite, sans passer par les réglages.",
