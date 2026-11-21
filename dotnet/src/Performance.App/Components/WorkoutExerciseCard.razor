@@ -36,7 +36,7 @@
             </details>
         }
     </div>
-    <div class="set-grid set-labels"><span>Série</span><span>Dernière</span><span>kg</span><span>Reps</span><span aria-hidden="true">✓</span></div>
+    <div class="set-grid set-labels"><span>Série</span><span>Dernière</span><span>kg</span><span>Reps</span><span aria-hidden="true">✓</span><span></span></div>
     @for (var index = 0; index < Rows.Count; index++)
     {
         var setIndex = index;
@@ -47,21 +47,23 @@
             <input inputmode="decimal" aria-label="Charge série @(index + 1) @Exercise.Name" value="@FieldValue(setIndex, TrainingSetField.Weight, row.Weight)" @onchange="args => SaveFieldAsync(setIndex, TrainingSetField.Weight, args.Value?.ToString() ?? string.Empty)" />
             <input inputmode="numeric" aria-label="Répétitions série @(index + 1) @Exercise.Name" value="@FieldValue(setIndex, TrainingSetField.Reps, row.Reps)" @oninput="args => SaveFieldAsync(setIndex, TrainingSetField.Reps, args.Value?.ToString() ?? string.Empty)" />
             <span class="set-completed" aria-label="@(WorkoutUi.IsWorkoutSetCompleted(row) ? "Série renseignée" : "Série à renseigner")">@(WorkoutUi.IsWorkoutSetCompleted(row) ? "✓" : "○")</span>
+            <button class="remove-set" disabled="@(_busy || Rows.Count <= 1)" aria-label="Supprimer la série @(index + 1) @Exercise.Name" @onclick="() => RunAsync(() => State.RemoveSetAsync(Exercise.Id, setIndex))">×</button>
         </div>
     }
+    <button class="secondary-button add-set" disabled="@(_busy || Rows.Count >= 20)" aria-label="Ajouter une série @Exercise.Name" @onclick="() => RunAsync(() => State.AddSetAsync(Exercise.Id))">+ Ajouter une série</button>
     @if (State.Data.ActiveWorkout is { RestEnd: { } end } active && active.RestExerciseId == Exercise.Id)
     {
         <div class="mini-rest-timer" role="status">
             <span>Repos</span><strong><LiveTimer Deadline="end" /></strong>
-            <button class="secondary-button" disabled="@_busy" aria-label="Ajouter 30 secondes @Exercise.Name" @onclick="() => RunRestAsync(() => State.ExtendRestAsync())">+30 s</button>
-            <button class="secondary-button" disabled="@_busy" aria-label="Arrêter le timer @Exercise.Name" @onclick="() => RunRestAsync(() => State.StopRestAsync())">×</button>
+            <button class="secondary-button" disabled="@_busy" aria-label="Ajouter 30 secondes @Exercise.Name" @onclick="() => RunAsync(() => State.ExtendRestAsync())">+30 s</button>
+            <button class="secondary-button" disabled="@_busy" aria-label="Arrêter le timer @Exercise.Name" @onclick="() => RunAsync(() => State.StopRestAsync())">×</button>
         </div>
     }
     <div class="exercise-rest-controls">
         <label>Repos<select aria-label="Durée de repos @Exercise.Name" value="@RestSeconds" disabled="@_busy" @onchange="ChangeRestAsync">
             @foreach (var seconds in RestOptions) { <option value="@seconds">@FormatDuration(seconds)</option> }
         </select></label>
-        <button class="secondary-button rest-button" disabled="@_busy" @onclick="() => RunRestAsync(() => State.StartRestAsync(Exercise.Id))">Démarrer le repos</button>
+        <button class="secondary-button rest-button" disabled="@_busy" @onclick="() => RunAsync(() => State.StartRestAsync(Exercise.Id))">Démarrer le repos</button>
     </div>
     @if (!string.IsNullOrWhiteSpace(Exercise.Link) && Uri.TryCreate(Exercise.Link, UriKind.Absolute, out var link) && (link.Scheme == "https" || link.Scheme == "http"))
     {
@@ -132,8 +134,8 @@
         finally { _pendingOperations--; await Changed.InvokeAsync(); }
     }
     private Task ChangeRestAsync(ChangeEventArgs args) => int.TryParse(args.Value?.ToString(), out var seconds)
-        ? RunRestAsync(() => State.SetRestDurationAsync(Exercise.Id, seconds)) : Task.CompletedTask;
-    private async Task RunRestAsync(Func<Task<WorkoutResult>> action)
+        ? RunAsync(() => State.SetRestDurationAsync(Exercise.Id, seconds)) : Task.CompletedTask;
+    private async Task RunAsync(Func<Task<WorkoutResult>> action)
     {
         _pendingOperations++;
         try

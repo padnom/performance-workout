@@ -253,6 +253,46 @@ public sealed class WorkoutEditingUiTests : IDisposable
     }
 
     [Fact]
+    public async Task AddSet_AppendsRowWithPreviousWeight()
+    {
+        await StartAsync();
+        var page = _context.Render<Workout>();
+        page.Find("input[aria-label^='Charge série 4']").Change("60");
+
+        page.Find(".add-set").Click();
+
+        page.FindAll(".set-row").Count.ShouldBe(5);
+        page.Find("input[aria-label^='Charge série 5']").GetAttribute("value").ShouldBe("60");
+        page.Find("input[aria-label^='Répétitions série 5']").GetAttribute("value").ShouldBe("");
+    }
+
+    [Fact]
+    public async Task RemoveSet_DeletesTargetedRowAndKeepsOthers()
+    {
+        await StartAsync();
+        var page = _context.Render<Workout>();
+        page.Find("input[aria-label^='Charge série 1']").Change("40");
+        page.Find("input[aria-label^='Charge série 2']").Change("45");
+
+        page.Find("button[aria-label^='Supprimer la série 1 ']").Click();
+
+        page.FindAll(".set-row").Count.ShouldBe(3);
+        page.Find("input[aria-label^='Charge série 1']").GetAttribute("value").ShouldBe("45");
+    }
+
+    [Fact]
+    public async Task RemoveSet_WithSingleRow_DisablesRemoval()
+    {
+        await StartAsync();
+        var page = _context.Render<Workout>();
+
+        for (var count = 4; count > 1; count--) page.Find($"button[aria-label^='Supprimer la série {count} ']").Click();
+
+        page.FindAll(".set-row").Count.ShouldBe(1);
+        page.Find(".remove-set").HasAttribute("disabled").ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task AndroidBack_ClosesNestedEditorThenPickerThenReturnsHomeWithDraft()
     {
         await StartAsync();
