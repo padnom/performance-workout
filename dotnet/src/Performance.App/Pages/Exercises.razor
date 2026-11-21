@@ -3,51 +3,51 @@
 @using Performance.Domain
 @inject WorkoutStateService State
 
-<PageTitle>Exercices · Performance</PageTitle>
-<p class="eyebrow">BIBLIOTHÈQUE</p>
+<PageTitle>@T("Exercises.PageTitle")</PageTitle>
+<p class="eyebrow">@T("Exercises.Eyebrow")</p>
 <div class="page-heading">
-    <div><h1>Exercices</h1><p class="muted">Ton catalogue, tes variantes de salle et tes repères.</p></div>
-    <button class="primary-button" disabled="@_loading" @onclick="NewExercise">＋ Créer</button>
+    <div><h1>@T("Exercises.Title")</h1><p class="muted">@T("Exercises.Subtitle")</p></div>
+    <button class="primary-button" disabled="@_loading" @onclick="NewExercise">＋ @T("Exercises.Create")</button>
 </div>
 @if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
-@if (_loading) { <p class="loading">Chargement du catalogue…</p> }
+@if (_loading) { <p class="loading">@T("Exercises.Loading")</p> }
 @if (!_loading)
 {
-    <input class="search-input" aria-label="Rechercher par nom, muscle ou tag" placeholder="Nom, muscle, tag…" @bind="_search" @bind:event="oninput" />
-    <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
-    <p class="muted results-count">@FilteredExercises.Count() exercice(s)</p>
+    <input class="search-input" aria-label="@T("Exercises.SearchLabel")" placeholder="@T("Exercises.SearchPlaceholder")" @bind="_search" @bind:event="oninput" />
+    <label class="field gym-field">@T("Exercises.FilterGym")<select @bind="_gym"><option value="">@T("Exercises.AllGyms")</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
+    <p class="muted results-count">@T("Exercises.Count", FilteredExercises.Count())</p>
     <div class="card-list">
     @foreach (var exercise in FilteredExercises)
     {
         <article class="panel catalog-card">
             <h2>@exercise.Name</h2>
-            <p class="muted">@ExerciseMuscles.Primary(exercise) · @exercise.Sets séries · @exercise.RepTarget · repos @exercise.Rest</p>
+            <p class="muted">@T("Exercises.Summary", WorkoutUi.TagName(ExerciseMuscles.Primary(exercise)), exercise.Sets, exercise.RepTarget, exercise.Rest)</p>
             <div class="tag-list">
                 @foreach (var gym in exercise.Variants.Select(variant => variant.Gym).Distinct()) { <b>@WorkoutUi.GymName(gym)</b> }
-                @foreach (var tag in exercise.Tags) { <span>#@tag</span> }
-                @if (exercise.IsCustom) { <span>Personnel</span> }
+                @foreach (var tag in exercise.Tags) { <span>#@WorkoutUi.TagName(tag)</span> }
+                @if (exercise.IsCustom) { <span>@T("Exercises.Custom")</span> }
             </div>
-            <button class="secondary-button" @onclick="() => EditExercise(exercise)">Modifier</button>
+            <button class="secondary-button" @onclick="() => EditExercise(exercise)">@T("Exercises.Edit")</button>
         </article>
     }
     </div>
-    @if (!FilteredExercises.Any()) { <section class="panel empty-state"><h3>Aucun exercice trouvé</h3><p class="muted">Essaie un autre nom, muscle ou filtre de salle.</p></section> }
+    @if (!FilteredExercises.Any()) { <section class="panel empty-state"><h3>@T("Exercises.NoneFound")</h3><p class="muted">@T("Exercises.NoneFoundHint")</p></section> }
 }
 @if (_editing)
 {
     <div class="modal-backdrop"><section class="panel editor-dialog" role="dialog" aria-modal="true" aria-labelledby="exercise-editor-title">
-        <h2 id="exercise-editor-title">@(_original is null ? "Créer un exercice" : "Modifier l’exercice")</h2>
+        <h2 id="exercise-editor-title">@(_original is null ? T("Exercises.CreateTitle") : T("Exercises.EditTitle"))</h2>
         <form @onsubmit="SaveAsync" @onsubmit:preventDefault>
-            <label class="field">Nom<input required maxlength="150" @bind="_name" /></label>
+            <label class="field">@T("Exercises.Name")<input required maxlength="150" @bind="_name" /></label>
             <div class="field-pair">
-                <label class="field">Séries<input type="number" min="1" max="20" @bind="_sets" /></label>
-                <label class="field">Cible de répétitions<input @bind="_target" placeholder="8–12" /></label>
+                <label class="field">@T("Exercises.Sets")<input type="number" min="1" max="20" @bind="_sets" /></label>
+                <label class="field">@T("Exercises.RepTarget")<input @bind="_target" placeholder="8–12" /></label>
             </div>
-            <label class="field">Repos (secondes)<input type="number" min="15" max="600" @bind="_restSeconds" /></label>
-            <label class="field">Lien du mouvement<input type="url" @bind="_link" placeholder="https://…" /></label>
+            <label class="field">@T("Exercises.RestSeconds")<input type="number" min="15" max="600" @bind="_restSeconds" /></label>
+            <label class="field">@T("Exercises.Link")<input type="url" @bind="_link" placeholder="https://…" /></label>
             <TagPicker @bind-Value="_tags" Disabled="_busy" />
             <fieldset class="gym-checkboxes">
-                <legend>Salles disponibles</legend>
+                <legend>@T("Exercises.GymsAvailable")</legend>
                 @foreach (var gym in WorkoutUi.Gyms)
                 {
                     <label><input type="checkbox" checked="@_selectedGyms.Contains(gym)" @onchange="() => ToggleGym(gym)" />@WorkoutUi.GymName(gym)</label>
@@ -56,17 +56,17 @@
             @if (SimilarExercises.Any())
             {
                 <aside class="notice">
-                    <strong>Un exercice similaire existe déjà</strong><p>Utilise-le pour conserver un historique unique.</p>
+                    <strong>@T("Exercises.SimilarTitle")</strong><p>@T("Exercises.SimilarHint")</p>
                     @foreach (var exercise in SimilarExercises.Take(3))
                     {
-                        <button class="secondary-button" type="button" @onclick="() => EditExercise(exercise)">Utiliser @exercise.Name</button>
+                        <button class="secondary-button" type="button" @onclick="() => EditExercise(exercise)">@T("Exercises.Use", exercise.Name)</button>
                     }
                 </aside>
             }
             @if (!string.IsNullOrEmpty(_editorMessage)) { <p class="notice" role="alert">@_editorMessage</p> }
             <div class="settings-actions">
-                <button class="primary-button" type="submit" disabled="@_busy">Enregistrer</button>
-                <button class="secondary-button" type="button" disabled="@_busy" @onclick="() => _editing = false">Annuler</button>
+                <button class="primary-button" type="submit" disabled="@_busy">@T("Exercises.Save")</button>
+                <button class="secondary-button" type="button" disabled="@_busy" @onclick="() => _editing = false">@T("Exercises.Cancel")</button>
             </div>
         </form>
     </section></div>
@@ -92,13 +92,13 @@
         .Select(group => group.First()).OrderBy(exercise => exercise.Name);
     private IEnumerable<Exercise> FilteredExercises => Catalog.Where(exercise =>
         (_gym.Length == 0 || WorkoutUi.ExerciseGyms(exercise).Contains(_gym)) &&
-        $"{exercise.Name} {ExerciseMuscles.Primary(exercise)} {string.Join(' ', exercise.Tags)}".Contains(_search, StringComparison.CurrentCultureIgnoreCase));
+        $"{exercise.Name} {ExerciseMuscles.Primary(exercise)} {WorkoutUi.TagName(ExerciseMuscles.Primary(exercise))} {string.Join(' ', exercise.Tags)} {string.Join(' ', exercise.Tags.Select(WorkoutUi.TagName))}".Contains(_search, StringComparison.CurrentCultureIgnoreCase));
     private IEnumerable<Exercise> SimilarExercises => _name.Trim().Length < 3 ? [] : Catalog
         .Where(exercise => exercise.Id != _original?.Id && WorkoutUi.NormalizeName(exercise.Name) == WorkoutUi.NormalizeName(_name));
     protected override async Task OnInitializedAsync()
     {
         try { await State.InitializeAsync(); }
-        catch { _message = "Impossible de charger le catalogue. Rouvre l’application pour réessayer."; }
+        catch { _message = T("Exercises.LoadFailed"); }
         finally { _loading = false; }
     }
     private void NewExercise()
@@ -130,7 +130,7 @@
             var result = await State.SaveExerciseAsync(BuildExercise());
             if (!result.IsSuccess) { _editorMessage = WorkoutUi.Error(result.Error); return; }
             _editing = false;
-            _message = "Exercice enregistré.";
+            _message = T("Exercises.Saved");
         }
         catch { _editorMessage = WorkoutUi.Error(null); }
         finally { _busy = false; }
@@ -138,10 +138,10 @@
     private string ValidationMessage()
     {
         if (string.IsNullOrWhiteSpace(_name) || _sets is < 1 or > 20 || _restSeconds is < 15 or > 600 || _selectedGyms.Count == 0)
-            return "Renseigne un nom, 1 à 20 séries, un repos de 15 à 600 secondes et au moins une salle.";
-        if (!TagPicker.Parse(_tags).Any(ExerciseMuscles.IsMuscle)) return "Choisis au moins un muscle dans les tags.";
+            return T("Exercises.ValidationFields");
+        if (!TagPicker.Parse(_tags).Any(ExerciseMuscles.IsMuscle)) return T("Exercises.ValidationMuscle");
         if (_link.Length > 0 && (!Uri.TryCreate(_link, UriKind.Absolute, out var link) || (link.Scheme != "https" && link.Scheme != "http")))
-            return "Le lien doit commencer par https:// ou http://.";
+            return T("Exercises.ValidationLink");
         return "";
     }
     private Exercise BuildExercise() => (_original ?? new Exercise

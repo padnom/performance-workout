@@ -10,26 +10,26 @@
 {
     var selectedSession = State.ResolveSessionForGym(session, _gym);
     <div class="modal-backdrop"><section class="panel confirm-dialog @(_preview ? "start-preview" : "")" role="dialog" aria-modal="true" aria-labelledby="start-title">
-        <h2 id="start-title">@(_preview ? session.Name : "Démarrer la séance ?")</h2>
-        <p class="muted">@(_preview ? session.Focus : $"{session.Name}. Le chronomètre démarrera après confirmation.")</p>
-        <label class="field gym-field">Salle de cette séance<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
+        <h2 id="start-title">@(_preview ? session.Name : T("SessionStart.Title"))</h2>
+        <p class="muted">@(_preview ? session.Focus : T("SessionStart.Hint", session.Name))</p>
+        <label class="field gym-field">@T("SessionStart.GymField")<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
         @if (_preview)
         {
             <ol>@foreach (var plan in selectedSession.Exercises)
-            { <li>@(State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId)?.Name ?? plan.ExerciseId)<span class="muted">@(plan.Sets ?? 4) séries · @plan.RepTarget · repos @plan.Rest</span></li> }</ol>
-            @if (selectedSession.OptionalExercises is { Count: > 0 } optionalExercises) { <p class="muted">@optionalExercises.Count exercices optionnels à ajouter en fin de séance.</p> }
+            { <li>@(State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId)?.Name ?? plan.ExerciseId)<span class="muted">@T("SessionStart.PlanLine", plan.Sets ?? 4, plan.RepTarget, plan.Rest)</span></li> }</ol>
+            @if (selectedSession.OptionalExercises is { Count: > 0 } optionalExercises) { <p class="muted">@T("SessionStart.OptionalNote", optionalExercises.Count)</p> }
         }
         @if (session.Id != "free")
         {
             <div class="settings-actions">
-                <button class="secondary-button export-pending-session" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareFileAsync)">Exporter cette séance</button>
-                <button class="secondary-button share-pending-session-text" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareTextAsync)">Partager en texte</button>
+                <button class="secondary-button export-pending-session" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareFileAsync)">@T("SessionStart.Export")</button>
+                <button class="secondary-button share-pending-session-text" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareTextAsync)">@T("SessionStart.ShareText")</button>
             </div>
         }
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
         <div class="settings-actions">
-            <button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_preview ? "Démarrer cette séance" : "Confirmer")</button>
-            <button class="secondary-button" disabled="@_busy" @onclick="Close">Retour</button>
+            <button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_preview ? T("SessionStart.StartThis") : T("SessionStart.Confirm"))</button>
+            <button class="secondary-button" disabled="@_busy" @onclick="Close">@T("SessionStart.Back")</button>
         </div>
     </section></div>
 }

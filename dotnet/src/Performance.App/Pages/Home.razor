@@ -3,15 +3,15 @@
 @using Performance.Domain
 @inject WorkoutStateService State
 
-<PageTitle>Accueil · Performance</PageTitle>
-<p class="eyebrow">ENTRAÎNEMENT</p>
-<div class="page-heading"><div><h1>Prêt à progresser ?</h1><p class="muted">Chaque série compte. Garde le rythme.</p></div></div>
-@if (_loading) { <p class="loading" role="status">Chargement de tes données…</p> }
+<PageTitle>@T("Home.PageTitle")</PageTitle>
+<p class="eyebrow">@T("Home.Eyebrow")</p>
+<div class="page-heading"><div><h1>@T("Home.Title")</h1><p class="muted">@T("Home.Tagline")</p></div></div>
+@if (_loading) { <p class="loading" role="status">@T("Home.Loading")</p> }
 @if (!_loading)
 {
     @if (State.Data.ActiveWorkout?.Session is { } active)
     {
-        <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
+        <a class="resume-workout" href="/seance"><span>@T("Home.InProgress")<strong>@(active.Name == "Séance libre" ? T("Home.FreeWorkoutName") : active.Name)</strong></span><b>@T("Home.Resume")</b></a>
     }
     <Dashboard Free="FreeWorkout" Disabled="@(State.Data.ActiveWorkout is not null)" />
     <SessionStart @ref="_starter" />
@@ -25,8 +25,8 @@
     protected override async Task OnInitializedAsync()
     {
         try { await State.InitializeAsync(); }
-        catch { _message = "Impossible de charger les données. Rouvre l’application pour réessayer."; }
+        catch { _message = T("Home.LoadFailed"); }
         finally { _loading = false; }
     }
-    private void FreeWorkout() => _starter?.Select(new WorkoutSession { Id = "free", Name = "Séance libre", Focus = "Ajoute les exercices de ton choix" }, confirmOnly: true);
+    private void FreeWorkout() => _starter?.Select(new WorkoutSession { Id = "free", Name = "Séance libre", Focus = T("Home.FreeWorkoutFocus") }, confirmOnly: true);
 }

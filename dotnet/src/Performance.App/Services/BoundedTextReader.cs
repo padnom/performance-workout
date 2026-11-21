@@ -1,4 +1,5 @@
 using System.Text;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Services;
 
@@ -11,7 +12,7 @@ public static class BoundedTextReader
         var content = new StringBuilder();
         while (await reader.ReadAsync(buffer.AsMemory(), cancellationToken) is var count && count > 0)
         {
-            if (content.Length + count > maximumCharacters) throw new FormatException("Ce fichier est trop volumineux.");
+            if (content.Length + count > maximumCharacters) throw new FormatException(T("Service.BoundedTextReader.TooLarge"));
             content.Append(buffer, 0, count);
         }
         return content.ToString();

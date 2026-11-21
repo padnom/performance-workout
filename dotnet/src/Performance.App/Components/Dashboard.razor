@@ -3,25 +3,25 @@
 @inject WorkoutStateService State
 @inject TimeProvider Clock
 
-<section class="dashboard" aria-label="Accueil entraînement">
+<section class="dashboard" aria-label="@T("Dashboard.Aria")">
     <div class="dashboard-metrics">
-        <section class="dashboard-metric weekly-metric" aria-label="Séances des 7 derniers jours">
-            <p class="eyebrow">CETTE SEMAINE</p>
-            <strong>@_weekCount <small>@(_weekCount == 1 ? "séance" : "séances")</small></strong>
-            <span>@(_weekCount >= 4 ? "Objectif atteint ✓" : $"{4 - _weekCount} avant l’objectif")</span>
+        <section class="dashboard-metric weekly-metric" aria-label="@T("Dashboard.WeekAria")">
+            <p class="eyebrow">@T("Dashboard.ThisWeek")</p>
+            <strong>@_weekCount <small>@(_weekCount == 1 ? T("Dashboard.WorkoutOne") : T("Dashboard.WorkoutMany"))</small></strong>
+            <span>@(_weekCount >= 4 ? T("Dashboard.GoalReached") : T("Dashboard.ToGoal", 4 - _weekCount))</span>
         </section>
-        <section class="dashboard-metric sets-metric" aria-label="Séries des 7 derniers jours">
-            <p class="eyebrow">SÉRIES · 7 J</p>
-            <strong>@_weekSets <small>séries</small></strong>
-            <span>@(_weekSets == 0 ? "Commence ta 1re séance" : "Séries avec répétitions enregistrées")</span>
+        <section class="dashboard-metric sets-metric" aria-label="@T("Dashboard.SetsAria")">
+            <p class="eyebrow">@T("Dashboard.SetsEyebrow")</p>
+            <strong>@_weekSets <small>@T("Dashboard.Sets")</small></strong>
+            <span>@(_weekSets == 0 ? T("Dashboard.StartFirst") : T("Dashboard.SetsRecorded"))</span>
         </section>
     </div>
     <button class="free-workout-card" disabled="@Disabled" @onclick="() => Free.InvokeAsync()">
         <span class="free-icon" aria-hidden="true">＋</span>
-        <span><strong>Séance libre</strong><small>Recherche et ajoute tes exercices à la volée</small></span>
+        <span><strong>@T("Dashboard.FreeWorkout")</strong><small>@T("Dashboard.FreeWorkoutHint")</small></span>
         <b aria-hidden="true">→</b>
     </button>
-    <a class="action-link choose-session" href="/programmes">Choisir une séance →</a>
+    <a class="action-link choose-session" href="/programmes">@T("Dashboard.ChooseWorkout")</a>
 </section>
 
 @code {

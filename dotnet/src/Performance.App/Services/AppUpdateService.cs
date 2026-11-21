@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using Performance.Application;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Services;
 
@@ -38,26 +39,26 @@ public sealed class AppUpdateService(HttpClient http, IApkInstaller installer, T
         try
         {
             if (Status is AppUpdateStatus.Downloading or AppUpdateStatus.Installing) return;
-            Set(AppUpdateStatus.Checking, userInitiated ? "Recherche d’une mise à jour…" : Message);
+            Set(AppUpdateStatus.Checking, userInitiated ? T("Service.AppUpdateService.Checking") : Message);
             _lastCheck = clock.GetUtcNow();
             var release = await FetchLatestAsync(cancellationToken);
             if (release is not null && AppReleaseParser.IsNewer(release, installer.InstalledVersion))
             {
                 if (Available?.Version != release.Version) { Dismissed = false; _downloadedPath = null; }
                 Available = release;
-                Set(AppUpdateStatus.Available, $"Version {release.Version} disponible.");
+                Set(AppUpdateStatus.Available, T("Service.AppUpdateService.Available", release.Version));
             }
             else
             {
                 Available = null;
-                Set(AppUpdateStatus.UpToDate, userInitiated ? $"Application à jour ({installer.InstalledVersion})." : "");
+                Set(AppUpdateStatus.UpToDate, userInitiated ? T("Service.AppUpdateService.UpToDate", installer.InstalledVersion) : "");
             }
         }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException or IOException)
         {
             diagnostics?.Record("update.check", TimeSpan.Zero, userInitiated ? exception : null);
             Set(Available is null ? AppUpdateStatus.Idle : AppUpdateStatus.Available,
-                userInitiated ? "Vérification impossible : vérifie ta connexion Internet." : Message);
+                userInitiated ? T("Service.AppUpdateService.CheckFailed") : Message);
         }
         finally { _gate.Release(); }
     }
@@ -72,20 +73,20 @@ public sealed class AppUpdateService(HttpClient http, IApkInstaller installer, T
             Dismissed = false;
             if (_downloadedPath is null || !File.Exists(_downloadedPath))
                 _downloadedPath = await DownloadAsync(release, cancellationToken);
-            Set(AppUpdateStatus.Installing, "Confirme l’installation dans la fenêtre Android. Tes données sont conservées.");
+            Set(AppUpdateStatus.Installing, T("Service.AppUpdateService.Installing"));
             var result = await installer.InstallAsync(_downloadedPath);
             if (result == ApkInstallResult.PermissionRequired)
-                Set(AppUpdateStatus.PermissionRequired, "Autorise « Performance » à installer des applications, puis reviens ici : l’installation reprendra.");
+                Set(AppUpdateStatus.PermissionRequired, T("Service.AppUpdateService.PermissionRequired"));
             else if (result == ApkInstallResult.Unavailable)
-                Set(AppUpdateStatus.Failed, "L’installateur Android n’a pas pu être ouvert.");
+                Set(AppUpdateStatus.Failed, T("Service.AppUpdateService.InstallerFailed"));
         }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException or IOException or InvalidDataException)
         {
             diagnostics?.Record("update.install", TimeSpan.Zero, exception);
             _downloadedPath = null;
             Set(AppUpdateStatus.Failed, exception is InvalidDataException
-                ? "Le fichier téléchargé est invalide. Réessaie plus tard."
-                : "Téléchargement interrompu : vérifie ta connexion et réessaie.");
+                ? T("Service.AppUpdateService.InvalidFile")
+                : T("Service.AppUpdateService.DownloadInterrupted"));
         }
         finally { _gate.Release(); }
     }
@@ -115,7 +116,7 @@ public sealed class AppUpdateService(HttpClient http, IApkInstaller installer, T
     private async Task<string> DownloadAsync(AppRelease release, CancellationToken cancellationToken)
     {
         Progress = 0;
-        Set(AppUpdateStatus.Downloading, $"Téléchargement de la version {release.Version}…");
+        Set(AppUpdateStatus.Downloading, T("Service.AppUpdateService.Downloading", release.Version));
         var directory = Path.Combine(installer.DownloadDirectory, "updates");
         if (Directory.Exists(directory)) Directory.Delete(directory, true);
         Directory.CreateDirectory(directory);

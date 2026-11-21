@@ -8,28 +8,28 @@
 @inject NavigationManager Navigation
 @inject IServiceProvider Services
 
-<PageTitle>Séance en cours · Performance</PageTitle>
-@if (_loading) { <p class="loading" role="status">Chargement de ta séance…</p> }
+<PageTitle>@T("Workout.PageTitle")</PageTitle>
+@if (_loading) { <p class="loading" role="status">@T("Workout.Loading")</p> }
 @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
 @if (!_loading && Active?.Session is { } session)
 {
     <div class="workout-page">
-        <aside class="workout-toolbar" aria-label="Suivi de la séance">
-            <div class="workout-clock"><span>Temps total</span><strong class="workout-elapsed"><LiveTimer StartedAt="Active.StartedAt" /></strong></div>
-            <div class="workout-completion"><strong>@CompletedCount / @TotalCount</strong><span>séries</span></div>
-            <button class="primary-button finish-workout" aria-label="Terminer la séance" disabled="@_busy" @onclick="() => _confirmation = Confirmation.Finish">Terminer</button>
+        <aside class="workout-toolbar" aria-label="@T("Workout.ToolbarLabel")">
+            <div class="workout-clock"><span>@T("Workout.TotalTime")</span><strong class="workout-elapsed"><LiveTimer StartedAt="Active.StartedAt" /></strong></div>
+            <div class="workout-completion"><strong>@CompletedCount / @TotalCount</strong><span>@T("Workout.SetsUnit")</span></div>
+            <button class="primary-button finish-workout" aria-label="@T("Workout.FinishLabel")" disabled="@_busy" @onclick="() => _confirmation = Confirmation.Finish">@T("Workout.Finish")</button>
             @if (Active.RestEnd is { } deadline)
             {
-                <div class="rest-banner" role="status"><div><span>@RestExerciseName</span><strong>Repos · <LiveTimer Deadline="deadline" Expired="() => CompleteRestAsync(deadline)" /></strong></div>
-                    <button class="secondary-button" disabled="@_busy" aria-label="Ajouter 30 secondes de repos" @onclick="() => RunAsync(() => State.ExtendRestAsync())">+30 s</button>
-                    <button class="secondary-button" disabled="@_busy" aria-label="Arrêter le repos" @onclick="() => RunAsync(() => State.StopRestAsync())">×</button>
+                <div class="rest-banner" role="status"><div><span>@RestExerciseName</span><strong>@T("Workout.RestPrefix") <LiveTimer Deadline="deadline" Expired="() => CompleteRestAsync(deadline)" /></strong></div>
+                    <button class="secondary-button" disabled="@_busy" aria-label="@T("Workout.ExtendRestLabel")" @onclick="() => RunAsync(() => State.ExtendRestAsync())">+30 s</button>
+                    <button class="secondary-button" disabled="@_busy" aria-label="@T("Workout.StopRestLabel")" @onclick="() => RunAsync(() => State.StopRestAsync())">×</button>
                 </div>
             }
         </aside>
-        <div class="page-heading workout-page-heading"><div><p class="eyebrow">SÉANCE EN COURS</p><h1>@session.Name</h1></div>
-            <button class="secondary-button" aria-label="Consulter l’historique sans quitter la séance" @onclick="() => _historyOpen = true">◷ Historique</button>
+        <div class="page-heading workout-page-heading"><div><p class="eyebrow">@T("Workout.Eyebrow")</p><h1>@session.Name</h1></div>
+            <button class="secondary-button" aria-label="@T("Workout.HistoryLabel")" @onclick="() => _historyOpen = true">@T("Workout.History")</button>
         </div>
-        <label class="field gym-field">Salle de cette séance<select value="@Active.DefaultGym" disabled="@_busy" @onchange="ChangeGymAsync">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
+        <label class="field gym-field">@T("Workout.GymField")<select value="@Active.DefaultGym" disabled="@_busy" @onchange="ChangeGymAsync">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
         @foreach (var plan in session.Exercises.OrderBy(exercise => exercise.Order))
         {
             var exercise = State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId);
@@ -37,39 +37,39 @@
             {
                 <WorkoutExerciseCard @key="exercise.Id" Exercise="exercise" Plan="plan" Number="@(plan.Order + 1)" Error="SetMessage" Changed="RefreshWorkout" Replace="OpenReplace" Edit="OpenEdit" Remove="OpenRemove" />
             }
-            else { <p class="notice">Exercice indisponible : @plan.ExerciseId. Les données restent conservées.</p> }
+            else { <p class="notice">@T("Workout.ExerciseUnavailable", plan.ExerciseId)</p> }
         }
         @if (session.OptionalExercises is { Count: > 0 } optionalExercises)
         {
             var isAbs = optionalExercises.All(plan => State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId) is { } definition && ExerciseMuscles.Primary(definition) == "Abdominaux");
-            <section class="panel optional-abs" aria-label="Abdos optionnels">
-                <p class="eyebrow">FIN DE SÉANCE · OPTIONNEL</p><h2>@(isAbs && optionalExercises.Count == 2 ? "Deux exercices d’abdos" : $"{optionalExercises.Count} exercices optionnels")</h2>
-                <p class="muted">Ajoute ce bloc si tu le souhaites. Tu peux modifier chaque exercice après ajout.</p>
-                <ul>@foreach (var plan in optionalExercises) { var exercise = State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId); <li>@(exercise?.Name ?? plan.ExerciseId)<small class="muted"> · @(plan.Sets ?? exercise?.Sets ?? 2) séries · @(plan.RepTarget ?? exercise?.RepTarget) · repos @(plan.Rest ?? exercise?.Rest)</small></li> }</ul>
-                <button class="secondary-button add-optional-abs" disabled="@_busy" @onclick="() => RunAsync(() => State.AddOptionalExercisesAsync())">＋ @(isAbs ? "Ajouter les abdos" : "Ajouter le bloc optionnel")</button>
+            <section class="panel optional-abs" aria-label="@T("Workout.OptionalAbsLabel")">
+                <p class="eyebrow">@T("Workout.OptionalEyebrow")</p><h2>@(isAbs && optionalExercises.Count == 2 ? T("Workout.TwoAbs") : T("Workout.OptionalCount", optionalExercises.Count))</h2>
+                <p class="muted">@T("Workout.OptionalHint")</p>
+                <ul>@foreach (var plan in optionalExercises) { var exercise = State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId); <li>@(exercise?.Name ?? plan.ExerciseId)<small class="muted"> · @T("Workout.OptionalLine", plan.Sets ?? exercise?.Sets ?? 2, plan.RepTarget ?? exercise?.RepTarget, plan.Rest ?? exercise?.Rest)</small></li> }</ul>
+                <button class="secondary-button add-optional-abs" disabled="@_busy" @onclick="() => RunAsync(() => State.AddOptionalExercisesAsync())">＋ @(isAbs ? T("Workout.AddAbs") : T("Workout.AddOptionalBlock"))</button>
             </section>
         }
-        <button class="secondary-button add-workout-exercise" disabled="@_busy" @onclick="OpenAdd">＋ Ajouter un exercice</button>
-        <button class="danger-button abandon-workout" disabled="@_busy" @onclick="() => _confirmation = Confirmation.Cancel">Abandonner la séance</button>
+        <button class="secondary-button add-workout-exercise" disabled="@_busy" @onclick="OpenAdd">＋ @T("Workout.AddExercise")</button>
+        <button class="danger-button abandon-workout" disabled="@_busy" @onclick="() => _confirmation = Confirmation.Cancel">@T("Workout.Abandon")</button>
     </div>
 }
-@if (!_loading && Active is null) { <section class="panel empty-state"><h2>Aucune séance en cours</h2><a class="action-link" href="/">Retour à l’accueil →</a></section> }
+@if (!_loading && Active is null) { <section class="panel empty-state"><h2>@T("Workout.NoneActive")</h2><a class="action-link" href="/">@T("Workout.BackHome")</a></section> }
 @if (_historyOpen && Active is not null)
 {
     <div class="modal-backdrop"><section class="panel confirm-dialog workout-history-dialog" role="dialog" aria-modal="true" aria-labelledby="workout-history-title">
-        <div class="card-heading"><h2 id="workout-history-title">Historique récent</h2><button class="secondary-button" aria-label="Fermer l’historique" @onclick="() => _historyOpen = false">×</button></div>
+        <div class="card-heading"><h2 id="workout-history-title">@T("Workout.RecentHistory")</h2><button class="secondary-button" aria-label="@T("Workout.CloseHistory")" @onclick="() => _historyOpen = false">×</button></div>
         <SessionHistory RecentLimit="10" />
     </section></div>
 }
 @if (_pickerOpen && !_editorOpen)
 {
     <div class="modal-backdrop"><section class="panel confirm-dialog exercise-picker" role="dialog" aria-modal="true" aria-labelledby="exercise-picker-title">
-        <div class="card-heading"><h2 id="exercise-picker-title">@(_replacing is null ? "Ajouter un exercice" : "Remplacer l’exercice")</h2><button class="secondary-button" aria-label="Fermer la recherche" disabled="@_busy" @onclick="ClosePicker">×</button></div>
-        <input autofocus class="search-input" aria-label="Rechercher un exercice à ajouter" placeholder="Nom, muscle, tag…" @bind="_search" @bind:event="oninput" />
+        <div class="card-heading"><h2 id="exercise-picker-title">@(_replacing is null ? T("Workout.AddExercise") : T("Workout.ReplaceExercise"))</h2><button class="secondary-button" aria-label="@T("Workout.CloseSearch")" disabled="@_busy" @onclick="ClosePicker">×</button></div>
+        <input autofocus class="search-input" aria-label="@T("Workout.SearchLabel")" placeholder="@T("Workout.SearchPlaceholder")" @bind="_search" @bind:event="oninput" />
         <div class="picker-list">@foreach (var exercise in AvailableExercises.Take(25))
-            { <button class="picker-item" disabled="@_busy" @onclick="() => PickAsync(exercise.Id)"><span>@exercise.Name<small>@ExerciseMuscles.Primary(exercise)</small></span><b>＋</b></button> }</div>
-        @if (!AvailableExercises.Any()) { <p class="muted">Aucun exercice disponible pour cette recherche.</p> }
-        <button class="secondary-button create-workout-exercise" disabled="@_busy" @onclick="OpenCreate">＋ Créer un exercice</button>
+            { <button class="picker-item" disabled="@_busy" @onclick="() => PickAsync(exercise.Id)"><span>@exercise.Name<small>@WorkoutUi.TagName(ExerciseMuscles.Primary(exercise))</small></span><b>＋</b></button> }</div>
+        @if (!AvailableExercises.Any()) { <p class="muted">@T("Workout.NoExerciseFound")</p> }
+        <button class="secondary-button create-workout-exercise" disabled="@_busy" @onclick="OpenCreate">＋ @T("Workout.CreateExercise")</button>
         @if (_editorError.Length > 0) { <p class="notice" role="alert">@_editorError</p> }
     </section></div>
 }
@@ -82,8 +82,8 @@
     <div class="modal-backdrop"><section class="panel confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmation-title">
         <h2 id="confirmation-title">@ConfirmationTitle</h2><p class="muted">@ConfirmationMessage</p>
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
-        <div class="settings-actions"><button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_confirmation == Confirmation.Cancel ? "Oui, abandonner" : "Confirmer")</button>
-            <button class="secondary-button" disabled="@_busy" @onclick="() => _confirmation = Confirmation.None">Retour</button></div>
+        <div class="settings-actions"><button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_confirmation == Confirmation.Cancel ? T("Workout.YesAbandon") : T("Workout.Confirm"))</button>
+            <button class="secondary-button" disabled="@_busy" @onclick="() => _confirmation = Confirmation.None">@T("Workout.Back")</button></div>
     </section></div>
 }
 
@@ -101,21 +101,21 @@
     private int TotalCount => Active?.Session?.Exercises.Sum(plan => State.GetSets(plan.ExerciseId).Count) ?? 0;
     private string RestExerciseName => State.AllExercises.FirstOrDefault(item => item.Id == Active?.RestExerciseId)?.Name ?? "";
     private IEnumerable<Exercise> AvailableExercises => State.Exercises.GroupBy(exercise => WorkoutUi.NormalizeName(exercise.Name)).Select(group => group.First())
-        .Where(exercise => !IsAlreadyAdded(exercise) && WorkoutUi.NormalizeName($"{exercise.Name} {ExerciseMuscles.Primary(exercise)} {string.Join(' ', exercise.Tags)}").Contains(WorkoutUi.NormalizeName(_search), StringComparison.Ordinal)).OrderBy(exercise => exercise.Name);
+        .Where(exercise => !IsAlreadyAdded(exercise) && WorkoutUi.NormalizeName($"{exercise.Name} {ExerciseMuscles.Primary(exercise)} {WorkoutUi.TagName(ExerciseMuscles.Primary(exercise))} {string.Join(' ', exercise.Tags)} {string.Join(' ', exercise.Tags.Select(WorkoutUi.TagName))}").Contains(WorkoutUi.NormalizeName(_search), StringComparison.Ordinal)).OrderBy(exercise => exercise.Name);
     private bool IsAlreadyAdded(Exercise exercise) => Active?.Session?.Exercises.Any(plan => State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId) is { } existing && WorkoutUi.NormalizeName(existing.Name) == WorkoutUi.NormalizeName(exercise.Name)) ?? false;
-    private string ConfirmationTitle => _confirmation switch { Confirmation.Finish => "Terminer la séance ?", Confirmation.Remove => "Retirer l’exercice ?", _ => "Abandonner la séance ?" };
+    private string ConfirmationTitle => _confirmation switch { Confirmation.Finish => T("Workout.FinishTitle"), Confirmation.Remove => T("Workout.RemoveTitle"), _ => T("Workout.AbandonTitle") };
     private string ConfirmationMessage => _confirmation switch
     {
-        Confirmation.Finish => "Les séries renseignées seront ajoutées à ton historique.",
-        Confirmation.Remove => $"{_removing?.Name} et ses séries seront retirés de cette séance, dans toutes les salles.",
-        _ => "Les séries de la séance en cours seront supprimées. Ton historique reste conservé."
+        Confirmation.Finish => T("Workout.FinishMessage"),
+        Confirmation.Remove => T("Workout.RemoveMessage", _removing?.Name),
+        _ => T("Workout.AbandonMessage")
     };
     protected override async Task OnInitializedAsync()
     {
         State.DataChanged += DataChanged;
         if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation) _backRegistration = navigation.RegisterBackHandler(HandleBackAsync, 10);
         try { await State.InitializeAsync(); _pickerOpen = Navigation.Uri.Contains("ajouter=1", StringComparison.Ordinal) && Active is not null; }
-        catch { _message = "Impossible de charger la séance. Rouvre l’application pour réessayer."; }
+        catch { _message = T("Workout.LoadFailed"); }
         finally { _loading = false; }
     }
     private void SetMessage(string message) => _message = message;
@@ -169,13 +169,13 @@
         if (Services.GetService(typeof(RestNotificationCoordinator)) is RestNotificationCoordinator coordinator)
         {
             await coordinator.CompleteForegroundAsync(deadline);
-            if (Active is { RestEnd: null }) _message = "Repos terminé ✓";
+            if (Active is { RestEnd: null }) _message = T("Workout.RestDone");
             StateHasChanged(); return;
         }
         var result = await State.CompleteRestAsync(deadline);
         if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
         if (Active?.RestEnd is not null) return;
-        _message = "Repos terminé ✓";
+        _message = T("Workout.RestDone");
         if (State.RestNotificationsEnabled) Feedback.NotifyRestCompleted();
         StateHasChanged();
     }

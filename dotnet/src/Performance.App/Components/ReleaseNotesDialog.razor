@@ -1,13 +1,13 @@
 @using Performance.Application
 <div class="modal-backdrop"><section class="panel confirm-dialog release-notes" role="dialog" aria-modal="true" aria-labelledby="release-notes-title">
-    <p class="eyebrow">MISE À JOUR INSTALLÉE</p>
-    <h2 id="release-notes-title">Nouveautés de la version @Notes[0].Version</h2>
+    <p class="eyebrow">@T("ReleaseNotes.Eyebrow")</p>
+    <h2 id="release-notes-title">@T("ReleaseNotes.Title", Notes[0].Version)</h2>
     @foreach (var note in Notes)
     {
-        @if (Notes.Count > 1) { <h3>Version @note.Version</h3> }
-        <ul>@foreach (var item in note.Items) { <li>@item</li> }</ul>
+        @if (Notes.Count > 1) { <h3>@T("ReleaseNotes.Version", note.Version)</h3> }
+        <ul>@foreach (var item in note.DisplayedItems) { <li>@item</li> }</ul>
     }
-    <div class="settings-actions"><button class="primary-button close-release-notes" disabled="@Busy" @onclick="Closed">C’est noté</button></div>
+    <div class="settings-actions"><button class="primary-button close-release-notes" disabled="@Busy" @onclick="Closed">@T("ReleaseNotes.Close")</button></div>
 </section></div>
 
 @code {

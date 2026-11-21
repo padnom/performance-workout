@@ -3,15 +3,15 @@
 @using Performance.Domain
 @inject WorkoutStateService State
 
-<PageTitle>Historique · Performance</PageTitle>
-<p class="eyebrow">SÉANCE APRÈS SÉANCE</p>
-<h1>Historique</h1>
-<p class="muted intro">Retrouve tes séances terminées et tes performances par salle.</p>
-@if (_loading) { <p class="loading">Chargement de l’historique…</p> }
+<PageTitle>@T("History.PageTitle")</PageTitle>
+<p class="eyebrow">@T("History.Eyebrow")</p>
+<h1>@T("History.Title")</h1>
+<p class="muted intro">@T("History.Intro")</p>
+@if (_loading) { <p class="loading">@T("History.Loading")</p> }
 @if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
 @if (!_loading)
 {
-    <label class="field gym-field">Filtrer par salle<select @bind="_gym"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
+    <label class="field gym-field">@T("History.FilterByGym")<select @bind="_gym"><option value="">@T("History.AllGyms")</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
     <SessionHistory Gym="@_gym" Replay="ReplaySession" />
     <SessionStart @ref="_starter" />
 }
@@ -25,7 +25,7 @@
     protected override async Task OnInitializedAsync()
     {
         try { await State.InitializeAsync(); }
-        catch { _message = "Impossible de charger l’historique. Rouvre l’application pour réessayer."; }
+        catch { _message = T("History.LoadFailed"); }
         finally { _loading = false; }
     }
 }

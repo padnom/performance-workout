@@ -1,29 +1,29 @@
 @using Performance.Domain
 
-<fieldset class="tag-picker"><legend>Tags</legend>
-    <p class="muted tag-hint">Choisis au moins un muscle. Le premier muscle choisi est le muscle principal.</p>
+<fieldset class="tag-picker"><legend>@T("TagPicker.Tags")</legend>
+    <p class="muted tag-hint">@T("TagPicker.Hint")</p>
     @foreach (var group in Groups)
     {
         <div class="tag-category"><span>@group.Label</span><div>
             @foreach (var tag in group.Tags)
-            { <button class="secondary-button" type="button" aria-pressed="@(Has(tag) ? "true" : "false")" disabled="@Disabled" @onclick="() => ToggleAsync(tag)">@tag</button> }
+            { <button class="secondary-button" type="button" aria-pressed="@(Has(tag) ? "true" : "false")" disabled="@Disabled" @onclick="() => ToggleAsync(tag)">@WorkoutUi.TagName(tag)</button> }
         </div></div>
     }
 </fieldset>
-<label class="field">Tags (modifiables, séparés par des virgules)<input aria-label="Tags séparés par des virgules" value="@Value" disabled="@Disabled"
-    @onchange="args => ValueChanged.InvokeAsync(args.Value?.ToString() ?? string.Empty)" placeholder="prise neutre, convergente…" /></label>
+<label class="field">@T("TagPicker.Editable")<input aria-label="@T("TagPicker.EditableLabel")" value="@Value" disabled="@Disabled"
+    @onchange="args => ValueChanged.InvokeAsync(args.Value?.ToString() ?? string.Empty)" placeholder="@T("TagPicker.Placeholder")" /></label>
 
 @code {
     [Parameter] public string Value { get; set; } = "";
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public bool Disabled { get; set; }
 
-    public static readonly (string Label, string[] Tags)[] Groups =
+    public static (string Label, string[] Tags)[] Groups =>
     [
-        ("Muscle", ["Pectoraux", "Dos", "Grand dorsal", "Trapèzes", "Épaules", "Biceps", "Triceps", "Quadriceps", "Ischio-jambiers", "Fessiers", "Mollets", "Abdominaux"]),
-        ("Type", ["Polyarticulaire", "Isolation", "Unilatéral"]),
-        ("Équipement", ["Machine", "Poulie", "Haltères", "Barre", "Poids du corps"]),
-        ("Mouvement", ["Poussée", "Tirage vertical", "Tirage horizontal", "Flexion", "Extension", "Élévation"])
+        (T("TagPicker.Muscle"), ["Pectoraux", "Dos", "Grand dorsal", "Trapèzes", "Épaules", "Biceps", "Triceps", "Quadriceps", "Ischio-jambiers", "Fessiers", "Mollets", "Abdominaux"]),
+        (T("TagPicker.Type"), ["Polyarticulaire", "Isolation", "Unilatéral"]),
+        (T("TagPicker.Equipment"), ["Machine", "Poulie", "Haltères", "Barre", "Poids du corps"]),
+        (T("TagPicker.Movement"), ["Poussée", "Tirage vertical", "Tirage horizontal", "Flexion", "Extension", "Élévation"])
     ];
 
     public static IReadOnlyList<string> Parse(string value) => value

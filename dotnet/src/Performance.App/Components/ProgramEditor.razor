@@ -54,7 +54,7 @@
                     <div class="picker-list draft-exercise-picker" aria-label="@T("ProgramEditor.AvailableExercises", session.Name)">
                         @foreach (var exercise in candidates)
                         {
-                            <button type="button" class="picker-item" data-add-exercise="@exercise.Id" disabled="@(session.Exercises.Count >= 80)" @onclick="() => AddExercise(session, exercise.Id)"><span>@exercise.Name<small>@ExerciseMuscles.Primary(exercise)</small></span><b aria-hidden="true">＋</b></button>
+                            <button type="button" class="picker-item" data-add-exercise="@exercise.Id" disabled="@(session.Exercises.Count >= 80)" @onclick="() => AddExercise(session, exercise.Id)"><span>@exercise.Name<small>@WorkoutUi.TagName(ExerciseMuscles.Primary(exercise))</small></span><b aria-hidden="true">＋</b></button>
                         }
                         @if (candidates.Count == 0) { <p class="muted">@T("ProgramEditor.NoExercise")</p> }
                     </div>

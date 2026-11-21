@@ -6,59 +6,59 @@
 @inject WorkoutStateService State
 @inject TimeProvider Clock
 
-<PageTitle>Progrès · Performance</PageTitle>
-<p class="eyebrow">28 DERNIERS JOURS</p>
-<h1>Mes progrès</h1>
-<p class="muted intro">Comprends ce que tu entraînes réellement.</p>
-@if (_loading) { <p class="loading">Chargement des performances…</p> }
+<PageTitle>@T("Progress.PageTitle")</PageTitle>
+<p class="eyebrow">@T("Progress.Eyebrow")</p>
+<h1>@T("Progress.Title")</h1>
+<p class="muted intro">@T("Progress.Intro")</p>
+@if (_loading) { <p class="loading">@T("Progress.Loading")</p> }
 @if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
 @if (!_loading)
 {
-    <label class="field gym-field">Filtrer le bilan par salle<select @bind="_gym" @bind:after="Refresh"><option value="">Toutes les salles</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
+    <label class="field gym-field">@T("Progress.FilterGym")<select @bind="_gym" @bind:after="Refresh"><option value="">@T("Progress.AllGyms")</option>@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
     <div class="progress-summary">
-        <section class="panel"><strong>@_summary.Sessions</strong><span>Séances</span></section>
-        <section class="panel"><strong>@_summary.EnteredSets</strong><span>Séries saisies</span></section>
-        <section class="panel"><strong>@(_summary.AverageMinutes == 0 ? "—" : _summary.AverageMinutes.ToString())</strong><span>@(_summary.AverageMinutes == 0 ? "Durée moyenne" : "Min / séance")</span></section>
+        <section class="panel"><strong>@_summary.Sessions</strong><span>@T("Progress.Workouts")</span></section>
+        <section class="panel"><strong>@_summary.EnteredSets</strong><span>@T("Progress.EnteredSets")</span></section>
+        <section class="panel"><strong>@(_summary.AverageMinutes == 0 ? "—" : _summary.AverageMinutes.ToString())</strong><span>@(_summary.AverageMinutes == 0 ? T("Progress.AverageDuration") : T("Progress.MinPerWorkout"))</span></section>
     </div>
     <section class="panel progress-insight @(_summary.Sessions == 0 ? "neutral" : MissingAreas.Length > 0 ? "warning" : "good")">
-        <p class="eyebrow">@(_summary.Sessions == 0 ? "BILAN" : "BILAN DE RÉGULARITÉ")</p><h2>@InsightTitle</h2><p class="muted">@InsightText</p>
+        <p class="eyebrow">@(_summary.Sessions == 0 ? T("Progress.Summary") : T("Progress.Consistency"))</p><h2>@InsightTitle</h2><p class="muted">@InsightText</p>
     </section>
     <section class="panel progress-panel">
-        <header><div><p class="eyebrow">RÉPARTITION</p><h2>Programmes réalisés</h2></div><span class="count">@_summary.Sessions au total</span></header>
+        <header><div><p class="eyebrow">@T("Progress.Distribution")</p><h2>@T("Progress.ProgramsDone")</h2></div><span class="count">@T("Progress.TotalCount", _summary.Sessions)</span></header>
         <div class="progress-bars program-bars">
             @foreach (var item in _summary.Programs)
             {
-                <div class="progress-bar-row"><div><strong>@item.Name</strong><span>@item.Count @(item.Count == 1 ? "séance" : "séances")</span></div><div class="progress-track" role="meter" aria-label="@item.Name" aria-valuemin="0" aria-valuemax="@Maximum(_summary.Programs)" aria-valuenow="@item.Count" aria-valuetext="@($"{item.Count} séance(s) sur {_summary.Sessions}")"><span style="width: @Percent(item.Count, _summary.Programs)%"></span></div></div>
+                <div class="progress-bar-row"><div><strong>@ProgramLabel(item.Name)</strong><span>@item.Count @(item.Count == 1 ? T("Progress.WorkoutSingular") : T("Progress.WorkoutPlural"))</span></div><div class="progress-track" role="meter" aria-label="@ProgramLabel(item.Name)" aria-valuemin="0" aria-valuemax="@Maximum(_summary.Programs)" aria-valuenow="@item.Count" aria-valuetext="@T("Progress.ProgramValueText", item.Count, _summary.Sessions)"><span style="width: @Percent(item.Count, _summary.Programs)%"></span></div></div>
             }
-            @if (_summary.Sessions == 0) { <p class="muted">Aucune séance sur cette période.</p> }
+            @if (_summary.Sessions == 0) { <p class="muted">@T("Progress.NoWorkouts")</p> }
         </div>
     </section>
     <section class="panel progress-panel">
-        <header><div><p class="eyebrow">ÉQUILIBRE</p><h2>Zones travaillées</h2></div><span class="count">Séries directes</span></header>
+        <header><div><p class="eyebrow">@T("Progress.Balance")</p><h2>@T("Progress.AreasWorked")</h2></div><span class="count">@T("Progress.DirectSets")</span></header>
         <div class="progress-bars area-bars">
             @foreach (var item in _summary.Areas)
             {
-                <div class="progress-bar-row @(item.Count == 0 ? "missing" : "")"><div><strong>@item.Name</strong><span>@(item.Count == 0 ? "Aucune" : $"{item.Count} séries")</span></div><div class="progress-track" role="meter" aria-label="@item.Name" aria-valuemin="0" aria-valuemax="@Maximum(_summary.Areas)" aria-valuenow="@item.Count" aria-valuetext="@($"{item.Count} séries directes")"><span style="width: @Percent(item.Count, _summary.Areas)%"></span></div></div>
+                <div class="progress-bar-row @(item.Count == 0 ? "missing" : "")"><div><strong>@WorkoutUi.TagName(item.Name)</strong><span>@(item.Count == 0 ? T("Progress.None") : T("Progress.SetsCount", item.Count))</span></div><div class="progress-track" role="meter" aria-label="@WorkoutUi.TagName(item.Name)" aria-valuemin="0" aria-valuemax="@Maximum(_summary.Areas)" aria-valuenow="@item.Count" aria-valuetext="@T("Progress.DirectSetsCount", item.Count)"><span style="width: @Percent(item.Count, _summary.Areas)%"></span></div></div>
             }
         </div>
-        <p class="muted progress-note">Ce graphique compte les séries enregistrées sur les muscles principalement ciblés. Les sollicitations secondaires ne sont pas additionnées.</p>
+        <p class="muted progress-note">@T("Progress.AreasNote")</p>
     </section>
-    <div class="section-heading"><div><p class="eyebrow">DÉTAIL</p><h2>Progression par exercice</h2></div></div>
+    <div class="section-heading"><div><p class="eyebrow">@T("Progress.Detail")</p><h2>@T("Progress.ByExercise")</h2></div></div>
     <div class="progress-selectors">
-        <label class="field progress-exercise">Exercice<select @bind="_selected" @bind:after="RefreshCurve">@foreach (var exercise in State.AllExercises) { <option value="@exercise.Id">@exercise.Name</option> }</select></label>
-        <label class="field exercise-progress-gym">Salle de la courbe<select @bind="_exerciseGym" @bind:after="RefreshCurve">@foreach (var gym in CurveGyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
+        <label class="field progress-exercise">@T("Progress.Exercise")<select @bind="_selected" @bind:after="RefreshCurve">@foreach (var exercise in State.AllExercises) { <option value="@exercise.Id">@exercise.Name</option> }</select></label>
+        <label class="field exercise-progress-gym">@T("Progress.CurveGym")<select @bind="_exerciseGym" @bind:after="RefreshCurve">@foreach (var gym in CurveGyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
     </div>
     <ProgressChart History="_history" ExerciseName="@ExerciseName(_selected)" Gym="@_exerciseGym" />
-    <section class="panel personal-record"><span aria-hidden="true">🏆</span><div><p class="eyebrow">RECORD PERSONNEL · @WorkoutUi.GymName(_exerciseGym)</p><h3>@ExerciseName(_selected)</h3><strong>@WorkoutUi.Decimal(_history.SelectMany(entry => entry.Performance.Sets).Select(set => WorkoutUi.Number(set.Weight)).DefaultIfEmpty(0).Max()) kg</strong></div></section>
-    <details class="progress-all-records"><summary>Tous les records par exercice et salle</summary>
-        <input class="search-input" aria-label="Rechercher un record par exercice" placeholder="Rechercher un exercice…" @bind="_search" @bind:event="oninput" />
+    <section class="panel personal-record"><span aria-hidden="true">🏆</span><div><p class="eyebrow">@T("Progress.PersonalRecord", WorkoutUi.GymName(_exerciseGym))</p><h3>@ExerciseName(_selected)</h3><strong>@WorkoutUi.Decimal(_history.SelectMany(entry => entry.Performance.Sets).Select(set => WorkoutUi.Number(set.Weight)).DefaultIfEmpty(0).Max()) kg</strong></div></section>
+    <details class="progress-all-records"><summary>@T("Progress.AllRecords")</summary>
+        <input class="search-input" aria-label="@T("Progress.SearchLabel")" placeholder="@T("Progress.SearchPlaceholder")" @bind="_search" @bind:event="oninput" />
         <div class="card-list records-list">
             @foreach (var group in Performances.GroupBy(performance => new { Name = ExerciseName(performance.ExerciseId), Gym = WorkoutUi.Gym(performance) }).Where(group => group.Key.Name.Contains(_search, StringComparison.CurrentCultureIgnoreCase)).OrderBy(group => group.Key.Name).ThenBy(group => group.Key.Gym))
             {
                 var rows = group.SelectMany(performance => performance.Sets).Where(set => WorkoutUi.Number(set.Reps) > 0).ToArray();
                 @if (rows.Length > 0)
                 {
-                    <section class="panel record-card"><h3>@group.Key.Name</h3><p class="eyebrow">@WorkoutUi.GymName(group.Key.Gym)</p><div class="record-metrics"><div><strong>@WorkoutUi.Decimal(rows.Max(set => WorkoutUi.Number(set.Weight))) kg</strong><span>Meilleure charge</span></div><div><strong>@rows.Length</strong><span>Séries</span></div></div></section>
+                    <section class="panel record-card"><h3>@group.Key.Name</h3><p class="eyebrow">@WorkoutUi.GymName(group.Key.Gym)</p><div class="record-metrics"><div><strong>@WorkoutUi.Decimal(rows.Max(set => WorkoutUi.Number(set.Weight))) kg</strong><span>@T("Progress.BestWeight")</span></div><div><strong>@rows.Length</strong><span>@T("Progress.Sets")</span></div></div></section>
                 }
             }
         </div>
@@ -76,10 +76,11 @@
     private IReadOnlyList<ExerciseHistoryEntry> _history = [];
     private string[] MissingAreas => _summary.Areas.Where(item => item.Count == 0).Select(item => item.Name).ToArray();
     private string[] LightAreas => _summary.Areas.Where(item => item.Count > 0 && item.Count < _summary.Areas.Max(area => area.Count) * .35).Take(3).Select(item => item.Name).ToArray();
-    private string InsightTitle => _summary.Sessions == 0 ? "Pas encore assez de données" : MissingAreas.Length > 0 ? "Certaines zones sont absentes" : "Toutes les grandes zones sont présentes";
-    private string InsightText => _summary.Sessions == 0 ? "Termine une séance pour obtenir la répartition de tes programmes et des zones travaillées." : MissingAreas.Length > 0 ? $"{string.Join(", ", MissingAreas)} : aucune série directe enregistrée sur cette période." : LightAreas.Length > 0 ? $"{string.Join(", ", LightAreas)} apparaissent moins souvent que le reste." : "La répartition de tes séries est homogène sur les quatre dernières semaines.";
+    private string InsightTitle => _summary.Sessions == 0 ? T("Progress.InsightNoData") : MissingAreas.Length > 0 ? T("Progress.InsightMissing") : T("Progress.InsightAll");
+    private string InsightText => _summary.Sessions == 0 ? T("Progress.InsightTextNoData") : MissingAreas.Length > 0 ? T("Progress.InsightTextMissing", string.Join(", ", MissingAreas.Select(WorkoutUi.TagName))) : LightAreas.Length > 0 ? T("Progress.InsightTextLight", string.Join(", ", LightAreas.Select(WorkoutUi.TagName))) : T("Progress.InsightTextEven");
     private IEnumerable<ExercisePerformance> Performances => State.Data.History.Where(log => log.Date <= Clock.GetUtcNow()).SelectMany(log => log.Exercises).Where(performance => _gym.Length == 0 || WorkoutUi.Gym(performance) == _gym);
     private IEnumerable<string> CurveGyms => WorkoutUi.Gyms.Concat(State.Data.History.SelectMany(log => log.Exercises).Select(WorkoutUi.Gym)).Append(State.CurrentGym).Distinct();
+    private static string ProgramLabel(string name) => name == "Séance libre" ? T("Progress.FreeWorkout") : name;
     private string ExerciseName(string id) => State.AllExercises.FirstOrDefault(exercise => exercise.Id == id)?.Name ?? id;
     private static int Maximum(IReadOnlyList<ProgressCount> items) => Math.Max(1, items.Select(item => item.Count).DefaultIfEmpty(0).Max());
     private static string Percent(int count, IReadOnlyList<ProgressCount> items) => (100m * count / Maximum(items)).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
@@ -87,7 +88,7 @@
     {
         State.DataChanged += DataChanged;
         try { await State.InitializeAsync(); _exerciseGym = State.CurrentGym; Refresh(); }
-        catch { _message = "Impossible de charger les performances. Rouvre l’application pour réessayer."; }
+        catch { _message = T("Progress.LoadFailed"); }
         finally { _loading = false; }
     }
     private void Refresh()

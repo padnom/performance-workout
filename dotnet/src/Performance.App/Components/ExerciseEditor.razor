@@ -3,35 +3,35 @@
 @inject WorkoutStateService State
 
 <div class="modal-backdrop"><section class="panel editor-dialog" role="dialog" aria-modal="true" aria-labelledby="exercise-editor-title">
-    <h2 id="exercise-editor-title">@(Original is null ? "Créer un exercice" : "Modifier l’exercice")</h2>
+    <h2 id="exercise-editor-title">@(Original is null ? T("ExerciseEditor.CreateTitle") : T("ExerciseEditor.EditTitle"))</h2>
     <form @onsubmit="SaveAsync" @onsubmit:preventDefault>
-        <label class="field">Nom<input required maxlength="150" aria-label="Nom de l’exercice" @bind="_name" @bind:event="oninput" /></label>
+        <label class="field">@T("ExerciseEditor.Name")<input required maxlength="150" aria-label="@T("ExerciseEditor.NameLabel")" @bind="_name" @bind:event="oninput" /></label>
         <div class="field-pair">
-            <label class="field">Séries<input type="number" min="1" max="10" aria-label="Nombre de séries" @bind="_sets" /></label>
-            <label class="field">Cible de répétitions<input aria-label="Cible de répétitions" @bind="_target" placeholder="8–12" /></label>
+            <label class="field">@T("ExerciseEditor.Sets")<input type="number" min="1" max="10" aria-label="@T("ExerciseEditor.SetsLabel")" @bind="_sets" /></label>
+            <label class="field">@T("ExerciseEditor.RepTarget")<input aria-label="@T("ExerciseEditor.RepTarget")" @bind="_target" placeholder="8–12" /></label>
         </div>
-        <label class="field">Repos (secondes)<input type="number" min="15" max="600" aria-label="Repos en secondes" @bind="_rest" /></label>
-        <label class="field">Lien du mouvement<input type="url" @bind="_link" placeholder="https://…" /></label>
+        <label class="field">@T("ExerciseEditor.RestSeconds")<input type="number" min="15" max="600" aria-label="@T("ExerciseEditor.RestLabel")" @bind="_rest" /></label>
+        <label class="field">@T("ExerciseEditor.Link")<input type="url" @bind="_link" placeholder="https://…" /></label>
         <TagPicker @bind-Value="_tags" Disabled="Busy" />
-        <fieldset class="gym-checkboxes"><legend>Salles disponibles</legend>
+        <fieldset class="gym-checkboxes"><legend>@T("ExerciseEditor.GymsAvailable")</legend>
             @foreach (var gym in WorkoutUi.Gyms)
             { <label><input type="checkbox" checked="@_gyms.Contains(gym)" @onchange="() => ToggleGym(gym)" />@WorkoutUi.GymName(gym)</label> }
         </fieldset>
         @if (Original is null && SimilarExercises.Any())
         {
-            <aside class="notice duplicate-warning"><strong>Exercice similaire déjà présent</strong><p>Utilise l’exercice existant pour conserver un historique unique.</p>
+            <aside class="notice duplicate-warning"><strong>@T("ExerciseEditor.SimilarTitle")</strong><p>@T("ExerciseEditor.SimilarHint")</p>
                 @foreach (var exercise in SimilarExercises)
                 {
                     <button type="button" class="secondary-button use-existing-exercise" disabled="@(Busy || IsAlreadyAdded(exercise))" @onclick="() => ExistingSelected.InvokeAsync(exercise)">
-                        <span>@exercise.Name<small>@ExerciseMuscles.Primary(exercise) · @string.Join(" · ", WorkoutUi.ExerciseGyms(exercise))</small></span><b>@(IsAlreadyAdded(exercise) ? "Déjà dans la séance" : "Utiliser")</b>
+                        <span>@exercise.Name<small>@WorkoutUi.TagName(ExerciseMuscles.Primary(exercise)) · @string.Join(" · ", WorkoutUi.ExerciseGyms(exercise).Select(WorkoutUi.GymName))</small></span><b>@(IsAlreadyAdded(exercise) ? T("ExerciseEditor.AlreadyAdded") : T("ExerciseEditor.Use"))</b>
                     </button>
                 }
             </aside>
         }
         @if (_error.Length > 0 || Error.Length > 0) { <p class="notice" role="alert">@(_error.Length > 0 ? _error : Error)</p> }
         <div class="settings-actions">
-            <button class="primary-button" type="submit" disabled="@Busy">@(Original is null ? "Créer et ajouter à la séance" : "Enregistrer les modifications")</button>
-            <button class="secondary-button" type="button" disabled="@Busy" @onclick="Cancelled">Annuler</button>
+            <button class="primary-button" type="submit" disabled="@Busy">@(Original is null ? T("ExerciseEditor.CreateAndAdd") : T("ExerciseEditor.SaveChanges"))</button>
+            <button class="secondary-button" type="button" disabled="@Busy" @onclick="Cancelled">@T("ExerciseEditor.Cancel")</button>
         </div>
     </form>
 </section></div>
@@ -83,11 +83,11 @@
     private string ValidationMessage()
     {
         if (string.IsNullOrWhiteSpace(_name) || !TagPicker.Parse(_tags).Any(ExerciseMuscles.IsMuscle))
-            return "Indique le nom et choisis au moins un muscle dans les tags.";
+            return T("ExerciseEditor.ValidationName");
         if (string.IsNullOrWhiteSpace(_name) || _sets is < 1 or > 10 || _rest is < 15 or > 600 || _gyms.Count == 0)
-            return "Renseigne un nom, 1 à 10 séries, un repos de 15 à 600 secondes et au moins une salle.";
+            return T("ExerciseEditor.ValidationFields");
         if (_link.Length > 0 && (!Uri.TryCreate(_link.Trim(), UriKind.Absolute, out var link) || link.Scheme is not ("https" or "http")))
-            return "Le lien doit commencer par https:// ou http://.";
+            return T("ExerciseEditor.ValidationLink");
         return "";
     }
     private Exercise Build() => (Original ?? new Exercise { Id = $"custom-{Guid.NewGuid():N}", Name = _name.Trim(), IsCustom = true }) with

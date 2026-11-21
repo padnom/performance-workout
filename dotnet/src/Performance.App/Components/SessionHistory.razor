@@ -10,17 +10,17 @@
         var performances = Performances(log).ToArray();
         <section class="panel history-card" @key="log.Id">
             <div class="card-heading">
-                <div><p class="eyebrow">@log.Date.ToLocalTime().ToString("dd/MM/yyyy · HH:mm")</p><h2>@SessionName(log)</h2></div>
-                <span class="count">@log.DurationMinutes min</span>
+                <div><p class="eyebrow">@log.Date.ToLocalTime().ToString(T("SessionHistory.DateTimeFormat"), DisplayLanguage.Culture)</p><h2>@DisplayName(log)</h2></div>
+                <span class="count">@T("SessionHistory.Minutes", log.DurationMinutes)</span>
             </div>
-            <p class="muted">@performances.Length exercice(s) · @performances.SelectMany(performance => performance.Sets).Count(set => WorkoutUi.Number(set.Reps) > 0) séries</p>
+            <p class="muted">@T("SessionHistory.Summary", performances.Length, performances.SelectMany(performance => performance.Sets).Count(set => WorkoutUi.Number(set.Reps) > 0))</p>
             <details>
-                <summary>Voir les séries</summary>
+                <summary>@T("SessionHistory.ShowSets")</summary>
                 @foreach (var performance in performances)
                 {
                     <div class="history-exercise">
                         <h3>@ExerciseName(performance.ExerciseId) <small>· @WorkoutUi.GymName(WorkoutUi.Gym(performance))</small></h3>
-                        <div class="history-set-header"><span>Série</span><span>kg</span><span>Reps</span></div>
+                        <div class="history-set-header"><span>@T("SessionHistory.SetColumn")</span><span>@T("SessionHistory.Weight")</span><span>@T("SessionHistory.Reps")</span></div>
                         @foreach (var item in performance.Sets.Select((set, index) => new { Set = set, Index = index }).Where(item => HasData(item.Set)))
                         {
                             <div class="history-set">
@@ -35,13 +35,13 @@
             @if (Replay.HasDelegate)
             {
                 <div class="settings-actions">
-                    <button class="primary-button replay-session" data-log="@log.Id" disabled="@(_busy || State.Data.ActiveWorkout is not null)" @onclick="() => ReplayAsync(log)">Refaire cette séance</button>
+                    <button class="primary-button replay-session" data-log="@log.Id" disabled="@(_busy || State.Data.ActiveWorkout is not null)" @onclick="() => ReplayAsync(log)">@T("SessionHistory.Replay")</button>
                 </div>
-                @if (State.Data.ActiveWorkout is not null) { <p class="muted replay-blocked">Termine d’abord la séance en cours pour la refaire.</p> }
+                @if (State.Data.ActiveWorkout is not null) { <p class="muted replay-blocked">@T("SessionHistory.ReplayBlocked")</p> }
             }
             <div class="settings-actions">
-                <button class="secondary-button export-session" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareFileAsync)">Exporter la séance</button>
-                <button class="secondary-button share-session-text" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareTextAsync)">Partager en texte</button>
+                <button class="secondary-button export-session" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareFileAsync)">@T("SessionHistory.Export")</button>
+                <button class="secondary-button share-session-text" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareTextAsync)">@T("SessionHistory.ShareText")</button>
             </div>
             @if (_messageLogId == log.Id && _message.Length > 0) { <p class="notice" role="status">@_message</p> }
         </section>
@@ -49,7 +49,7 @@
 </div>
 @if (!Logs.Any())
 {
-    <section class="panel empty-state"><div class="empty-icon">◷</div><h3>Aucune séance enregistrée</h3><p class="muted">Termine une séance ou importe ta sauvegarde depuis les réglages pour retrouver ton historique.</p></section>
+    <section class="panel empty-state"><div class="empty-icon">◷</div><h3>@T("SessionHistory.EmptyTitle")</h3><p class="muted">@T("SessionHistory.EmptyHint")</p></section>
 }
 
 @code {
@@ -76,8 +76,9 @@
     private string SessionName(TrainingSessionLog log) => string.IsNullOrWhiteSpace(log.Name) ? SessionName(log.SessionId) : log.Name.Trim();
     private string SessionName(string id) => State.Programs.SelectMany(program => program.Sessions)
         .FirstOrDefault(session => session.Id == id)?.Name ?? (id == "free" ? "Séance libre" : "Séance");
-    private string ExerciseName(string id) => State.AllExercises.FirstOrDefault(exercise => exercise.Id == id)?.Name ?? "Exercice inconnu";
-    private WorkoutSession ExportSession(TrainingSessionLog log) => SessionFromLog(log, $"{SessionName(log)} · {log.Date.ToLocalTime():dd/MM}");
+    private string DisplayName(TrainingSessionLog log) => SessionName(log) switch { "Séance libre" => T("SessionHistory.FreeWorkout"), "Séance" => T("SessionHistory.Workout"), var name => name };
+    private string ExerciseName(string id) => State.AllExercises.FirstOrDefault(exercise => exercise.Id == id)?.Name ?? T("SessionHistory.UnknownExercise");
+    private WorkoutSession ExportSession(TrainingSessionLog log) => SessionFromLog(log, $"{DisplayName(log)} · {log.Date.ToLocalTime().ToString(T("SessionHistory.ShortDateFormat"), DisplayLanguage.Culture)}");
     private WorkoutSession SessionFromLog(TrainingSessionLog log, string name)
     {
         var planned = State.Programs.SelectMany(program => program.Sessions).FirstOrDefault(session => session.Id == log.SessionId);
@@ -89,7 +90,7 @@
         _messageLogId = log.Id; _message = "";
         WorkoutSession session;
         try { session = SessionFromLog(log, SessionName(log)); }
-        catch (FormatException) { _message = "Cette séance ne peut pas être refaite : ses exercices n’existent plus."; return; }
+        catch (FormatException) { _message = T("SessionHistory.ReplayFailed"); return; }
         await Replay.InvokeAsync(session);
     }
     private async Task ShareAsync(TrainingSessionLog log, Func<Func<WorkoutSession>, Task<string>> share)

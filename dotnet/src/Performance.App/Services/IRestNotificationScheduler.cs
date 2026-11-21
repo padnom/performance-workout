@@ -2,14 +2,15 @@ using System.Security.Cryptography;
 using System.Text;
 using Performance.Domain;
 using Performance.Application;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Services;
 
 public sealed record RestNotificationAccess(bool NotificationsAllowed, bool PreciseAlarmsAllowed)
 {
-    public string Description => !NotificationsAllowed ? "Les notifications sont bloquées dans les réglages Android."
-        : !PreciseAlarmsAllowed ? "Notifications autorisées. Sans l’autorisation Alarmes et rappels, Android peut retarder l’alerte."
-        : "Notifications autorisées, y compris lorsque l’écran est éteint.";
+    public string Description => !NotificationsAllowed ? T("Service.IRestNotificationScheduler.Blocked")
+        : !PreciseAlarmsAllowed ? T("Service.IRestNotificationScheduler.NoPreciseAlarms")
+        : T("Service.IRestNotificationScheduler.Allowed");
 }
 
 public sealed record RestNotificationRegistration(string Token, DateTimeOffset Deadline)

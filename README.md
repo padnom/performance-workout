@@ -20,6 +20,7 @@ Version actuelle : **1.5.2**, code Android **10**.
 - Import/export des sauvegardes Android et de l’ancien site web.
 - Diagnostics locaux exportés uniquement à la demande.
 - Mise à jour depuis l’application : détection automatique des nouvelles versions publiées sur GitHub, téléchargement vérifié puis installation confirmée par Android.
+- Interface en français ou en anglais : suit la langue du téléphone (français si le téléphone est en français, anglais sinon), modifiable dans Réglages → Langue. Les données, sauvegardes et partages restent identiques quelle que soit la langue.
 - Couleurs adaptées à la salle : rouge et noir On Air, orange Basic-Fit, selon la séance en cours ou la salle choisie.
 
 Le RIR, le poids cumulé soulevé et le temps cumulé en salle ne sont pas affichés. Les anciennes données restent compatibles avec les imports.

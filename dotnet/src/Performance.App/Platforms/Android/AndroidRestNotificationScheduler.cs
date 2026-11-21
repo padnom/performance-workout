@@ -6,6 +6,7 @@ using Android.Provider;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
 using Performance.Application;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Services;
 
@@ -117,8 +118,8 @@ public sealed class AndroidRestNotificationScheduler : IRestNotificationSchedule
             var builder = OperatingSystem.IsAndroidVersionAtLeast(26)
                 ? new Notification.Builder(Context, ChannelId) : new Notification.Builder(Context);
             builder.SetSmallIcon(Resource.Drawable.ic_rest_notification)
-                .SetContentTitle("Repos terminé")
-                .SetContentText("Tu peux reprendre ta prochaine série.")
+                .SetContentTitle(T("Service.AndroidRestNotificationScheduler.Title"))
+                .SetContentText(T("Service.AndroidRestNotificationScheduler.Text"))
                 .SetContentIntent(tap).SetAutoCancel(true)
                 .SetCategory(Notification.CategoryReminder).SetVisibility(NotificationVisibility.Private);
             if (!OperatingSystem.IsAndroidVersionAtLeast(26)) builder.SetVibrate([0, 200]);
@@ -156,8 +157,8 @@ public sealed class AndroidRestNotificationScheduler : IRestNotificationSchedule
     private static void EnsureChannel()
     {
         if (!OperatingSystem.IsAndroidVersionAtLeast(26)) return;
-        var channel = new NotificationChannel(ChannelId, "Fin du repos", NotificationImportance.Default)
-        { Description = "Alertes optionnelles à la fin du repos entre les séries." };
+        var channel = new NotificationChannel(ChannelId, T("Service.AndroidRestNotificationScheduler.ChannelName"), NotificationImportance.Default)
+        { Description = T("Service.AndroidRestNotificationScheduler.ChannelDescription") };
         channel.EnableVibration(true);
         channel.SetVibrationPattern([0, 200]);
         channel.SetSound(null, null);

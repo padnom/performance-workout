@@ -8,17 +8,17 @@
 @inject IServiceProvider Services
 @implements IDisposable
 
-<PageTitle>Réglages · Performance</PageTitle>
-<p class="eyebrow">TES DONNÉES, SUR TON APPAREIL</p>
-<h1>Réglages</h1>
-<p class="muted intro">Sauvegarde locale, préférences et migration depuis l’application web.</p>
-@if (_loading) { <p class="loading">Chargement des réglages…</p> }
+<PageTitle>@T("Settings.PageTitle")</PageTitle>
+<p class="eyebrow">@T("Settings.Eyebrow")</p>
+<h1>@T("Settings.Title")</h1>
+<p class="muted intro">@T("Settings.Intro")</p>
+@if (_loading) { <p class="loading">@T("Settings.Loading")</p> }
 @if (!string.IsNullOrEmpty(_message)) { <p class="notice" role="status">@_message</p> }
 @if (!_loading && !_loadFailed)
 {
     <section class="panel">
-        <h2>Salle d’entraînement</h2><p class="muted">Utilisée par la séance en cours et les prochaines séances.</p>
-        <label class="field">Salle
+        <h2>@T("Settings.Gym.Title")</h2><p class="muted">@T("Settings.Gym.Hint")</p>
+        <label class="field">@T("Settings.Gym.Label")
             <select value="@State.CurrentGym" disabled="@_busy" @onchange="ChangeGymAsync">
                 @foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }
             </select>
@@ -36,57 +36,57 @@
         </section>
     }
     <section class="panel notification-settings">
-        <h2>Repos</h2>
-        <label class="field"><span>Vibration de fin de repos</span>
+        <h2>@T("Settings.Rest.Title")</h2>
+        <label class="field"><span>@T("Settings.Rest.Vibration")</span>
             <input @key="_notificationInputRevision" type="checkbox" checked="@State.RestNotificationsEnabled" disabled="@_busy" @onchange="ChangeNotificationsAsync" />
         </label>
-        <p class="muted">Option désactivée par défaut. Une vibration brève et une notification silencieuse te préviennent en arrière-plan ou écran éteint. Aucun son.</p>
+        <p class="muted">@T("Settings.Rest.Hint")</p>
         @if (_notifications is not null) { <p class="muted" role="status">@_notifications.Access.Description</p> }
     </section>
     <section class="panel settings-panel">
-        <h2>Sauvegarde et transfert</h2>
-        <p class="muted">@State.Data.History.Count séance(s) enregistrée(s). Les données restent sur cet appareil. Exporte une sauvegarde avant de changer de téléphone.</p>
+        <h2>@T("Settings.Backup.Title")</h2>
+        <p class="muted">@T("Settings.Backup.Summary", State.Data.History.Count)</p>
         <div class="data-safety">
-            <strong>Depuis l’application web</strong>
-            <span>Exporte une sauvegarde complète depuis la PWA, puis sélectionne ce fichier JSON. L’import remplace les données actuelles après confirmation.</span>
+            <strong>@T("Settings.Backup.WebTitle")</strong>
+            <span>@T("Settings.Backup.WebHint")</span>
         </div>
         <div class="settings-actions">
-            <button class="primary-button" disabled="@_busy" @onclick="PickImportAsync">Importer une sauvegarde</button>
-            <button class="secondary-button" disabled="@_busy" @onclick="ShareBackupAsync">Exporter mes données</button>
+            <button class="primary-button" disabled="@_busy" @onclick="PickImportAsync">@T("Settings.Backup.Import")</button>
+            <button class="secondary-button" disabled="@_busy" @onclick="ShareBackupAsync">@T("Settings.Backup.Export")</button>
         </div>
     </section>
     <section class="panel diagnostic-settings">
-        <h2>Application</h2><p class="muted">Version @(_diagnostics?.Version ?? "1.1.0 (2)")</p>
-        <p class="muted">Les diagnostics contiennent les types d’erreurs et les durées des opérations, sans le contenu de tes séances. Aucun envoi automatique.</p>
-        <button class="secondary-button" disabled="@(_busy || _diagnostics is null)" @onclick="ShareDiagnosticsAsync">Exporter les diagnostics</button>
+        <h2>@T("Settings.App.Title")</h2><p class="muted">@T("Settings.App.Version", _diagnostics?.Version ?? "1.1.0 (2)")</p>
+        <p class="muted">@T("Settings.App.DiagnosticsHint")</p>
+        <button class="secondary-button" disabled="@(_busy || _diagnostics is null)" @onclick="ShareDiagnosticsAsync">@T("Settings.App.ExportDiagnostics")</button>
     </section>
     @if (_updates is not null)
     {
         <section class="panel update-settings">
-            <h2>Mises à jour</h2>
-            <p class="muted">L’application vérifie automatiquement les nouvelles versions publiées au démarrage (connexion requise, aucune donnée envoyée). Android te demande toujours de confirmer l’installation ; tes séances sont conservées.</p>
+            <h2>@T("Settings.Updates.Title")</h2>
+            <p class="muted">@T("Settings.Updates.Hint")</p>
             @if (!string.IsNullOrEmpty(_updates.Message)) { <p class="muted" role="status">@_updates.Message</p> }
             <div class="settings-actions">
                 @if (_updates.Available is { } release)
                 {
-                    <button class="primary-button" disabled="@_updates.Busy" @onclick="InstallUpdateAsync">Installer la version @release.Version</button>
+                    <button class="primary-button" disabled="@_updates.Busy" @onclick="InstallUpdateAsync">@T("Settings.Updates.Install", release.Version)</button>
                 }
-                <button class="secondary-button" disabled="@_updates.Busy" @onclick="CheckUpdatesAsync">Rechercher une mise à jour</button>
+                <button class="secondary-button" disabled="@_updates.Busy" @onclick="CheckUpdatesAsync">@T("Settings.Updates.Check")</button>
             </div>
         </section>
     }
 }
-@if (_loadFailed) { <button class="secondary-button" @onclick="LoadAsync">Réessayer le chargement</button> }
+@if (_loadFailed) { <button class="secondary-button" @onclick="LoadAsync">@T("Settings.RetryLoad")</button> }
 @if (_pendingImport is { } pending)
 {
     <div class="modal-backdrop">
         <section class="panel confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="import-title">
-            <h2 id="import-title">Remplacer les données ?</h2>
-            <p class="muted">La sauvegarde contient @pending.History.Count séance(s) et @pending.Exercises.Count exercice(s) personnalisé(s) ou modifié(s).</p>
-            <p class="notice">L’historique, les exercices, les réglages et la séance en cours de cet appareil seront remplacés. Exporte tes données actuelles si tu souhaites les conserver.</p>
+            <h2 id="import-title">@T("Settings.Import.Title")</h2>
+            <p class="muted">@T("Settings.Import.Contents", pending.History.Count, pending.Exercises.Count)</p>
+            <p class="notice">@T("Settings.Import.Warning")</p>
             <div class="settings-actions">
-                <button class="primary-button" disabled="@_busy" @onclick="ConfirmImportAsync">Confirmer le remplacement</button>
-                <button class="secondary-button" disabled="@_busy" @onclick="() => _pendingImport = null">Annuler</button>
+                <button class="primary-button" disabled="@_busy" @onclick="ConfirmImportAsync">@T("Settings.Import.Confirm")</button>
+                <button class="secondary-button" disabled="@_busy" @onclick="() => _pendingImport = null">@T("Settings.Import.Cancel")</button>
             </div>
         </section>
     </div>
@@ -133,12 +133,12 @@
         try
         {
             var enabled = args.Value is true;
-            if (_notifications is null) { _message = "Les notifications Android ne sont pas disponibles."; return; }
+            if (_notifications is null) { _message = T("Settings.Message.NotificationsUnavailable"); return; }
             var success = await _notifications.SetEnabledAsync(enabled);
-            _message = success ? (enabled ? "Notifications de repos activées." : "Notifications de repos désactivées.")
-                : "Activation impossible : vérifie les autorisations Android ou réessaie la sauvegarde.";
+            _message = success ? (enabled ? T("Settings.Message.NotificationsOn") : T("Settings.Message.NotificationsOff"))
+                : T("Settings.Message.NotificationsDenied");
         }
-        catch (Exception exception) { _diagnostics?.Record("settings.notifications", TimeSpan.Zero, exception); _message = "Impossible de modifier les notifications de repos."; }
+        catch (Exception exception) { _diagnostics?.Record("settings.notifications", TimeSpan.Zero, exception); _message = T("Settings.Message.NotificationsFailed"); }
         finally { _busy = false; _notificationInputRevision++; }
     }
     private void ChangeLanguage(ChangeEventArgs args)
@@ -152,8 +152,8 @@
     {
         if (_diagnostics is null) return;
         _busy = true;
-        try { await _diagnostics.ShareAsync(); _message = "Diagnostics prêts à être partagés."; }
-        catch (Exception exception) { _diagnostics.Record("diagnostics.share", TimeSpan.Zero, exception); _message = "Impossible de partager les diagnostics."; }
+        try { await _diagnostics.ShareAsync(); _message = T("Settings.Message.DiagnosticsReady"); }
+        catch (Exception exception) { _diagnostics.Record("diagnostics.share", TimeSpan.Zero, exception); _message = T("Settings.Message.DiagnosticsFailed"); }
         finally { _busy = false; }
     }
     public void Dispose()
@@ -166,13 +166,13 @@
     {
         _loading = true;
         try { await State.InitializeAsync(); _loadFailed = false; _message = ""; }
-        catch { _loadFailed = true; _message = "Impossible de charger les données locales. L’import et l’export restent indisponibles tant que le chargement échoue."; }
+        catch { _loadFailed = true; _message = T("Settings.Message.LoadFailed"); }
         finally { _loading = false; }
     }
     private async Task ChangeGymAsync(ChangeEventArgs args)
     {
         _busy = true;
-        try { var result = await State.SetGymAsync(args.Value?.ToString() ?? "One Air"); _message = result.IsSuccess ? "Salle enregistrée." : WorkoutUi.Error(result.Error); }
+        try { var result = await State.SetGymAsync(args.Value?.ToString() ?? "One Air"); _message = result.IsSuccess ? T("Settings.Message.GymSaved") : WorkoutUi.Error(result.Error); }
         catch { _message = WorkoutUi.Error(null); }
         finally { _busy = false; }
     }
@@ -180,7 +180,7 @@
     {
         _busy = true;
         try { var json = await BackupFiles.PickBackupAsync(); if (json is null) return; _pendingImport = ImportBackup.Execute(json); _message = ""; }
-        catch { _message = "Import impossible : le fichier n’est pas une sauvegarde Performance valide ou sa lecture a échoué. Aucune donnée n’a été remplacée."; }
+        catch { _message = T("Settings.Message.ImportFailed"); }
         finally { _busy = false; }
     }
     private async Task ConfirmImportAsync()
@@ -191,7 +191,7 @@
         {
             var result = await State.ReplaceDataAsync(_pendingImport);
             if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); _pendingImport = null; return; }
-            _pendingImport = null; _message = $"Import terminé : {State.Data.History.Count} séance(s) récupérée(s).";
+            _pendingImport = null; _message = T("Settings.Message.ImportDone", State.Data.History.Count);
         }
         catch { _message = WorkoutUi.Error(null); _pendingImport = null; }
         finally { _busy = false; }
@@ -199,8 +199,8 @@
     private async Task ShareBackupAsync()
     {
         _busy = true;
-        try { await BackupFiles.ShareBackupAsync(ExportBackup.Execute(State.Data)); _message = "Sauvegarde prête à être partagée."; }
-        catch { _message = "Export impossible : la sauvegarde n’a pas pu être partagée. Réessaie."; }
+        try { await BackupFiles.ShareBackupAsync(ExportBackup.Execute(State.Data)); _message = T("Settings.Message.BackupReady"); }
+        catch { _message = T("Settings.Message.ExportFailed"); }
         finally { _busy = false; }
     }
 }

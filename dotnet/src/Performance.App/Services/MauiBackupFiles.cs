@@ -1,4 +1,5 @@
 using Microsoft.Maui.ApplicationModel.DataTransfer;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Services;
 
@@ -6,7 +7,7 @@ public sealed class MauiBackupFiles : IBackupFiles
 {
     public async Task<string?> PickBackupAsync(CancellationToken cancellationToken = default)
     {
-        var file = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = "Choisir une sauvegarde Performance" });
+        var file = await FilePicker.Default.PickAsync(new PickOptions { PickerTitle = T("Service.MauiBackupFiles.PickerTitle") });
         if (file is null) return null;
         await using var stream = await file.OpenReadAsync();
         using var reader = new StreamReader(stream);
@@ -19,7 +20,7 @@ public sealed class MauiBackupFiles : IBackupFiles
         await File.WriteAllTextAsync(path, json, cancellationToken);
         await Share.Default.RequestAsync(new ShareFileRequest
         {
-            Title = "Sauvegarde Performance",
+            Title = T("Service.MauiBackupFiles.ShareTitle"),
             File = new ShareFile(path)
         });
     }

@@ -4,6 +4,7 @@ using Android.Content;
 using Android.OS;
 using Android.Views;
 using Performance.App.Services;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App;
 
@@ -145,7 +146,7 @@ public class MainActivity : MauiAppCompatActivity
         catch (Exception exception)
         {
             IPlatformApplication.Current?.Services.GetService<IAppDiagnostics>()?.Record("share.incoming", TimeSpan.Zero, exception);
-            return new IncomingShare(null, "Impossible de lire ce fichier.");
+            return new IncomingShare(null, T("Service.MainActivity.ReadFailed"));
         }
     }
 }

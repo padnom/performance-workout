@@ -4,6 +4,36 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Chart.Caption" xml:space="preserve"><value>Charges maximales par séance pour {0} dans {1}</value></data>
+  <data name="Chart.Change" xml:space="preserve"><value>Progression</value></data>
+  <data name="Chart.Date" xml:space="preserve"><value>Date</value></data>
+  <data name="Chart.Description" xml:space="preserve"><value>De {0} kg à {1} kg sur {2} séances. Les valeurs datées sont disponibles sous le graphique.</value></data>
+  <data name="Chart.Empty" xml:space="preserve"><value>Aucune séance enregistrée pour cet exercice dans cette salle.</value></data>
+  <data name="Chart.Label" xml:space="preserve"><value>Progression de {0} dans la salle {1}</value></data>
+  <data name="Chart.MaxWeight" xml:space="preserve"><value>Charge maximale</value></data>
+  <data name="Chart.MaxWeightEyebrow" xml:space="preserve"><value>CHARGE MAXIMALE</value></data>
+  <data name="Chart.NeedTwo" xml:space="preserve"><value>Enregistre au moins 2 séances pour voir la courbe.</value></data>
+  <data name="Chart.Note" xml:space="preserve"><value>Historique complet de cette salle. 0 kg correspond à une charge non renseignée ou au poids du corps ; la courbe ne mesure pas les répétitions.</value></data>
+  <data name="Chart.Record" xml:space="preserve"><value>Record</value></data>
+  <data name="Chart.SeeValues" xml:space="preserve"><value>Voir les valeurs datées</value></data>
+  <data name="Chart.Start" xml:space="preserve"><value>Début</value></data>
+  <data name="Chart.Title" xml:space="preserve"><value>Charge maximale de {0} · {1}</value></data>
+  <data name="Chart.WorkoutCount" xml:space="preserve"><value>{0} séance(s)</value></data>
+  <data name="Dashboard.Aria" xml:space="preserve"><value>Accueil entraînement</value></data>
+  <data name="Dashboard.ChooseWorkout" xml:space="preserve"><value>Choisir une séance →</value></data>
+  <data name="Dashboard.FreeWorkout" xml:space="preserve"><value>Séance libre</value></data>
+  <data name="Dashboard.FreeWorkoutHint" xml:space="preserve"><value>Recherche et ajoute tes exercices à la volée</value></data>
+  <data name="Dashboard.GoalReached" xml:space="preserve"><value>Objectif atteint ✓</value></data>
+  <data name="Dashboard.Sets" xml:space="preserve"><value>séries</value></data>
+  <data name="Dashboard.SetsAria" xml:space="preserve"><value>Séries des 7 derniers jours</value></data>
+  <data name="Dashboard.SetsEyebrow" xml:space="preserve"><value>SÉRIES · 7 J</value></data>
+  <data name="Dashboard.SetsRecorded" xml:space="preserve"><value>Séries avec répétitions enregistrées</value></data>
+  <data name="Dashboard.StartFirst" xml:space="preserve"><value>Commence ta 1re séance</value></data>
+  <data name="Dashboard.ThisWeek" xml:space="preserve"><value>CETTE SEMAINE</value></data>
+  <data name="Dashboard.ToGoal" xml:space="preserve"><value>{0} avant l’objectif</value></data>
+  <data name="Dashboard.WeekAria" xml:space="preserve"><value>Séances des 7 derniers jours</value></data>
+  <data name="Dashboard.WorkoutMany" xml:space="preserve"><value>séances</value></data>
+  <data name="Dashboard.WorkoutOne" xml:space="preserve"><value>séance</value></data>
   <data name="Error.ActiveWorkoutExists" xml:space="preserve"><value>Une séance est déjà en cours. Reprends-la ou abandonne-la avant d’en démarrer une autre.</value></data>
   <data name="Error.Default" xml:space="preserve"><value>L’enregistrement a échoué. Tes données précédemment enregistrées sont conservées. Réessaie.</value></data>
   <data name="Error.DuplicateExercise" xml:space="preserve"><value>Cet exercice est déjà dans la séance.</value></data>
@@ -31,12 +61,375 @@
   <data name="Error.UnknownGymProgram" xml:space="preserve"><value>Aucun programme prévu pour cette salle. Choisis On Air ou Basic-Fit.</value></data>
   <data name="Error.UnknownProgram" xml:space="preserve"><value>Ce programme n’est plus disponible.</value></data>
   <data name="Error.UnknownSession" xml:space="preserve"><value>Cette séance n’est plus disponible.</value></data>
+  <data name="ExerciseCard.Add30Label" xml:space="preserve"><value>Ajouter 30 secondes {0}</value></data>
+  <data name="ExerciseCard.AddSet" xml:space="preserve"><value>Ajouter une série</value></data>
+  <data name="ExerciseCard.AddSetLabel" xml:space="preserve"><value>Ajouter une série {0}</value></data>
+  <data name="ExerciseCard.Alternative" xml:space="preserve"><value>Alternative : {0}</value></data>
+  <data name="ExerciseCard.Collapse" xml:space="preserve"><value>Réduire {0}</value></data>
+  <data name="ExerciseCard.Completion" xml:space="preserve"><value>{0} / {1} séries renseignées</value></data>
+  <data name="ExerciseCard.Edit" xml:space="preserve"><value>Modifier</value></data>
+  <data name="ExerciseCard.Expand" xml:space="preserve"><value>Développer {0}</value></data>
+  <data name="ExerciseCard.Eyebrow" xml:space="preserve"><value>EXERCICE {0}</value></data>
+  <data name="ExerciseCard.Gym" xml:space="preserve"><value>Salle</value></data>
+  <data name="ExerciseCard.GymOf" xml:space="preserve"><value>Salle de {0}</value></data>
+  <data name="ExerciseCard.GymRecord" xml:space="preserve"><value>Record dans cette salle</value></data>
+  <data name="ExerciseCard.LastCol" xml:space="preserve"><value>Dernière</value></data>
+  <data name="ExerciseCard.LastWorkouts" xml:space="preserve"><value>Dernières séances · {0}</value></data>
+  <data name="ExerciseCard.Remove" xml:space="preserve"><value>Retirer</value></data>
+  <data name="ExerciseCard.RemoveSetLabel" xml:space="preserve"><value>Supprimer la série {0} {1}</value></data>
+  <data name="ExerciseCard.Replace" xml:space="preserve"><value>Remplacer</value></data>
+  <data name="ExerciseCard.RepsCol" xml:space="preserve"><value>Reps</value></data>
+  <data name="ExerciseCard.RepsLabel" xml:space="preserve"><value>Répétitions série {0} {1}</value></data>
+  <data name="ExerciseCard.Rest" xml:space="preserve"><value>Repos</value></data>
+  <data name="ExerciseCard.RestDurationLabel" xml:space="preserve"><value>Durée de repos {0}</value></data>
+  <data name="ExerciseCard.SeeMovement" xml:space="preserve"><value>Voir le mouvement ↗</value></data>
+  <data name="ExerciseCard.SetCol" xml:space="preserve"><value>Série</value></data>
+  <data name="ExerciseCard.SetDone" xml:space="preserve"><value>Série renseignée</value></data>
+  <data name="ExerciseCard.SetTodo" xml:space="preserve"><value>Série à renseigner</value></data>
+  <data name="ExerciseCard.StartRest" xml:space="preserve"><value>Démarrer le repos</value></data>
+  <data name="ExerciseCard.StopTimerLabel" xml:space="preserve"><value>Arrêter le timer {0}</value></data>
+  <data name="ExerciseCard.Summary" xml:space="preserve"><value>{0} · {1} · repos {2}</value></data>
+  <data name="ExerciseCard.WeightLabel" xml:space="preserve"><value>Charge série {0} {1}</value></data>
+  <data name="ExerciseEditor.AlreadyAdded" xml:space="preserve"><value>Déjà dans la séance</value></data>
+  <data name="ExerciseEditor.Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="ExerciseEditor.CreateAndAdd" xml:space="preserve"><value>Créer et ajouter à la séance</value></data>
+  <data name="ExerciseEditor.CreateTitle" xml:space="preserve"><value>Créer un exercice</value></data>
+  <data name="ExerciseEditor.EditTitle" xml:space="preserve"><value>Modifier l’exercice</value></data>
+  <data name="ExerciseEditor.GymsAvailable" xml:space="preserve"><value>Salles disponibles</value></data>
+  <data name="ExerciseEditor.Link" xml:space="preserve"><value>Lien du mouvement</value></data>
+  <data name="ExerciseEditor.Name" xml:space="preserve"><value>Nom</value></data>
+  <data name="ExerciseEditor.NameLabel" xml:space="preserve"><value>Nom de l’exercice</value></data>
+  <data name="ExerciseEditor.RepTarget" xml:space="preserve"><value>Cible de répétitions</value></data>
+  <data name="ExerciseEditor.RestLabel" xml:space="preserve"><value>Repos en secondes</value></data>
+  <data name="ExerciseEditor.RestSeconds" xml:space="preserve"><value>Repos (secondes)</value></data>
+  <data name="ExerciseEditor.SaveChanges" xml:space="preserve"><value>Enregistrer les modifications</value></data>
+  <data name="ExerciseEditor.Sets" xml:space="preserve"><value>Séries</value></data>
+  <data name="ExerciseEditor.SetsLabel" xml:space="preserve"><value>Nombre de séries</value></data>
+  <data name="ExerciseEditor.SimilarHint" xml:space="preserve"><value>Utilise l’exercice existant pour conserver un historique unique.</value></data>
+  <data name="ExerciseEditor.SimilarTitle" xml:space="preserve"><value>Exercice similaire déjà présent</value></data>
+  <data name="ExerciseEditor.Use" xml:space="preserve"><value>Utiliser</value></data>
+  <data name="ExerciseEditor.ValidationFields" xml:space="preserve"><value>Renseigne un nom, 1 à 10 séries, un repos de 15 à 600 secondes et au moins une salle.</value></data>
+  <data name="ExerciseEditor.ValidationLink" xml:space="preserve"><value>Le lien doit commencer par https:// ou http://.</value></data>
+  <data name="ExerciseEditor.ValidationName" xml:space="preserve"><value>Indique le nom et choisis au moins un muscle dans les tags.</value></data>
+  <data name="Exercises.AllGyms" xml:space="preserve"><value>Toutes les salles</value></data>
+  <data name="Exercises.Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Exercises.Count" xml:space="preserve"><value>{0} exercice(s)</value></data>
+  <data name="Exercises.Create" xml:space="preserve"><value>Créer</value></data>
+  <data name="Exercises.CreateTitle" xml:space="preserve"><value>Créer un exercice</value></data>
+  <data name="Exercises.Custom" xml:space="preserve"><value>Personnel</value></data>
+  <data name="Exercises.Edit" xml:space="preserve"><value>Modifier</value></data>
+  <data name="Exercises.EditTitle" xml:space="preserve"><value>Modifier l’exercice</value></data>
+  <data name="Exercises.Eyebrow" xml:space="preserve"><value>BIBLIOTHÈQUE</value></data>
+  <data name="Exercises.FilterGym" xml:space="preserve"><value>Filtrer par salle</value></data>
+  <data name="Exercises.GymsAvailable" xml:space="preserve"><value>Salles disponibles</value></data>
+  <data name="Exercises.Link" xml:space="preserve"><value>Lien du mouvement</value></data>
+  <data name="Exercises.LoadFailed" xml:space="preserve"><value>Impossible de charger le catalogue. Rouvre l’application pour réessayer.</value></data>
+  <data name="Exercises.Loading" xml:space="preserve"><value>Chargement du catalogue…</value></data>
+  <data name="Exercises.Name" xml:space="preserve"><value>Nom</value></data>
+  <data name="Exercises.NoneFound" xml:space="preserve"><value>Aucun exercice trouvé</value></data>
+  <data name="Exercises.NoneFoundHint" xml:space="preserve"><value>Essaie un autre nom, muscle ou filtre de salle.</value></data>
+  <data name="Exercises.PageTitle" xml:space="preserve"><value>Exercices · Performance</value></data>
+  <data name="Exercises.RepTarget" xml:space="preserve"><value>Cible de répétitions</value></data>
+  <data name="Exercises.RestSeconds" xml:space="preserve"><value>Repos (secondes)</value></data>
+  <data name="Exercises.Save" xml:space="preserve"><value>Enregistrer</value></data>
+  <data name="Exercises.Saved" xml:space="preserve"><value>Exercice enregistré.</value></data>
+  <data name="Exercises.SearchLabel" xml:space="preserve"><value>Rechercher par nom, muscle ou tag</value></data>
+  <data name="Exercises.SearchPlaceholder" xml:space="preserve"><value>Nom, muscle, tag…</value></data>
+  <data name="Exercises.Sets" xml:space="preserve"><value>Séries</value></data>
+  <data name="Exercises.SimilarHint" xml:space="preserve"><value>Utilise-le pour conserver un historique unique.</value></data>
+  <data name="Exercises.SimilarTitle" xml:space="preserve"><value>Un exercice similaire existe déjà</value></data>
+  <data name="Exercises.Subtitle" xml:space="preserve"><value>Ton catalogue, tes variantes de salle et tes repères.</value></data>
+  <data name="Exercises.Summary" xml:space="preserve"><value>{0} · {1} séries · {2} · repos {3}</value></data>
+  <data name="Exercises.Title" xml:space="preserve"><value>Exercices</value></data>
+  <data name="Exercises.Use" xml:space="preserve"><value>Utiliser {0}</value></data>
+  <data name="Exercises.ValidationFields" xml:space="preserve"><value>Renseigne un nom, 1 à 20 séries, un repos de 15 à 600 secondes et au moins une salle.</value></data>
+  <data name="Exercises.ValidationLink" xml:space="preserve"><value>Le lien doit commencer par https:// ou http://.</value></data>
+  <data name="Exercises.ValidationMuscle" xml:space="preserve"><value>Choisis au moins un muscle dans les tags.</value></data>
+  <data name="Favorite.Add" xml:space="preserve"><value>Ajouter {0} aux favoris</value></data>
+  <data name="Favorite.Remove" xml:space="preserve"><value>Retirer {0} des favoris</value></data>
   <data name="Gym.All" xml:space="preserve"><value>Toutes</value></data>
+  <data name="History.AllGyms" xml:space="preserve"><value>Toutes les salles</value></data>
+  <data name="History.Eyebrow" xml:space="preserve"><value>SÉANCE APRÈS SÉANCE</value></data>
+  <data name="History.FilterByGym" xml:space="preserve"><value>Filtrer par salle</value></data>
+  <data name="History.Intro" xml:space="preserve"><value>Retrouve tes séances terminées et tes performances par salle.</value></data>
+  <data name="History.LoadFailed" xml:space="preserve"><value>Impossible de charger l’historique. Rouvre l’application pour réessayer.</value></data>
+  <data name="History.Loading" xml:space="preserve"><value>Chargement de l’historique…</value></data>
+  <data name="History.PageTitle" xml:space="preserve"><value>Historique · Performance</value></data>
+  <data name="History.Title" xml:space="preserve"><value>Historique</value></data>
+  <data name="Home.Eyebrow" xml:space="preserve"><value>ENTRAÎNEMENT</value></data>
+  <data name="Home.FreeWorkoutFocus" xml:space="preserve"><value>Ajoute les exercices de ton choix</value></data>
+  <data name="Home.FreeWorkoutName" xml:space="preserve"><value>Séance libre</value></data>
+  <data name="Home.InProgress" xml:space="preserve"><value>Séance en cours</value></data>
+  <data name="Home.LoadFailed" xml:space="preserve"><value>Impossible de charger les données. Rouvre l’application pour réessayer.</value></data>
+  <data name="Home.Loading" xml:space="preserve"><value>Chargement de tes données…</value></data>
+  <data name="Home.PageTitle" xml:space="preserve"><value>Accueil · Performance</value></data>
+  <data name="Home.Resume" xml:space="preserve"><value>Reprendre la séance →</value></data>
+  <data name="Home.Tagline" xml:space="preserve"><value>Chaque série compte. Garde le rythme.</value></data>
+  <data name="Home.Title" xml:space="preserve"><value>Prêt à progresser ?</value></data>
+  <data name="Layout.ChooseGym" xml:space="preserve"><value>Choisir la salle</value></data>
+  <data name="Layout.CurrentGymAria" xml:space="preserve"><value>Salle actuelle : {0}. Changer de salle</value></data>
+  <data name="Layout.Exercises" xml:space="preserve"><value>Exercices</value></data>
+  <data name="Layout.GymAll" xml:space="preserve"><value>TOUTES SALLES</value></data>
+  <data name="Layout.GymEyebrow" xml:space="preserve"><value>SALLE</value></data>
+  <data name="Layout.GymEyebrowWorkout" xml:space="preserve"><value>SALLE DE LA SÉANCE EN COURS</value></data>
+  <data name="Layout.GymLocal" xml:space="preserve"><value>LOCAL</value></data>
+  <data name="Layout.History" xml:space="preserve"><value>Historique</value></data>
+  <data name="Layout.Home" xml:space="preserve"><value>Accueil</value></data>
+  <data name="Layout.HomeAria" xml:space="preserve"><value>Performance, accueil</value></data>
+  <data name="Layout.MainNavigation" xml:space="preserve"><value>Navigation principale</value></data>
+  <data name="Layout.More" xml:space="preserve"><value>Plus</value></data>
+  <data name="Layout.MoreScreens" xml:space="preserve"><value>Autres écrans</value></data>
+  <data name="Layout.Programs" xml:space="preserve"><value>Programmes</value></data>
+  <data name="Layout.Progress" xml:space="preserve"><value>Progrès</value></data>
+  <data name="Layout.Settings" xml:space="preserve"><value>Réglages</value></data>
+  <data name="Layout.SwitchGym" xml:space="preserve"><value>Changer de salle</value></data>
+  <data name="Library.All" xml:space="preserve"><value>Tous</value></data>
+  <data name="Library.AriaLabel" xml:space="preserve"><value>Bibliothèque des séances</value></data>
+  <data name="Library.Classic" xml:space="preserve"><value>Classiques</value></data>
+  <data name="Library.ExerciseCount" xml:space="preserve"><value>{0} exercices</value></data>
+  <data name="Library.Favorites" xml:space="preserve"><value>★ Favoris</value></data>
+  <data name="Library.FilterLabel" xml:space="preserve"><value>Filtrer les séances</value></data>
+  <data name="Library.GymProgram" xml:space="preserve"><value>Programme {0}</value></data>
+  <data name="Library.MyWorkouts" xml:space="preserve"><value>Mes séances</value></data>
+  <data name="Library.NoFavorites" xml:space="preserve"><value>Aucun favori pour l’instant. Touche l’étoile d’un programme pour le retrouver ici.</value></data>
+  <data name="Library.NoMatch" xml:space="preserve"><value>Aucune séance ne correspond. Essaie un autre mot ou un autre filtre.</value></data>
+  <data name="Library.SearchLabel" xml:space="preserve"><value>Rechercher une séance</value></data>
+  <data name="Library.SearchPlaceholder" xml:space="preserve"><value>Rechercher : push, dos, presse…</value></data>
+  <data name="Library.Show" xml:space="preserve"><value>Afficher {0}</value></data>
+  <data name="Library.Start" xml:space="preserve"><value>Démarrer {0}</value></data>
+  <data name="Library.Targeted" xml:space="preserve"><value>Ciblées</value></data>
+  <data name="ProgramDraft.DefaultSessionName" xml:space="preserve"><value>Séance {0}</value></data>
+  <data name="ProgramDraft.DescriptionLimit" xml:space="preserve"><value>La description du programme est limitée à 2 000 caractères.</value></data>
+  <data name="ProgramDraft.ExerciseCount" xml:space="preserve"><value>Ajoute de 1 à 80 exercices dans chaque séance.</value></data>
+  <data name="ProgramDraft.ExerciseDuplicate" xml:space="preserve"><value>Un exercice ne peut apparaître qu’une fois dans une séance.</value></data>
+  <data name="ProgramDraft.ExerciseGym" xml:space="preserve"><value>Un exercice ne correspond pas à cette salle. Choisis une autre salle ou retire cet exercice.</value></data>
+  <data name="ProgramDraft.OneSessionOnly" xml:space="preserve"><value>Une seule séance peut être créée à la fois.</value></data>
+  <data name="ProgramDraft.ProgramName" xml:space="preserve"><value>Renseigne un nom de programme de 1 à 160 caractères.</value></data>
+  <data name="ProgramDraft.Reps" xml:space="preserve"><value>Renseigne les répétitions de chaque exercice (100 caractères maximum).</value></data>
+  <data name="ProgramDraft.Rest" xml:space="preserve"><value>Renseigne un repos au format M:ss entre 0:15 et 10:00 (100 caractères maximum).</value></data>
+  <data name="ProgramDraft.SessionCount" xml:space="preserve"><value>Ajoute de 1 à 100 séances au programme.</value></data>
+  <data name="ProgramDraft.SessionName" xml:space="preserve"><value>Renseigne un nom de 1 à 160 caractères pour chaque séance.</value></data>
+  <data name="ProgramDraft.Sets" xml:space="preserve"><value>Choisis de 1 à 20 séries pour chaque exercice.</value></data>
+  <data name="ProgramEditor.AddExercise" xml:space="preserve"><value>Ajouter un exercice</value></data>
+  <data name="ProgramEditor.AddFavorite" xml:space="preserve"><value> Ajouter aux favoris</value></data>
+  <data name="ProgramEditor.AddSession" xml:space="preserve"><value>＋ Ajouter une séance</value></data>
+  <data name="ProgramEditor.AvailableExercises" xml:space="preserve"><value>Exercices disponibles pour {0}</value></data>
+  <data name="ProgramEditor.Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="ProgramEditor.Description" xml:space="preserve"><value>Description (facultative)</value></data>
+  <data name="ProgramEditor.ExerciseUnavailable" xml:space="preserve"><value>Exercice indisponible pour cette salle.</value></data>
+  <data name="ProgramEditor.FirstResults" xml:space="preserve"><value>12 premiers résultats · précise le nom ou le muscle pour affiner la recherche.</value></data>
+  <data name="ProgramEditor.Gym" xml:space="preserve"><value>Salle du programme</value></data>
+  <data name="ProgramEditor.Intro" xml:space="preserve"><value>Compose tes séances avec les exercices du catalogue.</value></data>
+  <data name="ProgramEditor.MoveDown" xml:space="preserve"><value>Descendre {0}</value></data>
+  <data name="ProgramEditor.MoveUp" xml:space="preserve"><value>Monter {0}</value></data>
+  <data name="ProgramEditor.NoExercise" xml:space="preserve"><value>Aucun exercice disponible pour cette recherche.</value></data>
+  <data name="ProgramEditor.ProgramName" xml:space="preserve"><value>Nom du programme</value></data>
+  <data name="ProgramEditor.Remove" xml:space="preserve"><value>Retirer</value></data>
+  <data name="ProgramEditor.RemoveExercise" xml:space="preserve"><value>Retirer {0}</value></data>
+  <data name="ProgramEditor.RemoveSession" xml:space="preserve"><value>Retirer la séance</value></data>
+  <data name="ProgramEditor.Reps" xml:space="preserve"><value>Répétitions</value></data>
+  <data name="ProgramEditor.Rest" xml:space="preserve"><value>Repos (M:ss)</value></data>
+  <data name="ProgramEditor.SaveProgram" xml:space="preserve"><value>Enregistrer le programme</value></data>
+  <data name="ProgramEditor.SaveSession" xml:space="preserve"><value>Enregistrer la séance</value></data>
+  <data name="ProgramEditor.Saving" xml:space="preserve"><value>Enregistrement…</value></data>
+  <data name="ProgramEditor.SearchPlaceholder" xml:space="preserve"><value>Nom ou muscle…</value></data>
+  <data name="ProgramEditor.SessionName" xml:space="preserve"><value>Nom de la séance {0}</value></data>
+  <data name="ProgramEditor.Sets" xml:space="preserve"><value>Séries</value></data>
+  <data name="ProgramEditor.TitleProgram" xml:space="preserve"><value>Créer un programme</value></data>
+  <data name="ProgramEditor.TitleSession" xml:space="preserve"><value>Créer une séance</value></data>
+  <data name="Programs.ActiveWorkout" xml:space="preserve"><value>Séance en cours</value></data>
+  <data name="Programs.Intro" xml:space="preserve"><value>Ouvre une séance pour voir ses exercices, ou ▶︎ pour la démarrer.</value></data>
+  <data name="Programs.LibraryHeading" xml:space="preserve"><value>BIBLIOTHÈQUE · {0} séances</value></data>
+  <data name="Programs.LoadFailed" xml:space="preserve"><value>Impossible de charger les données. Rouvre l’application pour réessayer.</value></data>
+  <data name="Programs.Loading" xml:space="preserve"><value>Chargement de tes données…</value></data>
+  <data name="Programs.PageTitle" xml:space="preserve"><value>Programmes · Performance</value></data>
+  <data name="Programs.ResumeWorkout" xml:space="preserve"><value>Reprendre la séance →</value></data>
+  <data name="Programs.Title" xml:space="preserve"><value>Choisis ta séance</value></data>
+  <data name="ProgramsMenu.Close" xml:space="preserve"><value>Fermer</value></data>
+  <data name="ProgramsMenu.CreateProgram" xml:space="preserve"><value>Créer un programme</value></data>
+  <data name="ProgramsMenu.CreateSession" xml:space="preserve"><value>Créer une séance</value></data>
+  <data name="ProgramsMenu.Export" xml:space="preserve"><value>Exporter / partager</value></data>
+  <data name="ProgramsMenu.ImportPrograms" xml:space="preserve"><value>Importer des programmes</value></data>
+  <data name="ProgramsMenu.ImportSession" xml:space="preserve"><value>Importer une séance</value></data>
+  <data name="ProgramsMenu.MoreActions" xml:space="preserve"><value>Plus d’actions</value></data>
+  <data name="Progress.AllGyms" xml:space="preserve"><value>Toutes les salles</value></data>
+  <data name="Progress.AllRecords" xml:space="preserve"><value>Tous les records par exercice et salle</value></data>
+  <data name="Progress.AreasNote" xml:space="preserve"><value>Ce graphique compte les séries enregistrées sur les muscles principalement ciblés. Les sollicitations secondaires ne sont pas additionnées.</value></data>
+  <data name="Progress.AreasWorked" xml:space="preserve"><value>Zones travaillées</value></data>
+  <data name="Progress.AverageDuration" xml:space="preserve"><value>Durée moyenne</value></data>
+  <data name="Progress.Balance" xml:space="preserve"><value>ÉQUILIBRE</value></data>
+  <data name="Progress.BestWeight" xml:space="preserve"><value>Meilleure charge</value></data>
+  <data name="Progress.ByExercise" xml:space="preserve"><value>Progression par exercice</value></data>
+  <data name="Progress.Consistency" xml:space="preserve"><value>BILAN DE RÉGULARITÉ</value></data>
+  <data name="Progress.CurveGym" xml:space="preserve"><value>Salle de la courbe</value></data>
+  <data name="Progress.Detail" xml:space="preserve"><value>DÉTAIL</value></data>
+  <data name="Progress.DirectSets" xml:space="preserve"><value>Séries directes</value></data>
+  <data name="Progress.DirectSetsCount" xml:space="preserve"><value>{0} séries directes</value></data>
+  <data name="Progress.Distribution" xml:space="preserve"><value>RÉPARTITION</value></data>
+  <data name="Progress.EnteredSets" xml:space="preserve"><value>Séries saisies</value></data>
+  <data name="Progress.Exercise" xml:space="preserve"><value>Exercice</value></data>
+  <data name="Progress.Eyebrow" xml:space="preserve"><value>28 DERNIERS JOURS</value></data>
+  <data name="Progress.FilterGym" xml:space="preserve"><value>Filtrer le bilan par salle</value></data>
+  <data name="Progress.FreeWorkout" xml:space="preserve"><value>Séance libre</value></data>
+  <data name="Progress.InsightAll" xml:space="preserve"><value>Toutes les grandes zones sont présentes</value></data>
+  <data name="Progress.InsightMissing" xml:space="preserve"><value>Certaines zones sont absentes</value></data>
+  <data name="Progress.InsightNoData" xml:space="preserve"><value>Pas encore assez de données</value></data>
+  <data name="Progress.InsightTextEven" xml:space="preserve"><value>La répartition de tes séries est homogène sur les quatre dernières semaines.</value></data>
+  <data name="Progress.InsightTextLight" xml:space="preserve"><value>{0} apparaissent moins souvent que le reste.</value></data>
+  <data name="Progress.InsightTextMissing" xml:space="preserve"><value>{0} : aucune série directe enregistrée sur cette période.</value></data>
+  <data name="Progress.InsightTextNoData" xml:space="preserve"><value>Termine une séance pour obtenir la répartition de tes programmes et des zones travaillées.</value></data>
+  <data name="Progress.Intro" xml:space="preserve"><value>Comprends ce que tu entraînes réellement.</value></data>
+  <data name="Progress.LoadFailed" xml:space="preserve"><value>Impossible de charger les performances. Rouvre l’application pour réessayer.</value></data>
+  <data name="Progress.Loading" xml:space="preserve"><value>Chargement des performances…</value></data>
+  <data name="Progress.MinPerWorkout" xml:space="preserve"><value>Min / séance</value></data>
+  <data name="Progress.NoWorkouts" xml:space="preserve"><value>Aucune séance sur cette période.</value></data>
+  <data name="Progress.None" xml:space="preserve"><value>Aucune</value></data>
+  <data name="Progress.PageTitle" xml:space="preserve"><value>Progrès · Performance</value></data>
+  <data name="Progress.PersonalRecord" xml:space="preserve"><value>RECORD PERSONNEL · {0}</value></data>
+  <data name="Progress.ProgramValueText" xml:space="preserve"><value>{0} séance(s) sur {1}</value></data>
+  <data name="Progress.ProgramsDone" xml:space="preserve"><value>Programmes réalisés</value></data>
+  <data name="Progress.SearchLabel" xml:space="preserve"><value>Rechercher un record par exercice</value></data>
+  <data name="Progress.SearchPlaceholder" xml:space="preserve"><value>Rechercher un exercice…</value></data>
+  <data name="Progress.Sets" xml:space="preserve"><value>Séries</value></data>
+  <data name="Progress.SetsCount" xml:space="preserve"><value>{0} séries</value></data>
+  <data name="Progress.Summary" xml:space="preserve"><value>BILAN</value></data>
+  <data name="Progress.Title" xml:space="preserve"><value>Mes progrès</value></data>
+  <data name="Progress.TotalCount" xml:space="preserve"><value>{0} au total</value></data>
+  <data name="Progress.WorkoutPlural" xml:space="preserve"><value>séances</value></data>
+  <data name="Progress.WorkoutSingular" xml:space="preserve"><value>séance</value></data>
+  <data name="Progress.Workouts" xml:space="preserve"><value>Séances</value></data>
+  <data name="ReleaseNotes.Close" xml:space="preserve"><value>C’est noté</value></data>
+  <data name="ReleaseNotes.Eyebrow" xml:space="preserve"><value>MISE À JOUR INSTALLÉE</value></data>
+  <data name="ReleaseNotes.Title" xml:space="preserve"><value>Nouveautés de la version {0}</value></data>
+  <data name="ReleaseNotes.Version" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="Routes.BackHome" xml:space="preserve"><value>Retour à l’accueil</value></data>
+  <data name="Routes.NotFoundEyebrow" xml:space="preserve"><value>PAGE INTROUVABLE</value></data>
+  <data name="Routes.NotFoundTitle" xml:space="preserve"><value>Cette page n’existe pas</value></data>
+  <data name="Service.AndroidRestNotificationScheduler.ChannelDescription" xml:space="preserve"><value>Alertes optionnelles à la fin du repos entre les séries.</value></data>
+  <data name="Service.AndroidRestNotificationScheduler.ChannelName" xml:space="preserve"><value>Fin du repos</value></data>
+  <data name="Service.AndroidRestNotificationScheduler.Text" xml:space="preserve"><value>Tu peux reprendre ta prochaine série.</value></data>
+  <data name="Service.AndroidRestNotificationScheduler.Title" xml:space="preserve"><value>Repos terminé</value></data>
+  <data name="Service.AppUpdateService.Available" xml:space="preserve"><value>Version {0} disponible.</value></data>
+  <data name="Service.AppUpdateService.CheckFailed" xml:space="preserve"><value>Vérification impossible : vérifie ta connexion Internet.</value></data>
+  <data name="Service.AppUpdateService.Checking" xml:space="preserve"><value>Recherche d’une mise à jour…</value></data>
+  <data name="Service.AppUpdateService.DownloadInterrupted" xml:space="preserve"><value>Téléchargement interrompu : vérifie ta connexion et réessaie.</value></data>
+  <data name="Service.AppUpdateService.Downloading" xml:space="preserve"><value>Téléchargement de la version {0}…</value></data>
+  <data name="Service.AppUpdateService.InstallerFailed" xml:space="preserve"><value>L’installateur Android n’a pas pu être ouvert.</value></data>
+  <data name="Service.AppUpdateService.Installing" xml:space="preserve"><value>Confirme l’installation dans la fenêtre Android. Tes données sont conservées.</value></data>
+  <data name="Service.AppUpdateService.InvalidFile" xml:space="preserve"><value>Le fichier téléchargé est invalide. Réessaie plus tard.</value></data>
+  <data name="Service.AppUpdateService.PermissionRequired" xml:space="preserve"><value>Autorise « Performance » à installer des applications, puis reviens ici : l’installation reprendra.</value></data>
+  <data name="Service.AppUpdateService.UpToDate" xml:space="preserve"><value>Application à jour ({0}).</value></data>
+  <data name="Service.BoundedTextReader.TooLarge" xml:space="preserve"><value>Ce fichier est trop volumineux.</value></data>
+  <data name="Service.IRestNotificationScheduler.Allowed" xml:space="preserve"><value>Notifications autorisées, y compris lorsque l’écran est éteint.</value></data>
+  <data name="Service.IRestNotificationScheduler.Blocked" xml:space="preserve"><value>Les notifications sont bloquées dans les réglages Android.</value></data>
+  <data name="Service.IRestNotificationScheduler.NoPreciseAlarms" xml:space="preserve"><value>Notifications autorisées. Sans l’autorisation Alarmes et rappels, Android peut retarder l’alerte.</value></data>
+  <data name="Service.MainActivity.ReadFailed" xml:space="preserve"><value>Impossible de lire ce fichier.</value></data>
+  <data name="Service.MauiBackupFiles.PickerTitle" xml:space="preserve"><value>Choisir une sauvegarde Performance</value></data>
+  <data name="Service.MauiBackupFiles.ShareTitle" xml:space="preserve"><value>Sauvegarde Performance</value></data>
+  <data name="Service.MauiProgramFiles.PickerTitle" xml:space="preserve"><value>Choisir des programmes Performance (.json)</value></data>
+  <data name="Service.MauiProgramFiles.SessionPickerTitle" xml:space="preserve"><value>Choisir une séance Performance (.json)</value></data>
+  <data name="Service.MauiProgramFiles.SessionShareTitle" xml:space="preserve"><value>Partager ma séance Performance</value></data>
+  <data name="Service.MauiProgramFiles.ShareTitle" xml:space="preserve"><value>Partager mes programmes Performance</value></data>
+  <data name="Service.MauiProgramFiles.TooLarge" xml:space="preserve"><value>Ce fichier est trop volumineux pour des programmes.</value></data>
+  <data name="SessionHistory.DateTimeFormat" xml:space="preserve"><value>dd/MM/yyyy · HH:mm</value></data>
+  <data name="SessionHistory.EmptyHint" xml:space="preserve"><value>Termine une séance ou importe ta sauvegarde depuis les réglages pour retrouver ton historique.</value></data>
+  <data name="SessionHistory.EmptyTitle" xml:space="preserve"><value>Aucune séance enregistrée</value></data>
+  <data name="SessionHistory.Export" xml:space="preserve"><value>Exporter la séance</value></data>
+  <data name="SessionHistory.FreeWorkout" xml:space="preserve"><value>Séance libre</value></data>
+  <data name="SessionHistory.Minutes" xml:space="preserve"><value>{0} min</value></data>
+  <data name="SessionHistory.Replay" xml:space="preserve"><value>Refaire cette séance</value></data>
+  <data name="SessionHistory.ReplayBlocked" xml:space="preserve"><value>Termine d’abord la séance en cours pour la refaire.</value></data>
+  <data name="SessionHistory.ReplayFailed" xml:space="preserve"><value>Cette séance ne peut pas être refaite : ses exercices n’existent plus.</value></data>
+  <data name="SessionHistory.Reps" xml:space="preserve"><value>Reps</value></data>
+  <data name="SessionHistory.SetColumn" xml:space="preserve"><value>Série</value></data>
+  <data name="SessionHistory.ShareText" xml:space="preserve"><value>Partager en texte</value></data>
+  <data name="SessionHistory.ShortDateFormat" xml:space="preserve"><value>dd/MM</value></data>
+  <data name="SessionHistory.ShowSets" xml:space="preserve"><value>Voir les séries</value></data>
+  <data name="SessionHistory.Summary" xml:space="preserve"><value>{0} exercice(s) · {1} séries</value></data>
+  <data name="SessionHistory.UnknownExercise" xml:space="preserve"><value>Exercice inconnu</value></data>
+  <data name="SessionHistory.Weight" xml:space="preserve"><value>kg</value></data>
+  <data name="SessionHistory.Workout" xml:space="preserve"><value>Séance</value></data>
+  <data name="SessionSharer.Failed" xml:space="preserve"><value>Impossible de partager cette séance. Réessaie.</value></data>
+  <data name="SessionSharer.Ready" xml:space="preserve"><value>Séance prête à partager.</value></data>
+  <data name="SessionStart.Back" xml:space="preserve"><value>Retour</value></data>
+  <data name="SessionStart.Confirm" xml:space="preserve"><value>Confirmer</value></data>
+  <data name="SessionStart.Export" xml:space="preserve"><value>Exporter cette séance</value></data>
+  <data name="SessionStart.GymField" xml:space="preserve"><value>Salle de cette séance</value></data>
+  <data name="SessionStart.Hint" xml:space="preserve"><value>{0}. Le chronomètre démarrera après confirmation.</value></data>
+  <data name="SessionStart.OptionalNote" xml:space="preserve"><value>{0} exercices optionnels à ajouter en fin de séance.</value></data>
+  <data name="SessionStart.PlanLine" xml:space="preserve"><value>{0} séries · {1} · repos {2}</value></data>
+  <data name="SessionStart.ShareText" xml:space="preserve"><value>Partager en texte</value></data>
+  <data name="SessionStart.StartThis" xml:space="preserve"><value>Démarrer cette séance</value></data>
+  <data name="SessionStart.Title" xml:space="preserve"><value>Démarrer la séance ?</value></data>
+  <data name="Settings.App.DiagnosticsHint" xml:space="preserve"><value>Les diagnostics contiennent les types d’erreurs et les durées des opérations, sans le contenu de tes séances. Aucun envoi automatique.</value></data>
+  <data name="Settings.App.ExportDiagnostics" xml:space="preserve"><value>Exporter les diagnostics</value></data>
+  <data name="Settings.App.Title" xml:space="preserve"><value>Application</value></data>
+  <data name="Settings.App.Version" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="Settings.Backup.Export" xml:space="preserve"><value>Exporter mes données</value></data>
+  <data name="Settings.Backup.Import" xml:space="preserve"><value>Importer une sauvegarde</value></data>
+  <data name="Settings.Backup.Summary" xml:space="preserve"><value>{0} séance(s) enregistrée(s). Les données restent sur cet appareil. Exporte une sauvegarde avant de changer de téléphone.</value></data>
+  <data name="Settings.Backup.Title" xml:space="preserve"><value>Sauvegarde et transfert</value></data>
+  <data name="Settings.Backup.WebHint" xml:space="preserve"><value>Exporte une sauvegarde complète depuis la PWA, puis sélectionne ce fichier JSON. L’import remplace les données actuelles après confirmation.</value></data>
+  <data name="Settings.Backup.WebTitle" xml:space="preserve"><value>Depuis l’application web</value></data>
+  <data name="Settings.Eyebrow" xml:space="preserve"><value>TES DONNÉES, SUR TON APPAREIL</value></data>
+  <data name="Settings.Gym.Hint" xml:space="preserve"><value>Utilisée par la séance en cours et les prochaines séances.</value></data>
+  <data name="Settings.Gym.Label" xml:space="preserve"><value>Salle</value></data>
+  <data name="Settings.Gym.Title" xml:space="preserve"><value>Salle d’entraînement</value></data>
+  <data name="Settings.Import.Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Settings.Import.Confirm" xml:space="preserve"><value>Confirmer le remplacement</value></data>
+  <data name="Settings.Import.Contents" xml:space="preserve"><value>La sauvegarde contient {0} séance(s) et {1} exercice(s) personnalisé(s) ou modifié(s).</value></data>
+  <data name="Settings.Import.Title" xml:space="preserve"><value>Remplacer les données ?</value></data>
+  <data name="Settings.Import.Warning" xml:space="preserve"><value>L’historique, les exercices, les réglages et la séance en cours de cet appareil seront remplacés. Exporte tes données actuelles si tu souhaites les conserver.</value></data>
+  <data name="Settings.Intro" xml:space="preserve"><value>Sauvegarde locale, préférences et migration depuis l’application web.</value></data>
   <data name="Settings.Language.Label" xml:space="preserve"><value>Langue de l’application</value></data>
   <data name="Settings.Language.Title" xml:space="preserve"><value>Langue</value></data>
   <data name="Settings.Language.auto" xml:space="preserve"><value>Automatique (langue du téléphone)</value></data>
   <data name="Settings.Language.en" xml:space="preserve"><value>English</value></data>
   <data name="Settings.Language.fr" xml:space="preserve"><value>Français</value></data>
+  <data name="Settings.Loading" xml:space="preserve"><value>Chargement des réglages…</value></data>
+  <data name="Settings.Message.BackupReady" xml:space="preserve"><value>Sauvegarde prête à être partagée.</value></data>
+  <data name="Settings.Message.DiagnosticsFailed" xml:space="preserve"><value>Impossible de partager les diagnostics.</value></data>
+  <data name="Settings.Message.DiagnosticsReady" xml:space="preserve"><value>Diagnostics prêts à être partagés.</value></data>
+  <data name="Settings.Message.ExportFailed" xml:space="preserve"><value>Export impossible : la sauvegarde n’a pas pu être partagée. Réessaie.</value></data>
+  <data name="Settings.Message.GymSaved" xml:space="preserve"><value>Salle enregistrée.</value></data>
+  <data name="Settings.Message.ImportDone" xml:space="preserve"><value>Import terminé : {0} séance(s) récupérée(s).</value></data>
+  <data name="Settings.Message.ImportFailed" xml:space="preserve"><value>Import impossible : le fichier n’est pas une sauvegarde Performance valide ou sa lecture a échoué. Aucune donnée n’a été remplacée.</value></data>
+  <data name="Settings.Message.LoadFailed" xml:space="preserve"><value>Impossible de charger les données locales. L’import et l’export restent indisponibles tant que le chargement échoue.</value></data>
+  <data name="Settings.Message.NotificationsDenied" xml:space="preserve"><value>Activation impossible : vérifie les autorisations Android ou réessaie la sauvegarde.</value></data>
+  <data name="Settings.Message.NotificationsFailed" xml:space="preserve"><value>Impossible de modifier les notifications de repos.</value></data>
+  <data name="Settings.Message.NotificationsOff" xml:space="preserve"><value>Notifications de repos désactivées.</value></data>
+  <data name="Settings.Message.NotificationsOn" xml:space="preserve"><value>Notifications de repos activées.</value></data>
+  <data name="Settings.Message.NotificationsUnavailable" xml:space="preserve"><value>Les notifications Android ne sont pas disponibles.</value></data>
+  <data name="Settings.PageTitle" xml:space="preserve"><value>Réglages · Performance</value></data>
+  <data name="Settings.Rest.Hint" xml:space="preserve"><value>Option désactivée par défaut. Une vibration brève et une notification silencieuse te préviennent en arrière-plan ou écran éteint. Aucun son.</value></data>
+  <data name="Settings.Rest.Title" xml:space="preserve"><value>Repos</value></data>
+  <data name="Settings.Rest.Vibration" xml:space="preserve"><value>Vibration de fin de repos</value></data>
+  <data name="Settings.RetryLoad" xml:space="preserve"><value>Réessayer le chargement</value></data>
+  <data name="Settings.Title" xml:space="preserve"><value>Réglages</value></data>
+  <data name="Settings.Updates.Check" xml:space="preserve"><value>Rechercher une mise à jour</value></data>
+  <data name="Settings.Updates.Hint" xml:space="preserve"><value>L’application vérifie automatiquement les nouvelles versions publiées au démarrage (connexion requise, aucune donnée envoyée). Android te demande toujours de confirmer l’installation ; tes séances sont conservées.</value></data>
+  <data name="Settings.Updates.Install" xml:space="preserve"><value>Installer la version {0}</value></data>
+  <data name="Settings.Updates.Title" xml:space="preserve"><value>Mises à jour</value></data>
+  <data name="Sharing.AddCopies" xml:space="preserve"><value>Ajouter les copies</value></data>
+  <data name="Sharing.AddToMyWorkouts" xml:space="preserve"><value>Ajouter à Mes séances</value></data>
+  <data name="Sharing.AddedInMyWorkouts" xml:space="preserve"><value>Ajoutée dans Mes séances. Ta semaine, ta séance en cours et ton historique restent conservés.</value></data>
+  <data name="Sharing.Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Sharing.CopiesAdded" xml:space="preserve"><value>Les copies ont été ajoutées à la bibliothèque, filtre « Mes séances ».</value></data>
+  <data name="Sharing.CopiesNote" xml:space="preserve"><value>Ajout de copies. Ta semaine, ta séance en cours et ton historique restent conservés.</value></data>
+  <data name="Sharing.ExerciseCount" xml:space="preserve"><value>{0} exercice(s)</value></data>
+  <data name="Sharing.ExportIntro" xml:space="preserve"><value>Fichier JSON avec les exercices et les consignes. Aucune charge personnelle ni historique.</value></data>
+  <data name="Sharing.ExportReady" xml:space="preserve"><value>Fichier de programmes prêt à partager.</value></data>
+  <data name="Sharing.ExportTitle" xml:space="preserve"><value>Exporter / partager</value></data>
+  <data name="Sharing.ImportCounts" xml:space="preserve"><value>{0} programme(s) · {1} séance(s) · {2} exercice(s)</value></data>
+  <data name="Sharing.ImportProgramsTitle" xml:space="preserve"><value>Ajouter ces programmes ?</value></data>
+  <data name="Sharing.ImportSessionTitle" xml:space="preserve"><value>Ajouter cette séance ?</value></data>
+  <data name="Sharing.OptionalCount" xml:space="preserve"><value>+ {0} exercice(s) optionnel(s)</value></data>
+  <data name="Sharing.ProgramsLegend" xml:space="preserve"><value>Programmes à partager</value></data>
+  <data name="Sharing.ReadFailed" xml:space="preserve"><value>Impossible de lire ce fichier. Réessaie.</value></data>
+  <data name="Sharing.ReadProgramsFailed" xml:space="preserve"><value>Impossible de lire ce fichier de programmes. Réessaie.</value></data>
+  <data name="Sharing.ReadSessionFailed" xml:space="preserve"><value>Impossible de lire ce fichier de séance. Réessaie.</value></data>
+  <data name="Sharing.SessionAdded" xml:space="preserve"><value>La séance a été ajoutée à Mes séances.</value></data>
+  <data name="Sharing.ShareFailed" xml:space="preserve"><value>Impossible de partager le fichier de programmes. Réessaie.</value></data>
   <data name="Tag.Abdominaux" xml:space="preserve"><value>Abdominaux</value></data>
   <data name="Tag.Adducteurs" xml:space="preserve"><value>Adducteurs</value></data>
   <data name="Tag.Arrière d’épaule" xml:space="preserve"><value>Arrière d’épaule</value></data>
@@ -69,4 +462,65 @@
   <data name="Tag.Unilatéral" xml:space="preserve"><value>Unilatéral</value></data>
   <data name="Tag.Élévation" xml:space="preserve"><value>Élévation</value></data>
   <data name="Tag.Épaules" xml:space="preserve"><value>Épaules</value></data>
+  <data name="TagPicker.Editable" xml:space="preserve"><value>Tags (modifiables, séparés par des virgules)</value></data>
+  <data name="TagPicker.EditableLabel" xml:space="preserve"><value>Tags séparés par des virgules</value></data>
+  <data name="TagPicker.Equipment" xml:space="preserve"><value>Équipement</value></data>
+  <data name="TagPicker.Hint" xml:space="preserve"><value>Choisis au moins un muscle. Le premier muscle choisi est le muscle principal.</value></data>
+  <data name="TagPicker.Movement" xml:space="preserve"><value>Mouvement</value></data>
+  <data name="TagPicker.Muscle" xml:space="preserve"><value>Muscle</value></data>
+  <data name="TagPicker.Placeholder" xml:space="preserve"><value>prise neutre, convergente…</value></data>
+  <data name="TagPicker.Tags" xml:space="preserve"><value>Tags</value></data>
+  <data name="TagPicker.Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Update.Aria" xml:space="preserve"><value>Mise à jour de l’application</value></data>
+  <data name="Update.Downloading" xml:space="preserve"><value>Téléchargement… {0:P0}</value></data>
+  <data name="Update.Install" xml:space="preserve"><value>Mettre à jour</value></data>
+  <data name="Update.Later" xml:space="preserve"><value>Plus tard</value></data>
+  <data name="Update.NewVersion" xml:space="preserve"><value>Nouvelle version {0}</value></data>
+  <data name="Update.Retry" xml:space="preserve"><value>Réessayer</value></data>
+  <data name="Workout.Abandon" xml:space="preserve"><value>Abandonner la séance</value></data>
+  <data name="Workout.AbandonMessage" xml:space="preserve"><value>Les séries de la séance en cours seront supprimées. Ton historique reste conservé.</value></data>
+  <data name="Workout.AbandonTitle" xml:space="preserve"><value>Abandonner la séance ?</value></data>
+  <data name="Workout.AddAbs" xml:space="preserve"><value>Ajouter les abdos</value></data>
+  <data name="Workout.AddExercise" xml:space="preserve"><value>Ajouter un exercice</value></data>
+  <data name="Workout.AddOptionalBlock" xml:space="preserve"><value>Ajouter le bloc optionnel</value></data>
+  <data name="Workout.Back" xml:space="preserve"><value>Retour</value></data>
+  <data name="Workout.BackHome" xml:space="preserve"><value>Retour à l’accueil →</value></data>
+  <data name="Workout.CloseHistory" xml:space="preserve"><value>Fermer l’historique</value></data>
+  <data name="Workout.CloseSearch" xml:space="preserve"><value>Fermer la recherche</value></data>
+  <data name="Workout.Confirm" xml:space="preserve"><value>Confirmer</value></data>
+  <data name="Workout.CreateExercise" xml:space="preserve"><value>Créer un exercice</value></data>
+  <data name="Workout.ExerciseUnavailable" xml:space="preserve"><value>Exercice indisponible : {0}. Les données restent conservées.</value></data>
+  <data name="Workout.ExtendRestLabel" xml:space="preserve"><value>Ajouter 30 secondes de repos</value></data>
+  <data name="Workout.Eyebrow" xml:space="preserve"><value>SÉANCE EN COURS</value></data>
+  <data name="Workout.Finish" xml:space="preserve"><value>Terminer</value></data>
+  <data name="Workout.FinishLabel" xml:space="preserve"><value>Terminer la séance</value></data>
+  <data name="Workout.FinishMessage" xml:space="preserve"><value>Les séries renseignées seront ajoutées à ton historique.</value></data>
+  <data name="Workout.FinishTitle" xml:space="preserve"><value>Terminer la séance ?</value></data>
+  <data name="Workout.GymField" xml:space="preserve"><value>Salle de cette séance</value></data>
+  <data name="Workout.History" xml:space="preserve"><value>◷ Historique</value></data>
+  <data name="Workout.HistoryLabel" xml:space="preserve"><value>Consulter l’historique sans quitter la séance</value></data>
+  <data name="Workout.LoadFailed" xml:space="preserve"><value>Impossible de charger la séance. Rouvre l’application pour réessayer.</value></data>
+  <data name="Workout.Loading" xml:space="preserve"><value>Chargement de ta séance…</value></data>
+  <data name="Workout.NoExerciseFound" xml:space="preserve"><value>Aucun exercice disponible pour cette recherche.</value></data>
+  <data name="Workout.NoneActive" xml:space="preserve"><value>Aucune séance en cours</value></data>
+  <data name="Workout.OptionalAbsLabel" xml:space="preserve"><value>Abdos optionnels</value></data>
+  <data name="Workout.OptionalCount" xml:space="preserve"><value>{0} exercices optionnels</value></data>
+  <data name="Workout.OptionalEyebrow" xml:space="preserve"><value>FIN DE SÉANCE · OPTIONNEL</value></data>
+  <data name="Workout.OptionalHint" xml:space="preserve"><value>Ajoute ce bloc si tu le souhaites. Tu peux modifier chaque exercice après ajout.</value></data>
+  <data name="Workout.OptionalLine" xml:space="preserve"><value>{0} séries · {1} · repos {2}</value></data>
+  <data name="Workout.PageTitle" xml:space="preserve"><value>Séance en cours · Performance</value></data>
+  <data name="Workout.RecentHistory" xml:space="preserve"><value>Historique récent</value></data>
+  <data name="Workout.RemoveMessage" xml:space="preserve"><value>{0} et ses séries seront retirés de cette séance, dans toutes les salles.</value></data>
+  <data name="Workout.RemoveTitle" xml:space="preserve"><value>Retirer l’exercice ?</value></data>
+  <data name="Workout.ReplaceExercise" xml:space="preserve"><value>Remplacer l’exercice</value></data>
+  <data name="Workout.RestDone" xml:space="preserve"><value>Repos terminé ✓</value></data>
+  <data name="Workout.RestPrefix" xml:space="preserve"><value>Repos ·</value></data>
+  <data name="Workout.SearchLabel" xml:space="preserve"><value>Rechercher un exercice à ajouter</value></data>
+  <data name="Workout.SearchPlaceholder" xml:space="preserve"><value>Nom, muscle, tag…</value></data>
+  <data name="Workout.SetsUnit" xml:space="preserve"><value>séries</value></data>
+  <data name="Workout.StopRestLabel" xml:space="preserve"><value>Arrêter le repos</value></data>
+  <data name="Workout.ToolbarLabel" xml:space="preserve"><value>Suivi de la séance</value></data>
+  <data name="Workout.TotalTime" xml:space="preserve"><value>Temps total</value></data>
+  <data name="Workout.TwoAbs" xml:space="preserve"><value>Deux exercices d’abdos</value></data>
+  <data name="Workout.YesAbandon" xml:space="preserve"><value>Oui, abandonner</value></data>
 </root>

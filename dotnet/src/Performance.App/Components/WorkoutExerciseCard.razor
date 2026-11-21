@@ -5,18 +5,18 @@
 <article class="panel exercise-card" data-exercise="@Exercise.Id">
     <div class="card-heading">
         <div>
-            <p class="eyebrow">EXERCICE @Number</p><h2>@Exercise.Name</h2>
-            <p class="muted">@ExerciseMuscles.Primary(Exercise) · @(Plan.RepTarget ?? Exercise.RepTarget) · repos @(Plan.Rest ?? Exercise.Rest)</p>
-            @if (!string.IsNullOrWhiteSpace(Exercise.AlternativeName)) { <p class="machine-name">Alternative : @Exercise.AlternativeName</p> }
+            <p class="eyebrow">@T("ExerciseCard.Eyebrow", Number)</p><h2>@Exercise.Name</h2>
+            <p class="muted">@T("ExerciseCard.Summary", WorkoutUi.TagName(ExerciseMuscles.Primary(Exercise)), Plan.RepTarget ?? Exercise.RepTarget, Plan.Rest ?? Exercise.Rest)</p>
+            @if (!string.IsNullOrWhiteSpace(Exercise.AlternativeName)) { <p class="machine-name">@T("ExerciseCard.Alternative", Exercise.AlternativeName)</p> }
         </div>
-        <button class="secondary-button collapse-exercise" disabled="@_busy" aria-expanded="@(_collapsed ? "false" : "true")" aria-label="@($"{(_collapsed ? "Développer" : "Réduire")} {Exercise.Name}")" @onclick="() => _collapsed = !_collapsed">@(_collapsed ? "⌄" : "⌃")</button>
+        <button class="secondary-button collapse-exercise" disabled="@_busy" aria-expanded="@(_collapsed ? "false" : "true")" aria-label="@T(_collapsed ? "ExerciseCard.Expand" : "ExerciseCard.Collapse", Exercise.Name)" @onclick="() => _collapsed = !_collapsed">@(_collapsed ? "⌄" : "⌃")</button>
     </div>
-    <p class="muted exercise-completion">@Rows.Count(WorkoutUi.IsWorkoutSetCompleted) / @Rows.Count séries renseignées</p>
+    <p class="muted exercise-completion">@T("ExerciseCard.Completion", Rows.Count(WorkoutUi.IsWorkoutSetCompleted), Rows.Count)</p>
     @if (!_collapsed)
     {
     <div class="gym-history">
-        <label>Salle
-            <select aria-label="Salle de @Exercise.Name" value="@SelectedGym" disabled="@_busy" @onchange="SwitchGymAsync">
+        <label>@T("ExerciseCard.Gym")
+            <select aria-label="@T("ExerciseCard.GymOf", Exercise.Name)" value="@SelectedGym" disabled="@_busy" @onchange="SwitchGymAsync">
                 @foreach (var gym in WorkoutUi.ExerciseGyms(Exercise)) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }
             </select>
         </label>
@@ -24,19 +24,19 @@
         {
             <p class="muted">@machine</p>
         }
-        <div class="gym-record"><span>Record dans cette salle</span><strong>@(Record > 0 ? $"{WorkoutUi.Decimal(Record)} kg" : "—")</strong></div>
+        <div class="gym-record"><span>@T("ExerciseCard.GymRecord")</span><strong>@(Record > 0 ? $"{WorkoutUi.Decimal(Record)} kg" : "—")</strong></div>
         @if (History.Any())
         {
             <details>
-                <summary>Dernières séances · @WorkoutUi.GymName(SelectedGym)</summary>
+                <summary>@T("ExerciseCard.LastWorkouts", WorkoutUi.GymName(SelectedGym))</summary>
                 @foreach (var item in History.Take(3))
                 {
-                    <p class="muted">@item.Date.ToLocalTime().ToString("dd/MM/yyyy") : @HistorySummary(item)</p>
+                    <p class="muted">@item.Date.ToLocalTime().ToString("d", DisplayLanguage.Culture) : @HistorySummary(item)</p>
                 }
             </details>
         }
     </div>
-    <div class="set-grid set-labels"><span>Série</span><span>Dernière</span><span>kg</span><span>Reps</span><span aria-hidden="true">✓</span><span></span></div>
+    <div class="set-grid set-labels"><span>@T("ExerciseCard.SetCol")</span><span>@T("ExerciseCard.LastCol")</span><span>kg</span><span>@T("ExerciseCard.RepsCol")</span><span aria-hidden="true">✓</span><span></span></div>
     @for (var index = 0; index < Rows.Count; index++)
     {
         var setIndex = index;
@@ -44,35 +44,35 @@
         var previous = Previous.ElementAtOrDefault(index);
         <div class="set-grid set-row @(WorkoutUi.IsWorkoutSetCompleted(row) ? "done" : "")" @key="setIndex">
             <b>@(index + 1)</b><span class="last-cell">@(previous is null ? "—" : $"{previous.Weight}×{previous.Reps}")</span>
-            <input inputmode="decimal" aria-label="Charge série @(index + 1) @Exercise.Name" value="@FieldValue(setIndex, TrainingSetField.Weight, row.Weight)" @onchange="args => SaveFieldAsync(setIndex, TrainingSetField.Weight, args.Value?.ToString() ?? string.Empty)" />
-            <input inputmode="numeric" aria-label="Répétitions série @(index + 1) @Exercise.Name" value="@FieldValue(setIndex, TrainingSetField.Reps, row.Reps)" @oninput="args => SaveFieldAsync(setIndex, TrainingSetField.Reps, args.Value?.ToString() ?? string.Empty)" />
-            <span class="set-completed" aria-label="@(WorkoutUi.IsWorkoutSetCompleted(row) ? "Série renseignée" : "Série à renseigner")">@(WorkoutUi.IsWorkoutSetCompleted(row) ? "✓" : "○")</span>
-            <button class="remove-set" disabled="@(_busy || Rows.Count <= 1)" aria-label="Supprimer la série @(index + 1) @Exercise.Name" @onclick="() => RunAsync(() => State.RemoveSetAsync(Exercise.Id, setIndex))">×</button>
+            <input inputmode="decimal" aria-label="@T("ExerciseCard.WeightLabel", index + 1, Exercise.Name)" value="@FieldValue(setIndex, TrainingSetField.Weight, row.Weight)" @onchange="args => SaveFieldAsync(setIndex, TrainingSetField.Weight, args.Value?.ToString() ?? string.Empty)" />
+            <input inputmode="numeric" aria-label="@T("ExerciseCard.RepsLabel", index + 1, Exercise.Name)" value="@FieldValue(setIndex, TrainingSetField.Reps, row.Reps)" @oninput="args => SaveFieldAsync(setIndex, TrainingSetField.Reps, args.Value?.ToString() ?? string.Empty)" />
+            <span class="set-completed" aria-label="@(WorkoutUi.IsWorkoutSetCompleted(row) ? T("ExerciseCard.SetDone") : T("ExerciseCard.SetTodo"))">@(WorkoutUi.IsWorkoutSetCompleted(row) ? "✓" : "○")</span>
+            <button class="remove-set" disabled="@(_busy || Rows.Count <= 1)" aria-label="@T("ExerciseCard.RemoveSetLabel", index + 1, Exercise.Name)" @onclick="() => RunAsync(() => State.RemoveSetAsync(Exercise.Id, setIndex))">×</button>
         </div>
     }
-    <button class="secondary-button add-set" disabled="@(_busy || Rows.Count >= 20)" aria-label="Ajouter une série @Exercise.Name" @onclick="() => RunAsync(() => State.AddSetAsync(Exercise.Id))">+ Ajouter une série</button>
+    <button class="secondary-button add-set" disabled="@(_busy || Rows.Count >= 20)" aria-label="@T("ExerciseCard.AddSetLabel", Exercise.Name)" @onclick="() => RunAsync(() => State.AddSetAsync(Exercise.Id))">+ @T("ExerciseCard.AddSet")</button>
     @if (State.Data.ActiveWorkout is { RestEnd: { } end } active && active.RestExerciseId == Exercise.Id)
     {
         <div class="mini-rest-timer" role="status">
-            <span>Repos</span><strong><LiveTimer Deadline="end" /></strong>
-            <button class="secondary-button" disabled="@_busy" aria-label="Ajouter 30 secondes @Exercise.Name" @onclick="() => RunAsync(() => State.ExtendRestAsync())">+30 s</button>
-            <button class="secondary-button" disabled="@_busy" aria-label="Arrêter le timer @Exercise.Name" @onclick="() => RunAsync(() => State.StopRestAsync())">×</button>
+            <span>@T("ExerciseCard.Rest")</span><strong><LiveTimer Deadline="end" /></strong>
+            <button class="secondary-button" disabled="@_busy" aria-label="@T("ExerciseCard.Add30Label", Exercise.Name)" @onclick="() => RunAsync(() => State.ExtendRestAsync())">+30 s</button>
+            <button class="secondary-button" disabled="@_busy" aria-label="@T("ExerciseCard.StopTimerLabel", Exercise.Name)" @onclick="() => RunAsync(() => State.StopRestAsync())">×</button>
         </div>
     }
     <div class="exercise-rest-controls">
-        <label>Repos<select aria-label="Durée de repos @Exercise.Name" value="@RestSeconds" disabled="@_busy" @onchange="ChangeRestAsync">
+        <label>@T("ExerciseCard.Rest")<select aria-label="@T("ExerciseCard.RestDurationLabel", Exercise.Name)" value="@RestSeconds" disabled="@_busy" @onchange="ChangeRestAsync">
             @foreach (var seconds in RestOptions) { <option value="@seconds">@FormatDuration(seconds)</option> }
         </select></label>
-        <button class="secondary-button rest-button" disabled="@_busy" @onclick="() => RunAsync(() => State.StartRestAsync(Exercise.Id))">Démarrer le repos</button>
+        <button class="secondary-button rest-button" disabled="@_busy" @onclick="() => RunAsync(() => State.StartRestAsync(Exercise.Id))">@T("ExerciseCard.StartRest")</button>
     </div>
     @if (!string.IsNullOrWhiteSpace(Exercise.Link) && Uri.TryCreate(Exercise.Link, UriKind.Absolute, out var link) && (link.Scheme == "https" || link.Scheme == "http"))
     {
-        <a class="action-link" href="@Exercise.Link" target="_blank" rel="noopener noreferrer">Voir le mouvement ↗</a>
+        <a class="action-link" href="@Exercise.Link" target="_blank" rel="noopener noreferrer">@T("ExerciseCard.SeeMovement")</a>
     }
     <div class="exercise-actions">
-        <button class="secondary-button replace-exercise" disabled="@_busy" @onclick="() => Replace.InvokeAsync(Exercise)">↻ Remplacer</button>
-        <button class="secondary-button edit-exercise" disabled="@_busy" @onclick="() => Edit.InvokeAsync(Exercise)">✎ Modifier</button>
-        <button class="danger-button remove-exercise" disabled="@_busy" @onclick="() => Remove.InvokeAsync(Exercise)">Retirer</button>
+        <button class="secondary-button replace-exercise" disabled="@_busy" @onclick="() => Replace.InvokeAsync(Exercise)">↻ @T("ExerciseCard.Replace")</button>
+        <button class="secondary-button edit-exercise" disabled="@_busy" @onclick="() => Edit.InvokeAsync(Exercise)">✎ @T("ExerciseCard.Edit")</button>
+        <button class="danger-button remove-exercise" disabled="@_busy" @onclick="() => Remove.InvokeAsync(Exercise)">@T("ExerciseCard.Remove")</button>
     </div>
     }
 </article>

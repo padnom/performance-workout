@@ -6,12 +6,12 @@
 @inject NavigationManager Navigation
 
 <div class="app-shell" data-gym="@GymTheme.For(Gym)">
-    <header class="topbar"><a class="brand" href="/" aria-label="Performance, accueil"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><button class="offline-pill gym-switch" title="Changer de salle" aria-label="Salle actuelle : @GymLabel. Changer de salle" aria-haspopup="menu" aria-expanded="@(_gymOpen ? "true" : "false")" disabled="@(_state is null || _gymBusy)" @onclick="ToggleGym">@if (GymTheme.Logo(Gym) is { } logo) { <img class="gym-logo" src="@logo" alt="" width="20" height="20" /> } else { <span></span> } @GymLabel <b aria-hidden="true">▾</b></button></header>
+    <header class="topbar"><a class="brand" href="/" aria-label="@T("Layout.HomeAria")"><img class="brand-mark" src="logo.svg" alt="" width="32" height="32" /><span>PERFORMANCE</span></a><button class="offline-pill gym-switch" title="@T("Layout.SwitchGym")" aria-label="@T("Layout.CurrentGymAria", GymLabel)" aria-haspopup="menu" aria-expanded="@(_gymOpen ? "true" : "false")" disabled="@(_state is null || _gymBusy)" @onclick="ToggleGym">@if (GymTheme.Logo(Gym) is { } logo) { <img class="gym-logo" src="@logo" alt="" width="20" height="20" /> } else { <span></span> } @GymLabel <b aria-hidden="true">▾</b></button></header>
     @if (_gymOpen)
     {
         <div class="plus-menu-backdrop" @onclick="CloseGym"></div>
-        <section class="panel gym-menu" role="menu" aria-label="Choisir la salle">
-            <p class="eyebrow">@(_state?.Data.ActiveWorkout is null ? "SALLE" : "SALLE DE LA SÉANCE EN COURS")</p>
+        <section class="panel gym-menu" role="menu" aria-label="@T("Layout.ChooseGym")">
+            <p class="eyebrow">@(_state?.Data.ActiveWorkout is null ? T("Layout.GymEyebrow") : T("Layout.GymEyebrowWorkout"))</p>
             @foreach (var gym in WorkoutUi.Gyms)
             {
                 <button role="menuitemradio" aria-checked="@(gym == Gym ? "true" : "false")" class="@(gym == Gym ? "active" : "")" data-gym="@gym" disabled="@_gymBusy" @onclick="() => SelectGymAsync(gym)">@if (GymTheme.Logo(gym) is { } icon) { <img src="@icon" alt="" width="20" height="20" /> } else { <span class="gym-dot"></span> }@WorkoutUi.GymName(gym)@if (gym == Gym) { <b aria-hidden="true">✓</b> }</button>
@@ -27,14 +27,14 @@
     @if (_plusOpen)
     {
         <div class="plus-menu-backdrop" @onclick="ClosePlus"></div>
-        <section class="panel plus-menu" aria-label="Autres écrans"><a href="/exercices" @onclick="ClosePlus">◉ Exercices</a><a href="/reglages" @onclick="ClosePlus">⚙ Réglages</a></section>
+        <section class="panel plus-menu" aria-label="@T("Layout.MoreScreens")"><a href="/exercices" @onclick="ClosePlus">◉ @T("Layout.Exercises")</a><a href="/reglages" @onclick="ClosePlus">⚙ @T("Layout.Settings")</a></section>
     }
-    <nav class="bottom-nav" aria-label="Navigation principale">
-        <NavLink href="/" Match="NavLinkMatch.All"><span class="nav-icon">⌂</span><span>Accueil</span></NavLink>
-        <NavLink href="/programmes" Match="NavLinkMatch.All"><span class="nav-icon">▦</span><span>Programmes</span></NavLink>
-        <NavLink href="/progres"><span class="nav-icon">↗</span><span>Progrès</span></NavLink>
-        <NavLink href="/historique"><span class="nav-icon">◷</span><span>Historique</span></NavLink>
-        <button class="@(_plusOpen ? "active" : "")" aria-expanded="@(_plusOpen ? "true" : "false")" aria-label="Plus" @onclick="() => { _gymOpen = false; _plusOpen = !_plusOpen; }"><span class="nav-icon">•••</span><span>Plus</span></button>
+    <nav class="bottom-nav" aria-label="@T("Layout.MainNavigation")">
+        <NavLink href="/" Match="NavLinkMatch.All"><span class="nav-icon">⌂</span><span>@T("Layout.Home")</span></NavLink>
+        <NavLink href="/programmes" Match="NavLinkMatch.All"><span class="nav-icon">▦</span><span>@T("Layout.Programs")</span></NavLink>
+        <NavLink href="/progres"><span class="nav-icon">↗</span><span>@T("Layout.Progress")</span></NavLink>
+        <NavLink href="/historique"><span class="nav-icon">◷</span><span>@T("Layout.History")</span></NavLink>
+        <button class="@(_plusOpen ? "active" : "")" aria-expanded="@(_plusOpen ? "true" : "false")" aria-label="@T("Layout.More")" @onclick="() => { _gymOpen = false; _plusOpen = !_plusOpen; }"><span class="nav-icon">•••</span><span>@T("Layout.More")</span></button>
     </nav>
 </div>
 
@@ -54,7 +54,7 @@
     private bool _releaseNotesChecked;
     private bool _closingNotes;
     private string? Gym => _state is null ? null : GymTheme.CurrentGym(_state);
-    private string GymLabel => Gym switch { null => "LOCAL", "Toutes" => "TOUTES SALLES", var gym => WorkoutUi.GymName(gym).ToUpperInvariant() };
+    private string GymLabel => Gym switch { null => T("Layout.GymLocal"), "Toutes" => T("Layout.GymAll"), var gym => WorkoutUi.GymName(gym).ToUpperInvariant() };
     protected override void OnInitialized()
     {
         Navigation.LocationChanged += LocationChanged;

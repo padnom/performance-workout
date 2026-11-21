@@ -118,7 +118,7 @@
 
     private string Summary(WorkoutSession session)
     {
-        var muscles = Definitions(session).Select(ExerciseMuscles.Primary).Where(muscle => muscle.Length > 0).Distinct().Take(3);
+        var muscles = Definitions(session).Select(ExerciseMuscles.Primary).Where(muscle => muscle.Length > 0).Distinct().Take(3).Select(WorkoutUi.TagName);
         return string.Join(" · ", muscles.Append(T("Library.ExerciseCount", session.Exercises.Count)));
     }
 

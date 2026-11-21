@@ -52,6 +52,9 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
+        var app = builder.Build();
+        // Every process start (UI or a rest notification firing in the background) shows texts in the chosen language.
+        DisplayLanguage.Apply(app.Services.GetRequiredService<ILanguagePreference>().Value, System.Globalization.CultureInfo.InstalledUICulture);
+        return app;
     }
 }
