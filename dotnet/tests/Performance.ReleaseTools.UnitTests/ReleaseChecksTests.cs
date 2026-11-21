@@ -191,7 +191,8 @@ public sealed class AndroidSmokeTests
     [Fact]
     public void Dashboard_requires_package_and_home_content()
     {
-        AndroidSmoke.IsDashboard("package=\"fr.padnom.performance\" text=\"Accueil\" text=\"Programme actif\"").ShouldBeTrue();
+        AndroidSmoke.IsDashboard("package=\"fr.padnom.performance\" text=\"Accueil\" text=\"Séance libre\"").ShouldBeTrue();
+        AndroidSmoke.IsDashboard("package=\"fr.padnom.performance\" text=\"Accueil\" text=\"Programme actif\"").ShouldBeFalse();
         AndroidSmoke.IsDashboard("package=\"fr.padnom.performance\" text=\"Chargement\"").ShouldBeFalse();
     }
 
