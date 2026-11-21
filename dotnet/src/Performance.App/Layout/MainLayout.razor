@@ -19,7 +19,7 @@
             @if (_gymError.Length > 0) { <p class="notice" role="alert">@_gymError</p> }
         </section>
     }
-    <main class="content @(IsWorkout ? "workout-content" : "")" @key="Navigation.Uri">
+    <main class="content @(IsWorkout ? "workout-content" : "")" @key="(Navigation.Uri, DisplayLanguage.Revision)">
         @if (!IsWorkout && _updates is { ShowBanner: true }) { <UpdateBanner Updates="_updates" /> }
         @Body
     </main>
@@ -58,6 +58,7 @@
     protected override void OnInitialized()
     {
         Navigation.LocationChanged += LocationChanged;
+        DisplayLanguage.Changed += LanguageChanged;
         _state = Services.GetService(typeof(WorkoutStateService)) as WorkoutStateService;
         if (_state is not null) _state.DataChanged += Refresh;
         _installer = Services.GetService(typeof(IApkInstaller)) as IApkInstaller;
@@ -90,6 +91,7 @@
         try { await _state.MarkReleaseNotesSeenAsync(_installer.InstalledVersion); }
         finally { _closingNotes = false; _releaseNotes = []; }
     }
+    private void LanguageChanged() => _ = InvokeAsync(StateHasChanged);
     private void RefreshUpdates() => _ = InvokeAsync(StateHasChanged);
     private void OpenWorkout() => _ = InvokeAsync(() => Navigation.NavigateTo("/seance"));
     private void OpenPrograms() => _ = InvokeAsync(() =>
@@ -132,6 +134,7 @@
     public void Dispose()
     {
         Navigation.LocationChanged -= LocationChanged;
+        DisplayLanguage.Changed -= LanguageChanged;
         if (_state is not null) _state.DataChanged -= Refresh;
         if (_updates is not null) _updates.Changed -= RefreshUpdates;
         if (_incomingShare is not null) _incomingShare.Received -= OpenPrograms;

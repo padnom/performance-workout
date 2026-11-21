@@ -39,5 +39,8 @@
     <Compile Include="../../src/Performance.App/Services/IApkInstaller.cs" Link="Services/IApkInstaller.cs" />
     <Compile Include="../../src/Performance.App/Services/AppUpdateService.cs" Link="Services/AppUpdateService.cs" />
     <Compile Include="../../src/Performance.App/Components/*.cs" Link="Components/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Performance.App/Resources/Text.cs" Link="Resources/Text.cs" />
+    <EmbeddedResource Include="../../src/Performance.App/Resources/Strings*.resx" Link="Resources/%(Filename)%(Extension)" />
+    <Compile Include="../../src/Performance.App/Services/ILanguagePreference.cs" Link="Services/ILanguagePreference.cs" />
   </ItemGroup>
 </Project>

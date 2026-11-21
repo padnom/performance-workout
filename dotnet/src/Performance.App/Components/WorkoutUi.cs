@@ -1,5 +1,7 @@
 using System.Globalization;
+using Performance.Application;
 using Performance.Domain;
+using static Performance.App.Resources.Text;
 
 namespace Performance.App.Components;
 
@@ -7,39 +9,24 @@ public static class WorkoutUi
 {
     public static readonly string[] Gyms = ["One Air", "Basic-Fit", "Toutes"];
     /// <summary>Display name of a gym; stored values keep "One Air" so existing data and backups stay compatible.</summary>
-    public static string GymName(string? gym) => gym switch { "One Air" => "On Air", null => "", _ => gym };
-    public static string Error(string? token) => token switch
+    public static string GymName(string? gym) => gym switch { "One Air" => "On Air", "Toutes" => T("Gym.All"), null => "", _ => gym };
+    public static string Error(string? token)
     {
-        "ActiveWorkoutExists" => "Une séance est déjà en cours. Reprends-la ou abandonne-la avant d’en démarrer une autre.",
-        "NoActiveWorkout" => "Aucune séance en cours.",
-        "InvalidSetIndex" => "Cette série n’est plus disponible.",
-        "SetLimit" => "Un exercice peut compter 20 séries au maximum.",
-        "LastSet" => "Garde au moins une série, ou retire l’exercice.",
-        "InvalidSet" => "Vérifie les valeurs : charge et répétitions positives.",
-        "EmptyWorkout" => "Renseigne au moins une série avec des répétitions avant de terminer.",
-        "UnknownExercise" => "Cet exercice n’est plus disponible.",
-        "DuplicateExercise" => "Cet exercice est déjà dans la séance.",
-        "InvalidExercise" => "Renseigne un nom et un nombre de séries valide.",
-        "ExerciseAlreadyExists" => "Un exercice portant ce nom existe déjà. Utilise-le depuis la recherche.",
-        "InvalidGym" => "Choisis une salle disponible pour cet exercice.",
-        "IncompatibleGym" => "Ce programme ne correspond pas à la salle choisie. Choisis On Air ou Basic-Fit, ou remplace les exercices concernés.",
-        "NoOptionalExercises" => "Les exercices optionnels sont déjà ajoutés ou indisponibles.",
-        "UnknownGymProgram" => "Aucun programme prévu pour cette salle. Choisis On Air ou Basic-Fit.",
-        "InvalidProgramPackage" => "Fichier de programmes invalide. Tes données sont conservées.",
-        "InvalidSessionPackage" => "Fichier de séance invalide. Tes données sont conservées.",
-        "SessionsProgramFull" => "Mes séances contient déjà 100 séances. Crée un programme pour les suivantes.",
-        "InvalidProgram" => "Renseigne le nom du programme et ajoute au moins une séance.",
-        "InvalidProgramSession" => "Chaque séance doit avoir un nom et au moins un exercice.",
-        "UnknownProgram" => "Ce programme n’est plus disponible.",
-        "InvalidRestDuration" => "Choisis un repos de 15 à 600 secondes.",
-        "NoActiveRest" => "Le repos est déjà terminé. Démarre un nouveau repos si nécessaire.",
-        "UnknownSession" => "Cette séance n’est plus disponible.",
-        "InvalidWeekSessionIndex" => "Cette séance n’est plus dans ta semaine.",
-        "InvalidWeekMove" => "Cette séance ne peut pas être déplacée dans cette direction.",
-        _ => "L’enregistrement a échoué. Tes données précédemment enregistrées sont conservées. Réessaie."
-    };
+        if (token is null) return T("Error.Default");
+        var key = "Error." + token;
+        var text = T(key);
+        return text == key ? T("Error.Default") : text;
+    }
+    /// <summary>Display name of a tag or muscle group; stored tags stay in French, custom tags are shown as typed.</summary>
+    public static string TagName(string? tag)
+    {
+        if (string.IsNullOrEmpty(tag)) return "";
+        var key = "Tag." + tag;
+        var text = T(key);
+        return text == key ? tag : text;
+    }
     public static decimal Number(string? value) => decimal.TryParse(value?.Trim().Replace(',', '.'), NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var parsed) && parsed >= 0 ? parsed : 0;
-    public static string Decimal(decimal value) => value.ToString("0.##", CultureInfo.GetCultureInfo("fr-FR"));
+    public static string Decimal(decimal value) => value.ToString("0.##", DisplayLanguage.Culture);
     public static string NormalizeName(string name) => string.Concat(name.Trim().ToLowerInvariant().Normalize(System.Text.NormalizationForm.FormD).Where(character => CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark && char.IsLetterOrDigit(character)));
     public static string Gym(ExercisePerformance performance) => performance.Gym ?? "One Air";
     public static int RestSeconds(string? rest) => Performance.Application.RestDuration.Parse(rest);

@@ -37,6 +37,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRestNotificationScheduler, AndroidRestNotificationScheduler>();
         builder.Services.AddSingleton<RestNotificationCoordinator>();
         builder.Services.AddSingleton<AppNavigationService>();
+        builder.Services.AddSingleton<ILanguagePreference, MauiLanguagePreference>();
         builder.Services.AddSingleton<IApkInstaller, AndroidApkInstaller>();
         builder.Services.AddSingleton(services => new AppUpdateService(new HttpClient(), services.GetRequiredService<IApkInstaller>(),
             services.GetRequiredService<TimeProvider>(), services.GetRequiredService<IAppDiagnostics>()));

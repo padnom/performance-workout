@@ -6,6 +6,8 @@ public partial class App : Microsoft.Maui.Controls.Application
     public App(IServiceProvider services)
     {
         _services = services;
+        var language = services.GetRequiredService<Services.ILanguagePreference>();
+        Performance.Application.DisplayLanguage.Apply(language.Value, System.Globalization.CultureInfo.InstalledUICulture);
         InitializeComponent();
     }
 

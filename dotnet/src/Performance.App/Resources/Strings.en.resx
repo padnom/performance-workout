@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Error.ActiveWorkoutExists" xml:space="preserve"><value>A workout is already in progress. Resume or discard it before starting another one.</value></data>
+  <data name="Error.Default" xml:space="preserve"><value>Saving failed. Your previously saved data has been kept. Try again.</value></data>
+  <data name="Error.DuplicateExercise" xml:space="preserve"><value>This exercise is already in the workout.</value></data>
+  <data name="Error.EmptyWorkout" xml:space="preserve"><value>Log at least one set with reps before finishing.</value></data>
+  <data name="Error.ExerciseAlreadyExists" xml:space="preserve"><value>An exercise with this name already exists. Pick it from the search.</value></data>
+  <data name="Error.IncompatibleGym" xml:space="preserve"><value>This program doesn’t match the selected gym. Choose On Air or Basic-Fit, or replace the affected exercises.</value></data>
+  <data name="Error.InvalidExercise" xml:space="preserve"><value>Enter a name and a valid number of sets.</value></data>
+  <data name="Error.InvalidGym" xml:space="preserve"><value>Choose a gym where this exercise is available.</value></data>
+  <data name="Error.InvalidProgram" xml:space="preserve"><value>Enter the program name and add at least one workout.</value></data>
+  <data name="Error.InvalidProgramPackage" xml:space="preserve"><value>Invalid programs file. Your data has been kept.</value></data>
+  <data name="Error.InvalidProgramSession" xml:space="preserve"><value>Each workout needs a name and at least one exercise.</value></data>
+  <data name="Error.InvalidRestDuration" xml:space="preserve"><value>Choose a rest between 15 and 600 seconds.</value></data>
+  <data name="Error.InvalidSessionPackage" xml:space="preserve"><value>Invalid workout file. Your data has been kept.</value></data>
+  <data name="Error.InvalidSet" xml:space="preserve"><value>Check the values: weight and reps must be positive.</value></data>
+  <data name="Error.InvalidSetIndex" xml:space="preserve"><value>This set is no longer available.</value></data>
+  <data name="Error.InvalidWeekMove" xml:space="preserve"><value>This workout can’t be moved in that direction.</value></data>
+  <data name="Error.InvalidWeekSessionIndex" xml:space="preserve"><value>This workout is no longer in your week.</value></data>
+  <data name="Error.LastSet" xml:space="preserve"><value>Keep at least one set, or remove the exercise.</value></data>
+  <data name="Error.NoActiveRest" xml:space="preserve"><value>The rest is already over. Start a new rest if needed.</value></data>
+  <data name="Error.NoActiveWorkout" xml:space="preserve"><value>No workout in progress.</value></data>
+  <data name="Error.NoOptionalExercises" xml:space="preserve"><value>The optional exercises are already added or unavailable.</value></data>
+  <data name="Error.SessionsProgramFull" xml:space="preserve"><value>My workouts already holds 100 workouts. Create a program for the next ones.</value></data>
+  <data name="Error.SetLimit" xml:space="preserve"><value>An exercise can have at most 20 sets.</value></data>
+  <data name="Error.UnknownExercise" xml:space="preserve"><value>This exercise is no longer available.</value></data>
+  <data name="Error.UnknownGymProgram" xml:space="preserve"><value>No program is planned for this gym. Choose On Air or Basic-Fit.</value></data>
+  <data name="Error.UnknownProgram" xml:space="preserve"><value>This program is no longer available.</value></data>
+  <data name="Error.UnknownSession" xml:space="preserve"><value>This workout is no longer available.</value></data>
+  <data name="Gym.All" xml:space="preserve"><value>All gyms</value></data>
+  <data name="Settings.Language.Label" xml:space="preserve"><value>App language</value></data>
+  <data name="Settings.Language.Title" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings.Language.auto" xml:space="preserve"><value>Automatic (phone language)</value></data>
+  <data name="Settings.Language.en" xml:space="preserve"><value>English</value></data>
+  <data name="Settings.Language.fr" xml:space="preserve"><value>Français</value></data>
+  <data name="Tag.Abdominaux" xml:space="preserve"><value>Abs</value></data>
+  <data name="Tag.Adducteurs" xml:space="preserve"><value>Adductors</value></data>
+  <data name="Tag.Arrière d’épaule" xml:space="preserve"><value>Rear delts</value></data>
+  <data name="Tag.Barre" xml:space="preserve"><value>Barbell</value></data>
+  <data name="Tag.Biceps" xml:space="preserve"><value>Biceps</value></data>
+  <data name="Tag.Dos" xml:space="preserve"><value>Back</value></data>
+  <data name="Tag.Extension" xml:space="preserve"><value>Extension</value></data>
+  <data name="Tag.Fessiers" xml:space="preserve"><value>Glutes</value></data>
+  <data name="Tag.Flexion" xml:space="preserve"><value>Curl</value></data>
+  <data name="Tag.Grand dorsal" xml:space="preserve"><value>Lats</value></data>
+  <data name="Tag.Haltères" xml:space="preserve"><value>Dumbbells</value></data>
+  <data name="Tag.Ischio-jambiers" xml:space="preserve"><value>Hamstrings</value></data>
+  <data name="Tag.Ischios / fessiers" xml:space="preserve"><value>Hamstrings / glutes</value></data>
+  <data name="Tag.Isolation" xml:space="preserve"><value>Isolation</value></data>
+  <data name="Tag.Jambes" xml:space="preserve"><value>Legs</value></data>
+  <data name="Tag.Lombaires" xml:space="preserve"><value>Lower back</value></data>
+  <data name="Tag.Machine" xml:space="preserve"><value>Machine</value></data>
+  <data name="Tag.Mollets" xml:space="preserve"><value>Calves</value></data>
+  <data name="Tag.Obliques" xml:space="preserve"><value>Obliques</value></data>
+  <data name="Tag.Pectoraux" xml:space="preserve"><value>Chest</value></data>
+  <data name="Tag.Poids du corps" xml:space="preserve"><value>Bodyweight</value></data>
+  <data name="Tag.Polyarticulaire" xml:space="preserve"><value>Compound</value></data>
+  <data name="Tag.Poulie" xml:space="preserve"><value>Cable</value></data>
+  <data name="Tag.Poussée" xml:space="preserve"><value>Push</value></data>
+  <data name="Tag.Quadriceps" xml:space="preserve"><value>Quads</value></data>
+  <data name="Tag.Tirage horizontal" xml:space="preserve"><value>Horizontal pull</value></data>
+  <data name="Tag.Tirage vertical" xml:space="preserve"><value>Vertical pull</value></data>
+  <data name="Tag.Trapèzes" xml:space="preserve"><value>Traps</value></data>
+  <data name="Tag.Triceps" xml:space="preserve"><value>Triceps</value></data>
+  <data name="Tag.Unilatéral" xml:space="preserve"><value>Unilateral</value></data>
+  <data name="Tag.Élévation" xml:space="preserve"><value>Raise</value></data>
+  <data name="Tag.Épaules" xml:space="preserve"><value>Shoulders</value></data>
+</root>

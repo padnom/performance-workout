@@ -24,6 +24,17 @@
             </select>
         </label>
     </section>
+    @if (_language is not null)
+    {
+        <section class="panel language-settings">
+            <h2>@T("Settings.Language.Title")</h2>
+            <label class="field">@T("Settings.Language.Label")
+                <select value="@_language.Value" disabled="@_busy" @onchange="ChangeLanguage">
+                    @foreach (var choice in DisplayLanguage.Choices) { <option value="@choice">@T("Settings.Language." + choice)</option> }
+                </select>
+            </label>
+        </section>
+    }
     <section class="panel notification-settings">
         <h2>Repos</h2>
         <label class="field"><span>Vibration de fin de repos</span>
@@ -91,12 +102,14 @@
     private RestNotificationCoordinator? _notifications;
     private IAppDiagnostics? _diagnostics;
     private AppUpdateService? _updates;
+    private ILanguagePreference? _language;
     private IDisposable? _backRegistration;
     protected override async Task OnInitializedAsync()
     {
         _notifications = Services.GetService(typeof(RestNotificationCoordinator)) as RestNotificationCoordinator;
         _diagnostics = Services.GetService(typeof(IAppDiagnostics)) as IAppDiagnostics;
         _updates = Services.GetService(typeof(AppUpdateService)) as AppUpdateService;
+        _language = Services.GetService(typeof(ILanguagePreference)) as ILanguagePreference;
         if (_updates is not null) _updates.Changed += RefreshNotifications;
         if (_notifications is not null) _notifications.Changed += RefreshNotifications;
         _backRegistration = (Services.GetService(typeof(AppNavigationService)) as AppNavigationService)?.RegisterBackHandler(CloseImportAsync, 10);
@@ -127,6 +140,11 @@
         }
         catch (Exception exception) { _diagnostics?.Record("settings.notifications", TimeSpan.Zero, exception); _message = "Impossible de modifier les notifications de repos."; }
         finally { _busy = false; _notificationInputRevision++; }
+    }
+    private void ChangeLanguage(ChangeEventArgs args)
+    {
+        _language?.Change(args.Value?.ToString() ?? DisplayLanguage.Auto);
+        _message = "";
     }
     private Task CheckUpdatesAsync() => _updates?.CheckAsync(true) ?? Task.CompletedTask;
     private Task InstallUpdateAsync() => _updates?.InstallAsync() ?? Task.CompletedTask;
