@@ -3,11 +3,16 @@ using System.Text;
 namespace Performance.Application;
 
 /// <summary>User-facing notes of one published Android version, shown once after the update.</summary>
-public sealed record ReleaseNote(Version Version, IReadOnlyList<string> Items);
+public sealed record ReleaseNote(Version Version, IReadOnlyList<string> Items, IReadOnlyList<string>? EnglishItems = null)
+{
+    /// <summary>Items in the display language; French when no English text was written for this version.</summary>
+    public IReadOnlyList<string> DisplayedItems => DisplayLanguage.IsEnglish && EnglishItems is { Count: > 0 } ? EnglishItems : Items;
+}
 
 /// <summary>
 /// Single source of the "Nouveautés" shown in the app after an update and of the GitHub release text.
 /// Add an entry here before publishing a new version: the release workflow refuses a version without notes.
+/// Write the French items and their English translation (shown when the app is in English).
 /// </summary>
 public static class ReleaseNotes
 {
@@ -23,21 +28,37 @@ public static class ReleaseNotes
         [
             "Change de salle (et de thème) directement depuis le bouton en haut à droite, sans passer par les réglages.",
             "Pendant une séance, ce bouton change la salle de la séance en cours.",
+        ],
+        [
+            "Switch gym (and theme) straight from the button at the top right, without going through the settings.",
+            "During a workout, this button changes the gym of the current workout.",
         ]),
         new(new Version(1, 5, 1),
         [
             "Fenêtre « Nouveautés » : après chaque mise à jour, l’application résume ce qui a changé.",
+        ],
+        [
+            "“What’s new” window: after each update, the app sums up what changed.",
         ]),
         new(new Version(1, 5, 0),
         [
             "Historique : « Refaire cette séance » relance une séance terminée avec les mêmes exercices, dans le même ordre et avec le même nombre de séries.",
             "La salle utilisée ce jour-là est présélectionnée et les charges reprennent ta dernière performance.",
             "Les séances terminées gardent leur nom dans l’historique.",
+        ],
+        [
+            "History: “Redo this workout” restarts a finished workout with the same exercises, in the same order and with the same number of sets.",
+            "The gym used that day is preselected and weights start from your last performance.",
+            "Finished workouts keep their name in the history.",
         ]),
         new(new Version(1, 4, 0),
         [
             "Mise à jour intégrée : l’application propose et installe elle-même les nouvelles versions.",
             "Thème et logo de la salle (On Air en rouge et noir, Basic-Fit, toutes salles).",
+        ],
+        [
+            "Built-in updates: the app offers and installs new versions itself.",
+            "Gym theme and logo (On Air in red and black, Basic-Fit, all gyms).",
         ]),
     ];
 
@@ -57,6 +78,9 @@ public static class ReleaseNotes
     {
         var text = new StringBuilder($"## Nouveautés de la version {note.Version}\n\n");
         foreach (var item in note.Items) text.Append("- ").Append(item).Append('\n');
+        if (note.EnglishItems is not { Count: > 0 } english) return text.ToString();
+        text.Append($"\n## What’s new in version {note.Version}\n\n");
+        foreach (var item in english) text.Append("- ").Append(item).Append('\n');
         return text.ToString();
     }
 }

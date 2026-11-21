@@ -2,6 +2,7 @@ using Performance.Domain;
 
 namespace Performance.Application;
 
+/// <summary>Plain-text summary of a workout to share, e.g. on WhatsApp, in the display language.</summary>
 public static class SessionText
 {
     public static string Format(WorkoutSession session, IReadOnlyList<Exercise> catalog)
@@ -10,7 +11,7 @@ public static class SessionText
         var lines = new List<string> { $"Performance · {session.Name}" };
         lines.AddRange(session.Exercises.Select((plan, index) => Line(plan, index + 1, definitions)));
         if (session.OptionalExercises.Count == 0) return string.Join("\n", lines);
-        lines.Add("Optionnels :");
+        lines.Add(DisplayLanguage.Pick("Optionnels :", "Optional:"));
         lines.AddRange(session.OptionalExercises.Select((plan, index) => Line(plan, session.Exercises.Count + index + 1, definitions)));
         return string.Join("\n", lines);
     }
@@ -22,7 +23,7 @@ public static class SessionText
         var sets = (plan.Sets ?? definition?.Sets)?.ToString() ?? "—";
         var repTarget = plan.RepTarget ?? definition?.RepTarget ?? "—";
         var rest = plan.Rest ?? definition?.Rest ?? "—";
-        var gym = string.IsNullOrEmpty(plan.Gym) ? "" : $" · {plan.Gym}";
-        return $"{number}. {name} — {sets} × {repTarget} · repos {rest}{gym}";
+        var gym = string.IsNullOrEmpty(plan.Gym) ? "" : $" · {(plan.Gym == "Toutes" ? DisplayLanguage.Pick("Toutes", "All gyms") : plan.Gym)}";
+        return $"{number}. {name} — {sets} × {repTarget} · {DisplayLanguage.Pick("repos", "rest")} {rest}{gym}";
     }
 }
