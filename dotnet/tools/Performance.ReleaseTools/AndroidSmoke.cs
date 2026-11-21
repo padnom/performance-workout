@@ -45,8 +45,12 @@ public sealed partial class AndroidSmoke(IProcessRunner runner, string outputDir
         Console.WriteLine("Standalone Release APK installed; process and Blazor dashboard verified on emulator.");
     }
 
+    // "Séance libre" is the home card that is always rendered, with or without history or programs.
+    /// <remarks>The app follows the emulator language: French or English home screen.</remarks>
     internal static bool IsDashboard(string ui) =>
-        ui.Contains(Package, StringComparison.Ordinal) && ui.Contains("Accueil", StringComparison.Ordinal) && ui.Contains("Programme actif", StringComparison.Ordinal);
+        ui.Contains(Package, StringComparison.Ordinal)
+        && (ui.Contains("Accueil", StringComparison.Ordinal) && ui.Contains("Séance libre", StringComparison.Ordinal)
+            || ui.Contains("\"Home\"", StringComparison.Ordinal) && ui.Contains("Free workout", StringComparison.Ordinal));
 
     /// <summary>Where to tap "Wait" when an overloaded emulator shows "System UI isn't responding" above the app.</summary>
     internal static (bool Shown, (int X, int Y)? Wait) FindSystemAnr(string ui)

@@ -2,17 +2,17 @@
 
 Application de suivi de musculation en **C# / .NET 10 MAUI Blazor Hybrid**, utilisable hors connexion et sans hébergement. L’interface, le catalogue et les données sont embarqués dans l’APK.
 
-Version actuelle : **1.5.2**, code Android **10**.
+Version actuelle : **1.7.0**, code Android **12**.
 
 ## Fonctionnalités
 
-- Accueil et programme de la semaine : ajout, réorganisation et retrait des séances.
-- Bibliothèque de programmes, variantes et démarrage rapide d’une séance libre.
+- Accueil : activité des 7 derniers jours et démarrage rapide d’une séance libre.
+- Bibliothèque de séances : recherche par nom, exercice ou muscle, filtres (favoris, mes séances, salle, classiques, ciblées), aperçu puis démarrage ; création, import et export dans le menu ⋯.
 - Création de programmes personnels à plusieurs séances, réglage des exercices et favoris pour retrouver rapidement ses programmes.
 - Création d’une séance seule et partage d’une séance (historique ou programme) en fichier ou en texte, par exemple sur WhatsApp ; un fichier reçu s’ouvre directement dans l’application et s’ajoute à « Mes séances ».
 - Programme de quatre séances adapté à On Air ou Basic-Fit : Push, Pull, Jambes et Upper, en 4×10 modifiable. Deux exercices d’abdos peuvent être ajoutés volontairement en fin de séance.
-- Partage JSON de la semaine ou de programmes sélectionnés, et import de copies après aperçu, sans partager les charges ni l’historique personnel.
-- Charges et répétitions par salle, remplacement/modification des exercices et exercices personnalisés.
+- Partage JSON de programmes sélectionnés, et import de copies après aperçu, sans partager les charges ni l’historique personnel.
+- Charges et répétitions par salle, ajout ou suppression d’une série pendant la séance, remplacement/modification des exercices et exercices personnalisés décrits par des tags (le premier tag muscle est le muscle principal).
 - Sauvegarde et reprise de la séance en cours après interruption.
 - Barre compacte en haut : durée de la séance, séries renseignées, repos et terminaison.
 - Vibration discrète de fin de repos, optionnelle et désactivée par défaut.
@@ -57,7 +57,7 @@ Voir [le projet Android](dotnet/README.md) et [la compilation, la signature et l
 
 ## Installer et livrer
 
-L’APK de cette version se trouve dans `outputs/performance-android-1.5.2.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
+L’APK de cette version se trouve dans `outputs/performance-android-1.7.0.apk` après compilation et vérification. Installer une mise à jour par-dessus l’application existante pour conserver ses données ; une désinstallation les efface.
 
 La CI vérifie les tests, les versions, un APK Release avec AOT/trimming et son lancement sur émulateur. Son APK de diagnostic utilise une clé jetable et ne met pas à jour l’installation existante. La distribution compatible nécessite les quatre secrets du certificat actuel dans l’environnement GitHub `android-release`, comme décrit dans le guide Android. Aucune clé privée ni APK n’est versionné.
 

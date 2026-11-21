@@ -24,6 +24,30 @@ public static class ReleaseNotes
 
     public static IReadOnlyList<ReleaseNote> All { get; } =
     [
+        new(new Version(1, 7, 0),
+        [
+            "L’application est disponible en anglais : elle suit la langue du téléphone, modifiable dans Réglages → Langue.",
+            "Bibliothèque : chaque variante affiche sa description et ses exercices spécifiques, avec un nom plus parlant (ex. « Jambes · B · Presse & fente »).",
+        ],
+        [
+            "The app is now available in English: it follows the phone language, changeable in Settings → Language.",
+            "Library: each variant shows its description and its own exercises, with a clearer name (e.g. “Jambes · B · Presse & fente”).",
+        ]),
+        new(new Version(1, 6, 0),
+        [
+            "Programmes devient une bibliothèque : cherche une séance par nom, exercice ou muscle, filtre-la (favoris, mes séances, ta salle, classiques, ciblées) et démarre-la avec ▶.",
+            "Créer, importer et exporter des programmes sont regroupés dans le menu ⋯ de la page Programmes.",
+            "La semaine planifiée n’est plus affichée, sur l’Accueil comme dans Programmes. Tes données restent conservées.",
+            "Pendant une séance, ajoute ou supprime une série sur chaque exercice.",
+            "Exercices : le muscle se choisit avec les tags ; le champ « Muscle principal » disparaît et les fautes de frappe existantes sont reconnues.",
+        ],
+        [
+            "Programs becomes a library: search a workout by name, exercise or muscle, filter it (favorites, my workouts, your gym, classic, targeted) and start it with ▶.",
+            "Creating, importing and exporting programs are grouped in the ⋯ menu of the Programs page.",
+            "The planned week is no longer shown, on Home or in Programs. Your data is kept.",
+            "During a workout, add or remove a set on each exercise.",
+            "Exercises: the muscle is chosen with tags; the “Main muscle” field is gone and existing typos are recognized.",
+        ]),
         new(new Version(1, 5, 2),
         [
             "Change de salle (et de thème) directement depuis le bouton en haut à droite, sans passer par les réglages.",
