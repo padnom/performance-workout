@@ -344,6 +344,8 @@ details p { margin: 8px 0; }
 .library-open { flex: 1; min-width: 0; display: grid; gap: 3px; padding: 8px 4px 8px 14px; border: 0; background: transparent; color: var(--text); text-align: left; cursor: pointer; }
 .library-open strong { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .library-open small { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-open .library-focus { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; }
+.library-open .library-specific { color: var(--accent); opacity: .8; }
 .library-start { flex-shrink: 0; width: 44px; height: 44px; padding: 0; color: var(--accent); font-size: 15px; }
 .sheet-backdrop { align-items: flex-end; padding: 0; }
 .sheet { width: min(100%, 560px); max-height: 88dvh; overflow-y: auto; border-radius: 22px 22px 0 0; padding: 20px 18px max(22px, env(safe-area-inset-bottom)); }

@@ -196,6 +196,7 @@
   <data name="Library.SearchLabel" xml:space="preserve"><value>Rechercher une séance</value></data>
   <data name="Library.SearchPlaceholder" xml:space="preserve"><value>Rechercher : push, dos, presse…</value></data>
   <data name="Library.Show" xml:space="preserve"><value>Afficher {0}</value></data>
+  <data name="Library.Specific" xml:space="preserve"><value>Spécifique : {0}</value></data>
   <data name="Library.Start" xml:space="preserve"><value>Démarrer {0}</value></data>
   <data name="Library.Targeted" xml:space="preserve"><value>Ciblées</value></data>
   <data name="ProgramDraft.DefaultSessionName" xml:space="preserve"><value>Séance {0}</value></data>

@@ -1838,7 +1838,7 @@
         },
         {
           "id": "pa",
-          "name": "Push · A",
+          "name": "Push · A · Barre & incliné",
           "focus": "Barre, presse inclinée, poulie, épaules et triceps",
           "color": "#ff5c57",
           "exercises": [
@@ -1894,7 +1894,7 @@
         },
         {
           "id": "pb",
-          "name": "Push · B",
+          "name": "Push · B · Haltères",
           "focus": "Presse inclinée, haltères, poulie et machines guidées",
           "color": "#ff5c57",
           "exercises": [
@@ -1950,7 +1950,7 @@
         },
         {
           "id": "pc",
-          "name": "Push · C",
+          "name": "Push · C · Épaules d’abord",
           "focus": "Développé épaules, incliné, chest press et isolations",
           "color": "#ff5c57",
           "exercises": [
@@ -2006,7 +2006,7 @@
         },
         {
           "id": "pd",
-          "name": "Push · D",
+          "name": "Push · D · Machines",
           "focus": "Chest press, presse inclinée et mouvements guidés",
           "color": "#ff5c57",
           "exercises": [
@@ -2133,7 +2133,7 @@
         },
         {
           "id": "pua",
-          "name": "Pull · A",
+          "name": "Pull · A · Tirage & low row",
           "focus": "Tirage vertical, low row, pull-over, arrière d’épaule et biceps",
           "color": "#5279ff",
           "exercises": [
@@ -2189,7 +2189,7 @@
         },
         {
           "id": "pub",
-          "name": "Pull · B",
+          "name": "Pull · B · Tractions",
           "focus": "Tractions, tirage vertical, rowing haltère et pull-over",
           "color": "#5279ff",
           "exercises": [
@@ -2245,7 +2245,7 @@
         },
         {
           "id": "puc",
-          "name": "Pull · C",
+          "name": "Pull · C · Rowing & lombaires",
           "focus": "Rowing guidé, poulie basse, tirage vertical et lombaires",
           "color": "#5279ff",
           "exercises": [
@@ -2301,7 +2301,7 @@
         },
         {
           "id": "pud",
-          "name": "Pull · D",
+          "name": "Pull · D · Face pull & pupitre",
           "focus": "Tirages guidés, rowing unilatéral, face pull et curl pupitre",
           "color": "#5279ff",
           "exercises": [
@@ -2428,7 +2428,7 @@
         },
         {
           "id": "la",
-          "name": "Jambes · A",
+          "name": "Jambes · A · Squat & ischios",
           "focus": "Squat pendulaire, soulevé roumain, leg curl et mollets",
           "color": "#31b57a",
           "exercises": [
@@ -2476,7 +2476,7 @@
         },
         {
           "id": "lb",
-          "name": "Jambes · B",
+          "name": "Jambes · B · Presse & fente",
           "focus": "Squat, presse, fente bulgare, leg curl et leg extension",
           "color": "#31b57a",
           "exercises": [
@@ -2532,7 +2532,7 @@
         },
         {
           "id": "lc",
-          "name": "Jambes · C",
+          "name": "Jambes · C · Fessiers & ischios",
           "focus": "Soulevé roumain, hip thrust, leg curl et fente bulgare",
           "color": "#31b57a",
           "exercises": [
@@ -2588,7 +2588,7 @@
         },
         {
           "id": "ld",
-          "name": "Jambes · D",
+          "name": "Jambes · D · Squat & presse",
           "focus": "Squat, presse, leg curl, leg extension et Glute Drive",
           "color": "#31b57a",
           "exercises": [
@@ -2723,7 +2723,7 @@
         },
         {
           "id": "ua",
-          "name": "Upper · A",
+          "name": "Upper · A · Deux développés",
           "focus": "Deux développés, deux tirages, épaules et biceps",
           "color": "#ff953f",
           "exercises": [
@@ -2779,7 +2779,7 @@
         },
         {
           "id": "ub",
-          "name": "Upper · B",
+          "name": "Upper · B · Haltères & bras",
           "focus": "Haltères, tirages, élévations latérales et bras",
           "color": "#ff953f",
           "exercises": [
@@ -2835,7 +2835,7 @@
         },
         {
           "id": "uc",
-          "name": "Upper · C",
+          "name": "Upper · C · Tirages d’abord",
           "focus": "Tirages variés, développé haltères, épaules et triceps",
           "color": "#ff953f",
           "exercises": [
@@ -2891,7 +2891,7 @@
         },
         {
           "id": "ud",
-          "name": "Upper · D",
+          "name": "Upper · D · Presse & machines",
           "focus": "Presse inclinée, tirages guidés, épaules et bras",
           "color": "#ff953f",
           "exercises": [
@@ -3018,7 +3018,7 @@
         },
         {
           "id": "aa",
-          "name": "Bras + épaules · A",
+          "name": "Bras + épaules · A · Classique",
           "focus": "Élévations, arrière d’épaule, deux curls et deux extensions",
           "color": "#a66cff",
           "exercises": [
@@ -3074,7 +3074,7 @@
         },
         {
           "id": "ab",
-          "name": "Bras + épaules · B",
+          "name": "Bras + épaules · B · Curls variés",
           "focus": "Curl pupitre, poulie, marteau, triceps et arrière d’épaule",
           "color": "#a66cff",
           "exercises": [
@@ -3130,7 +3130,7 @@
         },
         {
           "id": "ac",
-          "name": "Bras + épaules · C",
+          "name": "Bras + épaules · C · Triceps d’abord",
           "focus": "Développé serré, deux extensions, élévations et curl",
           "color": "#a66cff",
           "exercises": [
@@ -3186,7 +3186,7 @@
         },
         {
           "id": "ad",
-          "name": "Bras + épaules · D",
+          "name": "Bras + épaules · D · Épaules d’abord",
           "focus": "Développé épaules, élévations, arrière d’épaule et bras",
           "color": "#a66cff",
           "exercises": [

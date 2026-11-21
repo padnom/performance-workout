@@ -196,6 +196,7 @@
   <data name="Library.SearchLabel" xml:space="preserve"><value>Search workouts</value></data>
   <data name="Library.SearchPlaceholder" xml:space="preserve"><value>Search: push, back, press…</value></data>
   <data name="Library.Show" xml:space="preserve"><value>Show {0}</value></data>
+  <data name="Library.Specific" xml:space="preserve"><value>Only here: {0}</value></data>
   <data name="Library.Start" xml:space="preserve"><value>Start {0}</value></data>
   <data name="Library.Targeted" xml:space="preserve"><value>Targeted</value></data>
   <data name="ProgramDraft.DefaultSessionName" xml:space="preserve"><value>Workout {0}</value></data>

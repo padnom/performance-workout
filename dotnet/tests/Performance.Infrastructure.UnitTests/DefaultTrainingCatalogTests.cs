@@ -111,7 +111,7 @@ public sealed class DefaultTrainingCatalogTests
 
     [Theory]
     [InlineData("push", "Push", "Pectoraux · Épaules · Triceps", "#ff5c57")]
-    [InlineData("pa", "Push · A", "Barre, presse inclinée, poulie, épaules et triceps", "#ff5c57")]
+    [InlineData("pa", "Push · A · Barre & incliné", "Barre, presse inclinée, poulie, épaules et triceps", "#ff5c57")]
     [InlineData("cba", "Pectoraux + biceps · A · Équilibré", "Trois angles pectoraux et deux angles de curl", "#ff6b76")]
     public void Programs_WebSession_ShouldPreserveDisplayedMetadata(string id, string name, string focus, string color)
     {
@@ -145,5 +145,24 @@ public sealed class DefaultTrainingCatalogTests
         exercise.Variants.Select(variant => variant.Gym).ShouldBe(["One Air"]);
         exercise.Tags.ShouldContain("Tirage vertical");
         exercise.Link.ShouldBe("https://shop.lifefitness.com/products/hammer-strength-plate-loaded-iso-lateral-wide-pulldown");
+    }
+
+    [Theory]
+    [InlineData("push")]
+    [InlineData("pull")]
+    [InlineData("legs")]
+    [InlineData("upper")]
+    [InlineData("arms")]
+    public void Programs_ClassicFamilies_ShouldNameEveryVariantWithSuffixAndFocus(string programId)
+    {
+        // Arrange
+        var catalog = new DefaultTrainingCatalog();
+
+        // Act
+        var variants = catalog.Programs.Single(program => program.Id == programId).Sessions.Where(session => session.Id != programId).ToArray();
+
+        // Assert
+        variants.Length.ShouldBe(4);
+        variants.ShouldAllBe(session => session.Name.Split(" · ", StringSplitOptions.None).Length == 3 && !string.IsNullOrWhiteSpace(session.Focus));
     }
 }

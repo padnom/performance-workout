@@ -23,11 +23,21 @@
                 <h2>@group.Name</h2>
                 <ProgramFavoriteButton Snapshot="State.Data" ProgramId="@group.Program.Id" ProgramName="@group.Name" Disabled="Disabled" Changed="Changed" />
             </div>
+            @{ var specifics = SpecificLabels(group); }
             @foreach (var session in sessions)
             {
                 <div class="library-row" data-session="@session.Id" @key="session.Id">
                     <button type="button" class="library-open" disabled="@Disabled" aria-label="@T("Library.Show", session.Name)" @onclick="() => Selected.InvokeAsync(session)">
-                        <strong>@session.Name</strong><small>@Summary(session)</small>
+                        <strong>@session.Name</strong>
+                        @if (!string.IsNullOrWhiteSpace(session.Focus))
+                        {
+                            <small class="library-focus">@session.Focus</small>
+                        }
+                        @if (specifics.TryGetValue(session.Id, out var specific))
+                        {
+                            <small class="library-specific">@specific</small>
+                        }
+                        <small>@Summary(session)</small>
                     </button>
                     <button type="button" class="secondary-button library-start" disabled="@Disabled" aria-label="@T("Library.Start", session.Name)" @onclick="() => Started.InvokeAsync(session)"><span aria-hidden="true">▶&#xFE0E;</span></button>
                 </div>
@@ -116,9 +126,29 @@
     private IEnumerable<Exercise> Definitions(WorkoutSession session) => session.Exercises
         .Select(plan => State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId)).OfType<Exercise>();
 
+    /// <summary>
+    /// For a family of at least three variants, the exercises each variant shares with at most one sibling (three max: its own exercises first, then session order),
+    /// so that the variants can be told apart from the list. Computed once per group.
+    /// </summary>
+    private Dictionary<string, string> SpecificLabels(LibraryGroup group)
+    {
+        var labels = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (group.Family is not (ClassicFilter or TargetedFilter) || group.Sessions.Count < 3) return labels;
+        var names = State.AllExercises.GroupBy(exercise => exercise.Id).ToDictionary(g => g.Key, g => g.First().Name, StringComparer.Ordinal);
+        var usage = group.Sessions.SelectMany(session => session.Exercises.Select(plan => plan.ExerciseId).Distinct())
+            .GroupBy(id => id, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+        foreach (var session in group.Sessions)
+        {
+            var unique = session.Exercises.Select(plan => plan.ExerciseId).Distinct()
+                .Where(id => usage[id] <= 2 && names.ContainsKey(id)).OrderBy(id => usage[id]).Take(3).Select(id => names[id]).ToArray();
+            if (unique.Length > 0) labels[session.Id] = T("Library.Specific", string.Join(" · ", unique));
+        }
+        return labels;
+    }
+
     private string Summary(WorkoutSession session)
     {
-        var muscles = Definitions(session).Select(ExerciseMuscles.Primary).Where(muscle => muscle.Length > 0).Distinct().Take(3).Select(WorkoutUi.TagName);
+        var muscles = Definitions(session).Select(ExerciseMuscles.Primary).Where(muscle => muscle.Length > 0).Distinct().Take(2).Select(WorkoutUi.TagName);
         return string.Join(" · ", muscles.Append(T("Library.ExerciseCount", session.Exercises.Count)));
     }
 

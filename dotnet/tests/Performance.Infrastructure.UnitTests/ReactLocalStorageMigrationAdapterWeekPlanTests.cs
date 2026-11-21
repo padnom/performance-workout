@@ -25,7 +25,7 @@ public sealed class ReactLocalStorageMigrationAdapterWeekPlanTests
         // Assert
         JsonSerializer.Deserialize<string[]>(output[ReactLocalStorageMigrationAdapter.WeekPlanKey]).ShouldBe(["pa", "pua", "pa"]);
         restored.Programs.Single().Sessions.Select(session => session.Id).ShouldBe(["pa", "pua", "pa"]);
-        restored.Programs[0].Sessions[0].Name.ShouldBe("Push · A");
+        restored.Programs[0].Sessions[0].Name.ShouldBe("Push · A · Barre & incliné");
         output["future-key"].ShouldBe("opaque");
     }
 

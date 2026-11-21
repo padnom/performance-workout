@@ -64,7 +64,7 @@ public sealed class ProgramsTests : IDisposable
 
         // Assert
         var preview = page.Find(".start-preview");
-        preview.QuerySelector("h2")!.TextContent.ShouldBe("Push · C");
+        preview.QuerySelector("h2")!.TextContent.ShouldBe("Push · C · Épaules d’abord");
         preview.QuerySelectorAll("ol li").Length.ShouldBeGreaterThan(0);
         _state.Data.ActiveWorkout.ShouldBeNull();
 
