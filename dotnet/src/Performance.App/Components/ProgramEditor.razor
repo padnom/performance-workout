@@ -54,7 +54,7 @@
                     <div class="picker-list draft-exercise-picker" aria-label="Exercices disponibles pour @session.Name">
                         @foreach (var exercise in candidates)
                         {
-                            <button type="button" class="picker-item" data-add-exercise="@exercise.Id" disabled="@(session.Exercises.Count >= 80)" @onclick="() => AddExercise(session, exercise.Id)"><span>@exercise.Name<small>@exercise.MuscleGroup</small></span><b aria-hidden="true">＋</b></button>
+                            <button type="button" class="picker-item" data-add-exercise="@exercise.Id" disabled="@(session.Exercises.Count >= 80)" @onclick="() => AddExercise(session, exercise.Id)"><span>@exercise.Name<small>@ExerciseMuscles.Primary(exercise)</small></span><b aria-hidden="true">＋</b></button>
                         }
                         @if (candidates.Count == 0) { <p class="muted">Aucun exercice disponible pour cette recherche.</p> }
                     </div>
@@ -96,7 +96,7 @@
         var selected = session.Exercises.Select(plan => plan.ExerciseId).ToHashSet(StringComparer.Ordinal);
         return State.Exercises.Where(exercise => ProgramDraft.Compatible(exercise, gym) && !selected.Contains(exercise.Id)
             && (WorkoutUi.NormalizeName(exercise.Name).Contains(search, StringComparison.Ordinal)
-                || WorkoutUi.NormalizeName(exercise.MuscleGroup).Contains(search, StringComparison.Ordinal))).Take(12).ToArray();
+                || exercise.Tags.Append(ExerciseMuscles.Primary(exercise)).Any(tag => WorkoutUi.NormalizeName(tag).Contains(search, StringComparison.Ordinal)))).Take(12).ToArray();
     }
     private static void AddExercise(ProgramSessionDraft session, string id)
     {

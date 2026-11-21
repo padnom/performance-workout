@@ -149,7 +149,7 @@ public sealed class WorkoutEditingUiTests : IDisposable
         page.FindAll(".picker-item").ShouldNotContain(button => button.TextContent.Contains(First.Name));
         page.Find(".create-workout-exercise").Click();
         page.Find("input[aria-label='Nom de l’exercice']").Input(First.Name);
-        page.Find("input[aria-label='Muscle principal']").Change("Pectoraux");
+        page.FindAll(".tag-category button").Single(button => button.TextContent == "Pectoraux").Click();
         page.Find(".editor-dialog form").Submit();
         page.Find(".editor-dialog [role=alert]").TextContent.ShouldContain("existe déjà");
         _state.Data.ActiveWorkout!.Session!.Exercises.Count.ShouldBe(1);
@@ -209,7 +209,7 @@ public sealed class WorkoutEditingUiTests : IDisposable
     }
 
     [Fact]
-    public async Task Create_PredefinedTagsToggleAndMuscleIsRequired()
+    public async Task Create_PredefinedTagsToggleAndMuscleTagIsRequired()
     {
         await StartAsync();
         var page = _context.Render<Workout>();
@@ -217,20 +217,22 @@ public sealed class WorkoutEditingUiTests : IDisposable
         page.Find(".create-workout-exercise").Click();
         page.Find("input[aria-label='Nom de l’exercice']").Input("Mon mouvement inédit");
         page.Find(".editor-dialog form").Submit();
-        page.Find(".editor-dialog [role=alert]").TextContent.ShouldContain("muscle principal");
+        page.Find(".editor-dialog [role=alert]").TextContent.ShouldContain("au moins un muscle");
         _state.Data.ActiveWorkout!.Session!.Exercises.Count.ShouldBe(1);
-        page.Find("input[aria-label='Muscle principal']").Change("Dos");
+        page.FindAll("input[aria-label='Muscle principal']").ShouldBeEmpty();
         page.FindAll(".tag-category button").Single(button => button.TextContent == "Machine").Click();
         page.FindAll(".tag-category button").Single(button => button.TextContent == "Machine").GetAttribute("aria-pressed").ShouldBe("true");
         page.Find("input[aria-label='Tags séparés par des virgules']").GetAttribute("value").ShouldBe("Machine");
+        page.Find(".editor-dialog form").Submit();
+        page.Find(".editor-dialog [role=alert]").TextContent.ShouldContain("au moins un muscle");
         page.FindAll(".tag-category button").Single(button => button.TextContent == "Machine").Click();
         page.FindAll(".tag-category button").Single(button => button.TextContent == "Machine").GetAttribute("aria-pressed").ShouldBe("false");
         page.FindAll(".tag-category button").Single(button => button.TextContent == "Poulie").Click();
-        page.Find("input[aria-label='Tags séparés par des virgules']").Change("Poulie, prise neutre");
+        page.Find("input[aria-label='Tags séparés par des virgules']").Change("Poulie, prise neutre, dos, Biceps");
         page.Find(".editor-dialog form").Submit();
 
         var created = _state.Data.Exercises.Single();
-        created.Tags.ShouldBe(new[] { "Poulie", "prise neutre" });
+        created.Tags.ShouldBe(new[] { "Poulie", "prise neutre", "dos", "Biceps" });
         created.MuscleGroup.ShouldBe("Dos");
     }
 

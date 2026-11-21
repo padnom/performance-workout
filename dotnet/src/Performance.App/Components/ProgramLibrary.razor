@@ -54,7 +54,7 @@
                     <li class="program-exercise" data-exercise="@plan.ExerciseId">
                         <div>
                             <strong>@(exercise?.Name ?? plan.ExerciseId)</strong>
-                            <span class="muted">@exercise?.MuscleGroup · @(plan.RepTarget ?? exercise?.RepTarget) · repos @(plan.Rest ?? exercise?.Rest)</span>
+                            <span class="muted">@(exercise is null ? "" : ExerciseMuscles.Primary(exercise)) · @(plan.RepTarget ?? exercise?.RepTarget) · repos @(plan.Rest ?? exercise?.Rest)</span>
                             @if (!string.IsNullOrWhiteSpace(exercise?.AlternativeName)) { <small class="machine-name">@exercise.AlternativeName</small> }
                         </div>
                         @if (exercise?.Link is { } url && Uri.TryCreate(url, UriKind.Absolute, out var link) && (link.Scheme == "https" || link.Scheme == "http"))

@@ -6,7 +6,7 @@
     <div class="card-heading">
         <div>
             <p class="eyebrow">EXERCICE @Number</p><h2>@Exercise.Name</h2>
-            <p class="muted">@Exercise.MuscleGroup · @(Plan.RepTarget ?? Exercise.RepTarget) · repos @(Plan.Rest ?? Exercise.Rest)</p>
+            <p class="muted">@ExerciseMuscles.Primary(Exercise) · @(Plan.RepTarget ?? Exercise.RepTarget) · repos @(Plan.Rest ?? Exercise.Rest)</p>
             @if (!string.IsNullOrWhiteSpace(Exercise.AlternativeName)) { <p class="machine-name">Alternative : @Exercise.AlternativeName</p> }
         </div>
         <button class="secondary-button collapse-exercise" disabled="@_busy" aria-expanded="@(_collapsed ? "false" : "true")" aria-label="@($"{(_collapsed ? "Développer" : "Réduire")} {Exercise.Name}")" @onclick="() => _collapsed = !_collapsed">@(_collapsed ? "⌄" : "⌃")</button>

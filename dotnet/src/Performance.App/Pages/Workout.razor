@@ -41,7 +41,7 @@
         }
         @if (session.OptionalExercises is { Count: > 0 } optionalExercises)
         {
-            var isAbs = optionalExercises.All(plan => State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId)?.MuscleGroup.Contains("Abdo", StringComparison.OrdinalIgnoreCase) == true);
+            var isAbs = optionalExercises.All(plan => State.AllExercises.FirstOrDefault(exercise => exercise.Id == plan.ExerciseId) is { } definition && ExerciseMuscles.Primary(definition) == "Abdominaux");
             <section class="panel optional-abs" aria-label="Abdos optionnels">
                 <p class="eyebrow">FIN DE SÉANCE · OPTIONNEL</p><h2>@(isAbs && optionalExercises.Count == 2 ? "Deux exercices d’abdos" : $"{optionalExercises.Count} exercices optionnels")</h2>
                 <p class="muted">Ajoute ce bloc si tu le souhaites. Tu peux modifier chaque exercice après ajout.</p>
@@ -67,7 +67,7 @@
         <div class="card-heading"><h2 id="exercise-picker-title">@(_replacing is null ? "Ajouter un exercice" : "Remplacer l’exercice")</h2><button class="secondary-button" aria-label="Fermer la recherche" disabled="@_busy" @onclick="ClosePicker">×</button></div>
         <input autofocus class="search-input" aria-label="Rechercher un exercice à ajouter" placeholder="Nom, muscle, tag…" @bind="_search" @bind:event="oninput" />
         <div class="picker-list">@foreach (var exercise in AvailableExercises.Take(25))
-            { <button class="picker-item" disabled="@_busy" @onclick="() => PickAsync(exercise.Id)"><span>@exercise.Name<small>@exercise.MuscleGroup</small></span><b>＋</b></button> }</div>
+            { <button class="picker-item" disabled="@_busy" @onclick="() => PickAsync(exercise.Id)"><span>@exercise.Name<small>@ExerciseMuscles.Primary(exercise)</small></span><b>＋</b></button> }</div>
         @if (!AvailableExercises.Any()) { <p class="muted">Aucun exercice disponible pour cette recherche.</p> }
         <button class="secondary-button create-workout-exercise" disabled="@_busy" @onclick="OpenCreate">＋ Créer un exercice</button>
         @if (_editorError.Length > 0) { <p class="notice" role="alert">@_editorError</p> }
@@ -101,7 +101,7 @@
     private int TotalCount => Active?.Session?.Exercises.Sum(plan => State.GetSets(plan.ExerciseId).Count) ?? 0;
     private string RestExerciseName => State.AllExercises.FirstOrDefault(item => item.Id == Active?.RestExerciseId)?.Name ?? "";
     private IEnumerable<Exercise> AvailableExercises => State.Exercises.GroupBy(exercise => WorkoutUi.NormalizeName(exercise.Name)).Select(group => group.First())
-        .Where(exercise => !IsAlreadyAdded(exercise) && WorkoutUi.NormalizeName($"{exercise.Name} {exercise.MuscleGroup} {string.Join(' ', exercise.Tags)}").Contains(WorkoutUi.NormalizeName(_search), StringComparison.Ordinal)).OrderBy(exercise => exercise.Name);
+        .Where(exercise => !IsAlreadyAdded(exercise) && WorkoutUi.NormalizeName($"{exercise.Name} {ExerciseMuscles.Primary(exercise)} {string.Join(' ', exercise.Tags)}").Contains(WorkoutUi.NormalizeName(_search), StringComparison.Ordinal)).OrderBy(exercise => exercise.Name);
     private bool IsAlreadyAdded(Exercise exercise) => Active?.Session?.Exercises.Any(plan => State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId) is { } existing && WorkoutUi.NormalizeName(existing.Name) == WorkoutUi.NormalizeName(exercise.Name)) ?? false;
     private string ConfirmationTitle => _confirmation switch { Confirmation.Finish => "Terminer la séance ?", Confirmation.Remove => "Retirer l’exercice ?", _ => "Abandonner la séance ?" };
     private string ConfirmationMessage => _confirmation switch
