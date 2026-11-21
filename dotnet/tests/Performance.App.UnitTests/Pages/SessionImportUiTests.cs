@@ -86,6 +86,7 @@ public sealed class SessionImportUiTests : IDisposable
         var page = _context.Render<Programs>();
 
         // Act
+        page.Find(".programs-menu-toggle").Click();
         page.Find(".import-session").Click();
 
         // Assert
@@ -104,7 +105,7 @@ public sealed class SessionImportUiTests : IDisposable
         page.WaitForAssertion(() => _state.Programs.Single(program => program.Id == WorkoutStateService.SessionsProgramId)
             .Sessions.Single().Name.ShouldBe("Séance reçue"));
         page.FindAll(".session-import-preview").ShouldBeEmpty();
-        page.Find(".program-sharing .notice").TextContent.ShouldBe("La séance a été ajoutée à Mes séances.");
+        page.Find(".program-sharing-message").TextContent.ShouldBe("La séance a été ajoutée à Mes séances.");
     }
 
     [Fact]
@@ -116,7 +117,7 @@ public sealed class SessionImportUiTests : IDisposable
         var savesBefore = _repository.Saves;
         _files.PickedSession = SessionJson("Séance reçue");
         var page = _context.Render<ProgramSharing>();
-        page.Find(".import-session").Click();
+        page.InvokeAsync(() => page.Instance.PickSessionAsync()).GetAwaiter().GetResult();
 
         // Act
         page.Find(".cancel-session-import").Click();
@@ -138,11 +139,11 @@ public sealed class SessionImportUiTests : IDisposable
         var page = _context.Render<ProgramSharing>();
 
         // Act
-        page.Find(".import-session").Click();
+        page.InvokeAsync(() => page.Instance.PickSessionAsync()).GetAwaiter().GetResult();
 
         // Assert
         page.FindAll(".session-import-preview").ShouldBeEmpty();
-        page.Find(".program-sharing .notice").TextContent.ShouldNotBeEmpty();
+        page.Find(".program-sharing-message").TextContent.ShouldNotBeEmpty();
         _repository.Saves.ShouldBe(savesBefore);
     }
 
@@ -156,11 +157,11 @@ public sealed class SessionImportUiTests : IDisposable
         var page = _context.Render<ProgramSharing>();
 
         // Act
-        page.Find(".import-session").Click();
+        page.InvokeAsync(() => page.Instance.PickSessionAsync()).GetAwaiter().GetResult();
 
         // Assert
         page.FindAll(".session-import-preview").ShouldBeEmpty();
-        page.Find(".program-sharing .notice").TextContent.ShouldNotBeEmpty();
+        page.Find(".program-sharing-message").TextContent.ShouldNotBeEmpty();
     }
 
     [Fact]
@@ -173,7 +174,7 @@ public sealed class SessionImportUiTests : IDisposable
         await _state.ReplaceDataAsync(_state.Data with { Programs = [new WorkoutProgram { Id = WorkoutStateService.SessionsProgramId, Name = "Mes séances", Sessions = full }] });
         _files.PickedSession = SessionJson("Une de trop");
         var page = _context.Render<ProgramSharing>();
-        page.Find(".import-session").Click();
+        page.InvokeAsync(() => page.Instance.PickSessionAsync()).GetAwaiter().GetResult();
 
         // Act
         page.Find(".confirm-session-import").Click();
@@ -192,7 +193,7 @@ public sealed class SessionImportUiTests : IDisposable
         _files.PickedSession = SessionJson("Séance reçue");
         var navigation = _context.Services.GetRequiredService<AppNavigationService>();
         var page = _context.Render<ProgramSharing>();
-        page.Find(".import-session").Click();
+        page.InvokeAsync(() => page.Instance.PickSessionAsync()).GetAwaiter().GetResult();
 
         // Act
         await page.InvokeAsync(() => navigation.RequestBackAsync());
@@ -247,7 +248,7 @@ public sealed class SessionImportUiTests : IDisposable
         var page = _context.Render<ProgramSharing>();
 
         // Assert
-        page.Find(".program-sharing .notice").TextContent.ShouldBe("Fichier trop volumineux.");
+        page.Find(".program-sharing-message").TextContent.ShouldBe("Fichier trop volumineux.");
     }
 
     [Fact]
@@ -262,7 +263,7 @@ public sealed class SessionImportUiTests : IDisposable
         var page = _context.Render<ProgramSharing>();
 
         // Assert
-        page.Find(".program-sharing .notice").TextContent.ShouldBe("Ce fichier n'est pas un partage Performance compatible.");
+        page.Find(".program-sharing-message").TextContent.ShouldBe("Ce fichier n'est pas un partage Performance compatible.");
         page.FindAll("[role=dialog]").ShouldBeEmpty();
     }
 
@@ -306,6 +307,7 @@ public sealed class SessionImportUiTests : IDisposable
         var page = _context.Render<Programs>();
 
         // Act
+        page.Find(".programs-menu-toggle").Click();
         page.Find(".create-session").Click();
         page.Find(".draft-session-name").Change("Ma séance maison");
         var exerciseId = page.Find("[data-add-exercise]").GetAttribute("data-add-exercise");
@@ -328,6 +330,7 @@ public sealed class SessionImportUiTests : IDisposable
         var page = _context.Render<Programs>();
 
         // Act
+        page.Find(".programs-menu-toggle").Click();
         page.Find(".create-session").Click();
 
         // Assert
@@ -350,6 +353,7 @@ public sealed class SessionImportUiTests : IDisposable
         await _state.InitializeAsync();
         var savesBefore = _repository.Saves;
         var page = _context.Render<Programs>();
+        page.Find(".programs-menu-toggle").Click();
         page.Find(".create-session").Click();
 
         // Act
@@ -368,6 +372,7 @@ public sealed class SessionImportUiTests : IDisposable
         await _state.InitializeAsync();
         var savesBefore = _repository.Saves;
         var page = _context.Render<Programs>();
+        page.Find(".programs-menu-toggle").Click();
         page.Find(".create-session").Click();
         page.Find("[data-add-exercise]").Click();
 

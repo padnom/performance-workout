@@ -1,0 +1,56 @@
+@using Performance.App.Services
+@implements IDisposable
+@inject IServiceProvider Services
+
+<button type="button" class="secondary-button programs-menu-toggle" aria-label="Plus d’actions" aria-haspopup="dialog" aria-expanded="@(_open ? "true" : "false")" disabled="@Disabled" @onclick="Open"><span aria-hidden="true">⋯</span></button>
+@if (_open)
+{
+    <div class="modal-backdrop sheet-backdrop" @onclick="Close"><section class="panel sheet programs-menu" role="dialog" aria-modal="true" aria-labelledby="programs-menu-title" @onclick:stopPropagation="true">
+        <h2 id="programs-menu-title">Plus d’actions</h2>
+        <div class="programs-menu-actions">
+            <button type="button" class="programs-menu-item create-program" @onclick="() => RunAsync(CreateProgram)"><span aria-hidden="true">＋</span>Créer un programme</button>
+            <button type="button" class="programs-menu-item create-session" @onclick="() => RunAsync(CreateSession)"><span aria-hidden="true">＋</span>Créer une séance</button>
+            <hr />
+            <button type="button" class="programs-menu-item import-programs" @onclick="() => RunAsync(ImportPrograms)"><span aria-hidden="true">↓</span>Importer des programmes</button>
+            <button type="button" class="programs-menu-item import-session" @onclick="() => RunAsync(ImportSession)"><span aria-hidden="true">↓</span>Importer une séance</button>
+            <button type="button" class="programs-menu-item open-program-sharing" @onclick="() => RunAsync(Export)"><span aria-hidden="true">↑</span>Exporter / partager</button>
+        </div>
+        <button type="button" class="secondary-button close-programs-menu" @onclick="Close">Fermer</button>
+    </section></div>
+}
+
+@code {
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public EventCallback CreateProgram { get; set; }
+    [Parameter] public EventCallback CreateSession { get; set; }
+    [Parameter] public EventCallback ImportPrograms { get; set; }
+    [Parameter] public EventCallback ImportSession { get; set; }
+    [Parameter] public EventCallback Export { get; set; }
+    private bool _open;
+    private IDisposable? _backRegistration;
+
+    protected override void OnInitialized()
+    {
+        if (Services.GetService(typeof(AppNavigationService)) is AppNavigationService navigation)
+            _backRegistration = navigation.RegisterBackHandler(BackAsync, 10);
+    }
+
+    private void Open() => _open = true;
+    private void Close() => _open = false;
+
+    // The menu closes first so the editor, file picker or export sheet it opens is not hidden behind it.
+    private Task RunAsync(EventCallback action)
+    {
+        _open = false;
+        return action.InvokeAsync();
+    }
+
+    private async Task<bool> BackAsync()
+    {
+        if (!_open) return false;
+        await InvokeAsync(() => { _open = false; StateHasChanged(); });
+        return true;
+    }
+
+    public void Dispose() => _backRegistration?.Dispose();
+}

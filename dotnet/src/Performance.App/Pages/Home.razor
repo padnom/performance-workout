@@ -13,7 +13,7 @@
     {
         <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
     }
-    <Dashboard Sessions="State.WeekSessions" Selected="SelectSession" Free="FreeWorkout" Disabled="@(State.Data.ActiveWorkout is not null)" />
+    <Dashboard Free="FreeWorkout" Disabled="@(State.Data.ActiveWorkout is not null)" />
     <SessionStart @ref="_starter" />
 }
 @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
@@ -28,6 +28,5 @@
         catch { _message = "Impossible de charger les données. Rouvre l’application pour réessayer."; }
         finally { _loading = false; }
     }
-    private void SelectSession(WorkoutSession session) => _starter?.Select(session);
     private void FreeWorkout() => _starter?.Select(new WorkoutSession { Id = "free", Name = "Séance libre", Focus = "Ajoute les exercices de ton choix" }, confirmOnly: true);
 }

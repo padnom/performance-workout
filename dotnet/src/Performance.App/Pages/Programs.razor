@@ -4,8 +4,15 @@
 @inject WorkoutStateService State
 
 <PageTitle>Programmes · Performance</PageTitle>
-<p class="eyebrow library-heading">BIBLIOTHÈQUE · @LibraryCount séances</p>
-<div class="page-heading"><div><h1>Choisis ta séance</h1><p class="muted">Choisis une catégorie et une variante, puis prépare ta semaine.</p></div></div>
+<div class="page-heading programs-heading">
+    <div><p class="eyebrow library-heading">BIBLIOTHÈQUE · @LibraryCount séances</p><h1>Choisis ta séance</h1><p class="muted">Ouvre une séance pour voir ses exercices, ou ▶&#xFE0E; pour la démarrer.</p></div>
+    @if (!_loading)
+    {
+        <ProgramsMenu Disabled="_busy" CreateProgram="() => _editor?.Open()" CreateSession="() => _editor?.Open(singleSession: true)"
+            ImportPrograms="() => _sharing?.PickAsync() ?? Task.CompletedTask" ImportSession="() => _sharing?.PickSessionAsync() ?? Task.CompletedTask"
+            Export="() => _sharing?.OpenExport()" />
+    }
+</div>
 @if (_loading) { <p class="loading" role="status">Chargement de tes données…</p> }
 @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
 @if (!_loading)
@@ -14,14 +21,8 @@
     {
         <a class="resume-workout" href="/seance"><span>Séance en cours<strong>@active.Name</strong></span><b>Reprendre la séance →</b></a>
     }
-    <button class="primary-button create-program" disabled="@_busy" @onclick="() => _editor?.Open()">＋ Créer un programme</button>
-    <button class="secondary-button create-session" disabled="@_busy" @onclick="() => _editor?.Open(singleSession: true)">＋ Créer une séance</button>
-    <PersonalPrograms FavoritesOnly="true" Snapshot="State.Data" Selected="SelectSession" Added="AddWeekAsync" Changed="Refresh" Disabled="_busy" />
-    <GymProgram Snapshot="State.Data" Started="SelectSession" Changed="Refresh" />
-    <WeeklyPlan Sessions="State.WeekSessions" Selected="SelectSession" Error="SetMessage" Disabled="_busy" />
-    <PersonalPrograms Snapshot="State.Data" Selected="SelectSession" Added="AddWeekAsync" Changed="Refresh" Disabled="_busy" />
-    <details class="other-programs"><summary>Autres programmes</summary><ProgramLibrary Snapshot="State.Data" Added="AddWeekAsync" Started="StartSession" Changed="Refresh" Disabled="_busy" /></details>
-    <ProgramSharing Snapshot="State.Data" Changed="Refresh" />
+    <ProgramLibrary Snapshot="State.Data" Selected="SelectSession" Started="StartSession" Changed="Refresh" Disabled="_busy" />
+    <ProgramSharing @ref="_sharing" Snapshot="State.Data" Changed="Refresh" />
     <SessionStart @ref="_starter" />
     <ProgramEditor @ref="_editor" Changed="Refresh" />
 }
@@ -32,14 +33,14 @@
     private string _message = "";
     private SessionStart? _starter;
     private ProgramEditor? _editor;
-    private int LibraryCount => State.Programs.Where(program => program.Id is not ("react-week-plan" or "gym-one-air" or "gym-basic-fit")).Sum(program => ProgramLibrary.VariantsFor(program).Count);
+    private ProgramSharing? _sharing;
+    private int LibraryCount => ProgramLibrary.Groups(State).Sum(group => group.Sessions.Count);
     protected override async Task OnInitializedAsync()
     {
         try { await State.InitializeAsync(); }
         catch { _message = "Impossible de charger les données. Rouvre l’application pour réessayer."; }
         finally { _loading = false; }
     }
-    private void SetMessage(string message) => _message = message;
     private void Refresh() => StateHasChanged();
     private void SelectSession(WorkoutSession session) => Open(session, false);
     private void StartSession(WorkoutSession session) => Open(session, true);
@@ -47,12 +48,5 @@
     {
         if (State.Data.ActiveWorkout is not null) { _message = WorkoutUi.Error("ActiveWorkoutExists"); return; }
         _starter?.Select(session, confirmOnly);
-    }
-    private async Task AddWeekAsync(string id)
-    {
-        _busy = true;
-        try { var result = await State.AddWeekSessionAsync(id); _message = result.IsSuccess ? "" : WorkoutUi.Error(result.Error); }
-        catch { _message = WorkoutUi.Error(null); }
-        finally { _busy = false; }
     }
 }
