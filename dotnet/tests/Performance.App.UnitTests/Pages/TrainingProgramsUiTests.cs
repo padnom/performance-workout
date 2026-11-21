@@ -37,57 +37,88 @@ public sealed class TrainingProgramsUiTests : IDisposable
     }
 
     [Fact]
-    public void Programs_GymSelection_ShowsFourSessionsAndKeepsLegacyLibraryFolded()
+    public void Programs_Library_ListsGymProgramAndFiltersFamiliesWithoutWriting()
     {
         // Act
         var page = _context.Render<Programs>();
 
         // Assert
-        page.FindAll(".gym-session").Count.ShouldBe(4);
-        page.Find(".gym-program h2").TextContent.ShouldBe("Ton programme — On Air");
-        page.Find(".other-programs").HasAttribute("open").ShouldBeFalse();
-        page.FindAll(".category-filter").Count.ShouldBe(6);
+        page.FindAll("[data-group=gym-one-air] .library-row").Count.ShouldBe(4);
+        page.Find("[data-group=gym-one-air] h2").TextContent.ShouldBe("Programme On Air");
+        page.FindAll("[data-group=gym-basic-fit]").ShouldBeEmpty();
+        page.FindAll(".library-filter").Select(button => button.TextContent).ShouldBe(["Tous", "★ Favoris", "Mes séances", "On Air", "Classiques", "Ciblées"]);
+        page.FindAll("[data-group=push] .library-row").Count.ShouldBe(4);
+        page.FindAll("[data-session=push]").ShouldBeEmpty();
 
         // Act
-        page.Find("[aria-label='Salle du programme']").Change("Basic-Fit");
+        page.Find("[data-filter=gym]").Click();
 
         // Assert
-        page.FindAll(".gym-session").ShouldAllBe(card => card.GetAttribute("data-gym-session")!.StartsWith("basic-fit-"));
+        page.FindAll(".library-group").Select(group => group.GetAttribute("data-group")).ShouldBe(["gym-one-air"]);
+
+        // Act
+        page.Find("[data-filter=classic]").Click();
+
+        // Assert
+        page.FindAll(".library-group").Select(group => group.GetAttribute("data-group")).ShouldBe(["push", "pull", "legs", "upper", "arms", "full"]);
+
+        // Act
+        page.Find("[data-filter=targeted]").Click();
+
+        // Assert
+        page.FindAll(".library-group").Count.ShouldBe(5);
         _repository.Saves.ShouldBe(0);
     }
 
-    [Fact]
-    public async Task Programs_ApplyWeek_RequiresConfirmationAndPreservesActiveDraft()
+    [Theory]
+    [InlineData("presse", "quads-calves")]
+    [InlineData("ischio", "hams-glutes")]
+    public void Programs_LibrarySearch_MatchesSessionExercisesAndMuscles(string search, string expectedGroup)
     {
         // Arrange
-        await _state.InitializeAsync();
-        await _state.AddWeekSessionAsync("pa");
-        await _state.StartAsync(_state.GetRecommendedProgram("One Air")!.Sessions[0], "One Air");
-        var active = _state.Data.ActiveWorkout;
         var page = _context.Render<Programs>();
+        var before = page.FindAll(".library-row").Count;
 
         // Act
-        page.Find("[aria-label='Salle du programme']").Change("Basic-Fit");
-        page.Find(".use-gym-week").Click();
+        page.Find(".library-search").Input(search);
 
         // Assert
-        _state.WeekSessions.Single().Id.ShouldBe("pa");
+        var rows = page.FindAll(".library-row");
+        rows.Count.ShouldBeGreaterThan(0);
+        rows.Count.ShouldBeLessThan(before);
+        page.FindAll($"[data-group={expectedGroup}] .library-row").ShouldNotBeEmpty();
 
         // Act
-        page.Find(".confirm-gym-week").Click();
+        page.Find(".library-search").Input("zzz introuvable");
 
         // Assert
-        page.WaitForAssertion(() => _state.WeekSessions.Count.ShouldBe(4));
-        _state.WeekSessions.ShouldAllBe(session => session.Id.StartsWith("basic-fit-"));
-        _state.Data.ActiveWorkout.ShouldBeSameAs(active);
+        page.FindAll(".library-row").ShouldBeEmpty();
+        page.Find(".library-empty").TextContent.ShouldContain("Aucune séance ne correspond");
     }
 
     [Fact]
-    public async Task Programs_WeekConfirmation_BackCancelsWithoutWrite()
+    public async Task Programs_GymFilter_FollowsCurrentGym()
+    {
+        // Arrange
+        await _state.InitializeAsync();
+        await _state.SetGymAsync("Basic-Fit");
+
+        // Act
+        var page = _context.Render<Programs>();
+
+        // Assert
+        page.FindAll("[data-group=gym-one-air]").ShouldBeEmpty();
+        page.FindAll("[data-group=gym-basic-fit] .library-row").Count.ShouldBe(4);
+        page.Find("[data-filter=gym]").TextContent.ShouldBe("Basic-Fit");
+    }
+
+    [Fact]
+    public async Task Programs_Menu_BackClosesWithoutWrite()
     {
         // Arrange
         var page = _context.Render<Programs>();
-        page.Find(".use-gym-week").Click();
+        page.Find(".programs-menu-toggle").Click();
+        page.Find(".programs-menu").ShouldNotBeNull();
 
         // Act
         await page.InvokeAsync(() => _navigation.RequestBackAsync());
@@ -102,7 +133,7 @@ public sealed class TrainingProgramsUiTests : IDisposable
     {
         // Arrange
         var page = _context.Render<Programs>();
-        page.Find(".gym-start").Click();
+        page.Find("[data-session=one-air-push] .library-open").Click();
 
         // Act
         page.Find(".start-preview select").Change("Basic-Fit");
@@ -143,18 +174,22 @@ public sealed class TrainingProgramsUiTests : IDisposable
     }
 
     [Fact]
-    public void Programs_BasicFitCard_OpensWithItsGymEvenWhenSettingsRemainOneAir()
+    public async Task Programs_ActiveWorkout_ShowsMessageInsteadOfOpeningSession()
     {
         // Arrange
+        await _state.InitializeAsync();
+        await _state.StartAsync(_state.GetRecommendedProgram("One Air")!.Sessions[0], "One Air");
+        var active = _state.Data.ActiveWorkout;
         var page = _context.Render<Programs>();
-        page.Find("[aria-label='Salle du programme']").Change("Basic-Fit");
 
         // Act
-        page.Find(".gym-start").Click();
+        page.Find("[data-session=pc] .library-start").Click();
 
         // Assert
-        page.Find(".start-preview select").GetAttribute("value").ShouldBe("Basic-Fit");
-        _state.CurrentGym.ShouldBe("One Air");
+        page.FindAll("[role=dialog]").ShouldBeEmpty();
+        page.Find(".notice").TextContent.ShouldContain("Une séance est déjà en cours");
+        page.Find(".resume-workout").ShouldNotBeNull();
+        _state.Data.ActiveWorkout.ShouldBeSameAs(active);
     }
 
     [Fact]
@@ -171,12 +206,11 @@ public sealed class TrainingProgramsUiTests : IDisposable
         var json = new ExportWorkoutProgramsUseCase(_codec).Execute([shareable], _state.AllExercises);
         (await _state.ImportProgramsAsync(new ImportWorkoutProgramsUseCase(_codec).Execute(json))).IsSuccess.ShouldBeTrue();
         var imported = _state.Data.Programs.Single();
-        await _state.AddWeekSessionAsync(imported.Sessions[0].Id);
         var page = _context.Render<Programs>();
-        page.Find("[data-family=custom]").Click();
+        page.Find("[data-filter=mine]").Click();
 
         // Act
-        page.Find(".start-library").Click();
+        page.Find($"[data-session='{imported.Sessions[0].Id}'] .library-start").Click();
 
         // Assert
         page.Find("[role=dialog] select").GetAttribute("value").ShouldBe("Basic-Fit");
@@ -231,21 +265,26 @@ public sealed class TrainingProgramsUiTests : IDisposable
     }
 
     [Fact]
-    public async Task ProgramSharing_ExportWeek_ContainsOnlyTrainingDefinitions()
+    public async Task ProgramSharing_Export_ContainsOnlyTrainingDefinitionsAndNoLongerOffersWeek()
     {
         // Arrange
         await _state.InitializeAsync();
         await _state.UseGymProgramWeekAsync("One Air");
         var page = _context.Render<ProgramSharing>();
+        page.InvokeAsync(() => page.Instance.OpenExport()).GetAwaiter().GetResult();
+
+        // Assert
+        page.Find(".program-sharing").TextContent.ShouldNotContain("Ma semaine");
+        page.FindAll("[data-share-program=react-week-plan]").ShouldBeEmpty();
+        page.Find(".export-programs").HasAttribute("disabled").ShouldBeTrue();
 
         // Act
-        page.Find("input[type=checkbox]").Change(true);
+        page.Find("[data-share-program=gym-one-air]").Change(true);
         page.Find(".export-programs").Click();
 
         // Assert
         page.WaitForAssertion(() => _files.Shared.ShouldNotBeNull());
         var package = _codec.Decode(_files.Shared!);
-        package.Programs.Single().Name.ShouldBe("Ma semaine");
         package.Programs.Single().Sessions.Count.ShouldBe(4);
         _files.Shared!.ShouldNotContain("activeWorkout");
         _files.Shared!.ShouldNotContain("history");
@@ -262,7 +301,7 @@ public sealed class TrainingProgramsUiTests : IDisposable
         var existing = _state.Data.Programs.Count;
 
         // Act
-        page.Find(".import-programs").Click();
+        page.InvokeAsync(() => page.Instance.PickAsync()).GetAwaiter().GetResult();
 
         // Assert
         page.Find(".program-import-preview").TextContent.ShouldContain("1 programme(s)");
@@ -288,7 +327,7 @@ public sealed class TrainingProgramsUiTests : IDisposable
         var page = _context.Render<ProgramSharing>();
 
         // Act
-        page.Find(".import-programs").Click();
+        page.InvokeAsync(() => page.Instance.PickAsync()).GetAwaiter().GetResult();
 
         // Assert
         _repository.Saves.ShouldBe(0);
@@ -302,7 +341,7 @@ public sealed class TrainingProgramsUiTests : IDisposable
         await _state.InitializeAsync();
         _files.Picked = new ExportWorkoutProgramsUseCase(_codec).Execute([_state.GetRecommendedProgram("One Air")!], _state.AllExercises);
         var page = _context.Render<ProgramSharing>();
-        page.Find(".import-programs").Click();
+        page.InvokeAsync(() => page.Instance.PickAsync()).GetAwaiter().GetResult();
         _repository.Fail = true;
 
         // Act
@@ -320,7 +359,7 @@ public sealed class TrainingProgramsUiTests : IDisposable
         await _state.InitializeAsync();
         _files.Picked = new ExportWorkoutProgramsUseCase(_codec).Execute([_state.GetRecommendedProgram("One Air")!], _state.AllExercises);
         var page = _context.Render<ProgramSharing>();
-        page.Find(".import-programs").Click();
+        page.InvokeAsync(() => page.Instance.PickAsync()).GetAwaiter().GetResult();
 
         // Act
         await page.InvokeAsync(() => _navigation.RequestBackAsync());
@@ -336,6 +375,7 @@ public sealed class TrainingProgramsUiTests : IDisposable
         // Arrange
         await _state.InitializeAsync();
         var page = _context.Render<ProgramSharing>();
+        page.InvokeAsync(() => page.Instance.OpenExport()).GetAwaiter().GetResult();
 
         // Act
         page.Find("[data-share-program=gym-one-air]").Change(true);

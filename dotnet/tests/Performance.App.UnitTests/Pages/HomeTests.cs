@@ -33,7 +33,7 @@ public sealed class HomeTests : IDisposable
     }
 
     [Fact]
-    public void Home_EmptyData_ShowsWelcomeMetricsAndLinkToCreateWeek()
+    public void Home_EmptyData_ShowsWelcomeMetricsAndLinkToChooseSession()
     {
         var page = _context.Render<RouteHarness>();
         page.Find("h1").TextContent.ShouldBe("Prêt à progresser ?");
@@ -41,8 +41,8 @@ public sealed class HomeTests : IDisposable
         page.Find(".weekly-metric").TextContent.ShouldContain("4 avant l’objectif");
         page.Find(".sets-metric strong").TextContent.ShouldContain("0");
         page.Markup.ShouldNotContain("tonnes");
-        page.Find(".empty-week").GetAttribute("href").ShouldBe("/programmes");
-        page.FindAll(".program-library, .week-move-up").ShouldBeEmpty();
+        page.Find(".choose-session").GetAttribute("href").ShouldBe("/programmes");
+        page.FindAll(".program-library, .dashboard-session, .empty-week").ShouldBeEmpty();
         _repository.Saves.ShouldBe(0);
     }
 
@@ -78,22 +78,14 @@ public sealed class HomeTests : IDisposable
     }
 
     [Fact]
-    public async Task Home_WeekCards_PreserveOrderDuplicatesAndRequireConfirmation()
+    public async Task Home_StoredWeek_IsNoLongerShownButKept()
     {
         var sessions = _catalog.Programs.First().Sessions.Where(session => session.Id is "pa" or "pc").ToArray();
-        await _state.ReplaceDataAsync(new PerformanceData { Programs = [new WorkoutProgram { Id = "react-week-plan", Name = "Ma semaine", Sessions = [sessions[1], sessions[0], sessions[1]] }] });
+        await _state.ReplaceDataAsync(new PerformanceData { Programs = [new WorkoutProgram { Id = "react-week-plan", Name = "Ma semaine", Sessions = [sessions[1], sessions[0]] }] });
         var page = _context.Render<RouteHarness>();
-        page.FindAll(".dashboard-session h3").Select(title => title.TextContent).ShouldBe(new[] { "Push · C", "Push · A", "Push · C" });
-        page.FindAll(".dashboard-session .session-index").Select(number => number.TextContent).ShouldBe(new[] { "01", "02", "03" });
-        page.FindAll(".dashboard-session")[1].Click();
-        _state.Data.ActiveWorkout.ShouldBeNull();
-        page.Find(".start-preview .primary-button").Click();
-        _state.Data.ActiveWorkout.ShouldBeNull();
-        page.Find("[role=dialog] .primary-button").Click();
-        _state.Data.ActiveWorkout!.Session!.Id.ShouldBe("pa");
-        new Uri(Navigation.Uri).AbsolutePath.ShouldBe("/seance");
-        page.Find(".workout-elapsed").TextContent.ShouldBe("0:00");
-        _state.WeekSessions.Count.ShouldBe(3);
+        page.FindAll(".dashboard-session").ShouldBeEmpty();
+        page.Markup.ShouldNotContain("Programme actif");
+        _state.WeekSessions.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -156,8 +148,9 @@ public sealed class HomeTests : IDisposable
         Navigation.NavigateTo("/programmes");
         var page = _context.Render<RouteHarness>();
         page.Find("h1").TextContent.ShouldBe("Choisis ta séance");
-        page.Find(".library-heading").TextContent.ShouldContain("44 séances");
-        page.Find(".week-plan").ShouldNotBeNull();
+        page.Find(".library-heading").TextContent.ShouldContain("48 séances");
+        page.FindAll(".week-plan, .weekly-session").ShouldBeEmpty();
+        page.Find(".programs-menu-toggle").ShouldNotBeNull();
         page.Find(".program-library").ShouldNotBeNull();
         page.FindAll(".dashboard, .free-workout-card").ShouldBeEmpty();
     }
@@ -190,7 +183,7 @@ public sealed class HomeTests : IDisposable
     }
 
     [Fact]
-    public async Task Programs_ActiveWorkout_CanEditWeekWithoutReplacingDraft()
+    public async Task Programs_ActiveWorkout_KeepsDraftAndOffersResume()
     {
         var session = _catalog.Programs.First().Sessions.First(session => session.Id == "pa");
         await _state.StartAsync(session, "One Air");
@@ -198,10 +191,8 @@ public sealed class HomeTests : IDisposable
         Navigation.NavigateTo("/programmes");
         var page = _context.Render<RouteHarness>();
 
-        page.Find("[data-session=pc] .add-week").Click();
-        page.Find(".start-library").Click();
+        page.Find("[data-session=pc] .library-start").Click();
 
-        _state.WeekSessions.Single().Id.ShouldBe("pc");
         _state.Data.ActiveWorkout.ShouldBeSameAs(saved);
         page.FindAll("[role=dialog]").ShouldBeEmpty();
         page.Find(".notice").TextContent.ShouldContain("Une séance est déjà en cours");

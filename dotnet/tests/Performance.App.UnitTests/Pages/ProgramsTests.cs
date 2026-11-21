@@ -35,15 +35,14 @@ public sealed class ProgramsTests : IDisposable
     }
 
     [Fact]
-    public void Home_SelectSession_StartsOnlyAfterConfirmation()
+    public void Programs_PlayButton_StartsOnlyAfterConfirmation()
     {
         // Arrange
         var page = _context.Render<Programs>();
-        page.WaitForAssertion(() => page.FindAll("button.session-option").Count.ShouldBeGreaterThan(0));
+        page.WaitForAssertion(() => page.FindAll(".library-row").Count.ShouldBeGreaterThan(0));
 
         // Act
-        page.Find("[data-session=pc] .session-option").Click();
-        page.Find(".start-library").Click();
+        page.Find("[data-session=pc] .library-start").Click();
 
         // Assert
         _state.Data.ActiveWorkout.ShouldBeNull();
@@ -52,6 +51,29 @@ public sealed class ProgramsTests : IDisposable
         page.WaitForAssertion(() => _state.Data.ActiveWorkout.ShouldNotBeNull());
         _state.Data.ActiveWorkout!.Session!.Id.ShouldBe("pc");
         _repository.Saves.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Programs_RowTap_OpensPreviewWithExercisesBeforeStarting()
+    {
+        // Arrange
+        var page = _context.Render<Programs>();
+
+        // Act
+        page.Find("[data-session=pc] .library-open").Click();
+
+        // Assert
+        var preview = page.Find(".start-preview");
+        preview.QuerySelector("h2")!.TextContent.ShouldBe("Push · C");
+        preview.QuerySelectorAll("ol li").Length.ShouldBeGreaterThan(0);
+        _state.Data.ActiveWorkout.ShouldBeNull();
+
+        // Act
+        page.Find(".start-preview .primary-button").Click();
+        page.Find("[role=dialog] .primary-button").Click();
+
+        // Assert
+        page.WaitForAssertion(() => _state.Data.ActiveWorkout!.Session!.Id.ShouldBe("pc"));
     }
 
     [Fact]

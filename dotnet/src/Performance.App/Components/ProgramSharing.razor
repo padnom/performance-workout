@@ -5,19 +5,22 @@
 @inject WorkoutStateService State
 @inject IServiceProvider Services
 
-<section class="panel program-sharing" aria-label="Partager des programmes">
-    <p class="eyebrow">PARTAGE</p><h2>Partager des programmes</h2>
-    <p class="muted">Fichier JSON avec les exercices et les consignes. Aucune charge personnelle ni historique.</p>
-    <fieldset disabled="@_busy"><legend>Choisir le contenu</legend>
-        <label class="program-share-choice"><input type="checkbox" checked="@_week" @onchange="args => _week = args.Value is true" disabled="@(State.WeekSessions.Count == 0)" /> Ma semaine (@State.WeekSessions.Count séances)</label>
-        @foreach (var program in State.Programs.Where(program => program.Id != "react-week-plan"))
-        {
-            <label class="program-share-choice"><input type="checkbox" data-share-program="@program.Id" checked="@_selected.Contains(program.Id)" @onchange="args => Select(program.Id, args.Value is true)" /> @program.Name @(!string.IsNullOrEmpty(program.Gym) ? $"· {program.Gym}" : "")</label>
-        }
-    </fieldset>
-    <div class="settings-actions"><button class="secondary-button export-programs" disabled="@(_busy || (!_week && _selected.Count == 0))" @onclick="ShareAsync">Exporter / partager</button><button class="secondary-button import-programs" disabled="@_busy" @onclick="PickAsync">Importer des programmes</button><button class="secondary-button import-session" disabled="@_busy" @onclick="PickSessionAsync">Importer une séance</button></div>
-    @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
-</section>
+@if (_message.Length > 0 && !_exportOpen && _preview is null && _sessionPreview is null) { <p class="notice program-sharing-message" role="status">@_message</p> }
+@if (_exportOpen)
+{
+    <div class="modal-backdrop sheet-backdrop" @onclick="CloseExport"><section class="panel sheet program-sharing" role="dialog" aria-modal="true" aria-labelledby="program-sharing-title" @onclick:stopPropagation="true">
+        <h2 id="program-sharing-title">Exporter / partager</h2>
+        <p class="muted">Fichier JSON avec les exercices et les consignes. Aucune charge personnelle ni historique.</p>
+        <fieldset disabled="@_busy"><legend>Programmes à partager</legend>
+            @foreach (var program in State.Programs.Where(program => program.Id != "react-week-plan"))
+            {
+                <label class="program-share-choice"><input type="checkbox" data-share-program="@program.Id" checked="@_selected.Contains(program.Id)" @onchange="args => Select(program.Id, args.Value is true)" /> @program.Name @(!string.IsNullOrEmpty(program.Gym) ? $"· {program.Gym}" : "")</label>
+            }
+        </fieldset>
+        @if (_message.Length > 0) { <p class="notice" role="status">@_message</p> }
+        <div class="settings-actions"><button class="primary-button export-programs" disabled="@(_busy || _selected.Count == 0)" @onclick="ShareAsync">Exporter / partager</button><button class="secondary-button close-program-sharing" disabled="@_busy" @onclick="CloseExport">Fermer</button></div>
+    </section></div>
+}
 @if (_preview is { } package)
 {
     <div class="modal-backdrop"><section class="panel confirm-dialog program-import-preview" role="dialog" aria-modal="true" aria-labelledby="program-import-title">
@@ -46,7 +49,7 @@
     [Parameter] public EventCallback Changed { get; set; }
     [Parameter] public PerformanceData? Snapshot { get; set; }
     private readonly HashSet<string> _selected = [];
-    private bool _week, _busy;
+    private bool _exportOpen, _busy;
     private string _message = "";
     private ProgramPackage? _preview;
     private SessionPackage? _sessionPreview;
@@ -77,7 +80,8 @@
     }
     private string ExerciseName(string id, SessionPackage package) =>
         (State.AllExercises.FirstOrDefault(item => item.Id == id) ?? package.Exercises.FirstOrDefault(item => item.Id == id))?.Name ?? id;
-    private async Task PickSessionAsync()
+    // Called from the ⋯ menu, outside this component's own handlers, hence the explicit StateHasChanged.
+    public async Task PickSessionAsync()
     {
         if (_busy) return;
         _busy = true; _message = "";
@@ -88,7 +92,7 @@
         }
         catch (FormatException exception) { _message = exception.Message; }
         catch { _message = "Impossible de lire ce fichier de séance. Réessaie."; }
-        finally { _busy = false; }
+        finally { _busy = false; StateHasChanged(); }
     }
     private async Task ConfirmSessionAsync()
     {
@@ -104,6 +108,8 @@
         catch { _message = WorkoutUi.Error(null); }
         finally { _busy = false; }
     }
+    public void OpenExport() { _message = ""; _exportOpen = true; StateHasChanged(); }
+    private void CloseExport() { if (!_busy) _exportOpen = false; }
     private void Select(string id, bool value) { if (value) _selected.Add(id); else _selected.Remove(id); }
     private T Get<T>() where T : class => Services.GetService(typeof(T)) as T ?? throw new InvalidOperationException();
     private async Task ShareAsync()
@@ -113,7 +119,6 @@
         try
         {
             var programs = State.Programs.Where(program => _selected.Contains(program.Id)).ToList();
-            if (_week && State.WeekSessions.Count > 0) programs.Insert(0, new WorkoutProgram { Id = "week-share", Name = "Ma semaine", Sessions = State.WeekSessions });
             var json = Get<ExportWorkoutProgramsUseCase>().Execute(programs, State.AllExercises);
             await Get<IProgramFiles>().ShareProgramsAsync(json);
             _message = "Fichier de programmes prêt à partager.";
@@ -122,7 +127,7 @@
         catch { _message = "Impossible de partager le fichier de programmes. Réessaie."; }
         finally { _busy = false; }
     }
-    private async Task PickAsync()
+    public async Task PickAsync()
     {
         if (_busy) return;
         _busy = true; _message = "";
@@ -133,7 +138,7 @@
         }
         catch (FormatException exception) { _message = exception.Message; }
         catch { _message = "Impossible de lire ce fichier de programmes. Réessaie."; }
-        finally { _busy = false; }
+        finally { _busy = false; StateHasChanged(); }
     }
     private async Task ConfirmAsync()
     {
@@ -143,7 +148,7 @@
         {
             var result = await State.ImportProgramsAsync(_preview);
             if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
-            _preview = null; _message = "Les copies ont été ajoutées à Autres programmes · Personnalisés.";
+            _preview = null; _message = "Les copies ont été ajoutées à la bibliothèque, filtre « Mes séances ».";
             await Changed.InvokeAsync();
         }
         catch { _message = WorkoutUi.Error(null); }
@@ -151,8 +156,8 @@
     }
     private async Task<bool> BackAsync()
     {
-        if (_preview is null && _sessionPreview is null) return false;
-        await InvokeAsync(() => { if (!_busy) { _preview = null; _sessionPreview = null; } StateHasChanged(); }); return true;
+        if (_preview is null && _sessionPreview is null && !_exportOpen) return false;
+        await InvokeAsync(() => { if (!_busy) { _preview = null; _sessionPreview = null; _exportOpen = false; } StateHasChanged(); }); return true;
     }
     public void Dispose()
     {
