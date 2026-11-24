@@ -24,6 +24,17 @@ public static class ReleaseNotes
 
     public static IReadOnlyList<ReleaseNote> All { get; } =
     [
+        new(new Version(1, 8, 0),
+        [
+            "Séances favorites : touche l’étoile d’une séance dans l’Historique ou dans Programmes, puis retrouve-la avec le filtre « ★ Favoris ».",
+            "Une séance libre mise en favori depuis l’Historique est enregistrée dans « Mes séances ».",
+            "Les favoris portent désormais sur les séances et non plus sur les programmes : les séances de tes programmes favoris restent favorites.",
+        ],
+        [
+            "Favorite workouts: tap a workout’s star in History or in Programs, then find it with the “★ Favorites” filter.",
+            "A free workout favorited from History is saved to “My workouts”.",
+            "Favorites now apply to workouts instead of programs: the workouts of your favorite programs stay favorites.",
+        ]),
         new(new Version(1, 7, 0),
         [
             "L’application est disponible en anglais : elle suit la langue du téléphone, modifiable dans Réglages → Langue.",
