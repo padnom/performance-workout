@@ -36,7 +36,7 @@ public sealed class ProgramAuthoringUiTests : IDisposable
     }
 
     [Fact]
-    public void CreateProgram_MultipleSessionsAndPrescriptions_SaveOneAtomicFavoriteProgram()
+    public void CreateProgram_MultipleSessionsAndPrescriptions_SaveOneAtomicProgramWithFavoriteSessions()
     {
         // Arrange
         var page = OpenEditor();
@@ -70,11 +70,12 @@ public sealed class ProgramAuthoringUiTests : IDisposable
         saved.Sessions[1].Exercises[1].Sets.ShouldBe(3);
         saved.Sessions[1].Exercises[1].RepTarget.ShouldBe("8–12");
         saved.Sessions[1].Exercises[1].Rest.ShouldBe("2:00");
-        _state.IsProgramFavorite(saved.Id).ShouldBeTrue();
+        _state.FavoriteSessionIds.OrderBy(id => id).ShouldBe(saved.Sessions.Select(session => session.Id).Order());
         page.FindAll(".program-editor").ShouldBeEmpty();
         page.Find($"[data-group='{saved.Id}'] h2").TextContent.ShouldBe("Ma progression");
         page.Find("[data-filter=favorites]").Click();
         page.FindAll(".library-group").Select(group => group.GetAttribute("data-group")).ShouldBe([saved.Id]);
+        page.FindAll(".library-row").Select(row => row.GetAttribute("data-session")).ShouldBe(saved.Sessions.Select(session => session.Id));
         _state.Data.ActiveWorkout.ShouldBeNull();
     }
 
@@ -149,12 +150,12 @@ public sealed class ProgramAuthoringUiTests : IDisposable
         page.Find(".program-name").GetAttribute("value").ShouldBe("À conserver");
         page.FindAll(".draft-exercise").Count.ShouldBe(1);
         _state.Data.Programs.ShouldBeEmpty();
-        _state.FavoritePrograms.ShouldBeEmpty();
+        _state.FavoriteSessionIds.ShouldBeEmpty();
         _repository.Fail = false;
         page.Find(".save-program").Click();
         page.WaitForAssertion(() => _state.Data.Programs.Count.ShouldBe(1));
         _repository.Saves.ShouldBe(1);
-        _state.FavoritePrograms.Single().Name.ShouldBe("À conserver");
+        _state.FavoriteSessionIds.Single().ShouldBe(_state.Data.Programs.Single().Sessions.Single().Id);
     }
 
     [Fact]
@@ -233,22 +234,23 @@ public sealed class ProgramAuthoringUiTests : IDisposable
         page.Find(".program-gym").Change("Toutes");
         page.Find(".save-program").Click();
         page.WaitForAssertion(() => _state.Data.Programs.Single().Gym.ShouldBe("Toutes"));
-        _state.FavoritePrograms.ShouldBeEmpty();
+        _state.FavoriteSessionIds.ShouldBeEmpty();
     }
 
     [Fact]
-    public void Favorites_BuiltInToggle_UpdatesFavoritesFilterAndKeepsSearch()
+    public void Favorites_BuiltInSessionToggle_UpdatesFavoritesFilterAndKeepsSearch()
     {
         // Arrange
+        var variant = ProgramFamilies.VisibleSessions(_state.Programs.Single(program => program.Id == "pull"))[0].Id;
         var page = _context.Render<Programs>();
         page.Find(".library-search").Input("pull");
 
         // Act
-        page.Find("[data-group=pull] [data-favorite-program=pull]").Click();
+        page.Find($"[data-group=pull] [data-favorite-session='{variant}']").Click();
 
         // Assert
-        page.WaitForAssertion(() => _state.IsProgramFavorite("pull").ShouldBeTrue());
-        page.Find("[data-group=pull] .program-favorite").GetAttribute("aria-pressed").ShouldBe("true");
+        page.WaitForAssertion(() => _state.IsSessionFavorite(variant).ShouldBeTrue());
+        page.Find($"[data-favorite-session='{variant}']").GetAttribute("aria-pressed").ShouldBe("true");
         page.Find(".library-search").GetAttribute("value").ShouldBe("pull");
 
         // Act
@@ -256,12 +258,13 @@ public sealed class ProgramAuthoringUiTests : IDisposable
 
         // Assert
         page.FindAll(".library-group").Select(group => group.GetAttribute("data-group")).ShouldBe(["pull"]);
+        page.FindAll(".library-row").Select(row => row.GetAttribute("data-session")).ShouldBe([variant]);
 
         // Act
-        page.Find("[data-group=pull] [data-favorite-program=pull]").Click();
+        page.Find($"[data-group=pull] [data-favorite-session='{variant}']").Click();
 
         // Assert
-        page.WaitForAssertion(() => _state.FavoritePrograms.ShouldBeEmpty());
+        page.WaitForAssertion(() => _state.FavoriteSessionIds.ShouldBeEmpty());
         page.FindAll(".library-group").ShouldBeEmpty();
         page.Find(".library-empty").ShouldNotBeNull();
     }
@@ -295,7 +298,7 @@ public sealed class ProgramAuthoringUiTests : IDisposable
     }
 
     [Fact]
-    public async Task Favorites_CustomProgramRemoval_StaysInMySessionsWithPreviewAndStart()
+    public async Task Favorites_CustomSessionRemoval_StaysInMySessionsWithPreviewAndStart()
     {
         // Arrange
         await _state.InitializeAsync();
@@ -309,7 +312,7 @@ public sealed class ProgramAuthoringUiTests : IDisposable
         page.Find("[data-filter=favorites]").Click();
 
         // Act
-        page.Find($"[data-group='{program.Id}'] [data-favorite-program='{program.Id}']").Click();
+        page.Find($"[data-group='{program.Id}'] [data-favorite-session='{program.Sessions[0].Id}']").Click();
 
         // Assert
         page.WaitForAssertion(() => page.FindAll(".library-group").ShouldBeEmpty());
@@ -330,15 +333,16 @@ public sealed class ProgramAuthoringUiTests : IDisposable
     {
         // Arrange
         var page = _context.Render<Programs>();
+        var id = _state.Programs.Single(program => program.Id == "gym-one-air").Sessions[0].Id;
         _repository.Fail = true;
 
         // Act
-        page.Find("[data-group=gym-one-air] [data-favorite-program=gym-one-air]").Click();
+        page.Find($"[data-group=gym-one-air] [data-favorite-session='{id}']").Click();
 
         // Assert
-        page.Find("[data-group=gym-one-air] .favorite-error").TextContent.ShouldContain("L’enregistrement a échoué");
-        _state.IsProgramFavorite("gym-one-air").ShouldBeFalse();
-        page.Find("[data-group=gym-one-air] .program-favorite").GetAttribute("aria-pressed").ShouldBe("false");
+        page.Find(".favorite-error").TextContent.ShouldContain("L’enregistrement a échoué");
+        _state.IsSessionFavorite(id).ShouldBeFalse();
+        page.Find($"[data-group=gym-one-air] [data-favorite-session='{id}']").GetAttribute("aria-pressed").ShouldBe("false");
     }
 
     private IRenderedComponent<Programs> OpenEditor()

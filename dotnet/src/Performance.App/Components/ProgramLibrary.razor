@@ -11,7 +11,8 @@
             <button type="button" class="secondary-button library-filter" data-filter="@filter.Key" aria-pressed="@Pressed(_filter == filter.Key)" disabled="@Disabled" @onclick="() => _filter = filter.Key">@filter.Label</button>
         }
     </div>
-    @{ var groups = VisibleGroups().ToArray(); }
+    @{ var favorites = State.FavoriteSessionIds; var groups = VisibleGroups(favorites).ToArray(); }
+    @if (_error.Length > 0) { <p class="notice favorite-error" role="alert">@_error</p> }
     @if (groups.Length == 0)
     {
         <p class="muted library-empty">@EmptyMessage</p>
@@ -21,7 +22,6 @@
         <section class="library-group" data-group="@group.Program.Id" @key="group.Program.Id">
             <div class="library-group-heading">
                 <h2>@group.Name</h2>
-                <ProgramFavoriteButton Snapshot="State.Data" ProgramId="@group.Program.Id" ProgramName="@group.Name" Disabled="Disabled" Changed="Changed" />
             </div>
             @{ var specifics = SpecificLabels(group); }
             @foreach (var session in sessions)
@@ -39,6 +39,7 @@
                         }
                         <small>@Summary(session)</small>
                     </button>
+                    <button type="button" class="secondary-button session-favorite" data-favorite-session="@session.Id" aria-pressed="@Pressed(favorites.Contains(session.Id))" aria-label="@(favorites.Contains(session.Id) ? T("Favorite.Remove", session.Name) : T("Favorite.Add", session.Name))" disabled="@(Disabled || _busy)" @onclick="() => ToggleFavoriteAsync(session.Id)"><span aria-hidden="true">@(favorites.Contains(session.Id) ? "★" : "☆")</span></button>
                     <button type="button" class="secondary-button library-start" disabled="@Disabled" aria-label="@T("Library.Start", session.Name)" @onclick="() => Started.InvokeAsync(session)"><span aria-hidden="true">▶&#xFE0E;</span></button>
                 </div>
             }
@@ -54,11 +55,27 @@
     [Parameter] public bool Disabled { get; set; }
 
     public const string AllFilter = "all", FavoritesFilter = "favorites", MineFilter = "mine", GymFilter = "gym", ClassicFilter = "classic", TargetedFilter = "targeted";
-    private static readonly HashSet<string> ClassicIds = ["push", "pull", "legs", "upper", "arms", "full"];
-    private static readonly HashSet<string> TargetedIds = ["chest-biceps", "back-triceps", "chest-back", "quads-calves", "hams-glutes"];
+    private static IReadOnlySet<string> ClassicIds => ProgramFamilies.ClassicIds;
+    private static IReadOnlySet<string> TargetedIds => ProgramFamilies.TargetedIds;
     private static readonly HashSet<string> HiddenIds = ["react-week-plan", "gym-one-air", "gym-basic-fit"];
     private string _filter = AllFilter;
     private string _search = "";
+    private string _error = "";
+    private bool _busy;
+
+    private async Task ToggleFavoriteAsync(string sessionId)
+    {
+        if (_busy || Disabled) return;
+        _busy = true;
+        try
+        {
+            var result = await State.ToggleSessionFavoriteAsync(sessionId);
+            _error = result.IsSuccess ? "" : WorkoutUi.Error(result.Error);
+            if (result.IsSuccess) await Changed.InvokeAsync();
+        }
+        catch { _error = WorkoutUi.Error(null); }
+        finally { _busy = false; }
+    }
 
     /// <summary>The stored name of the personal workouts program is French; it is displayed in the current language.</summary>
     public static string DisplayName(WorkoutProgram program) => program.Id == WorkoutStateService.SessionsProgramId ? T("Library.MyWorkouts") : program.Name;
@@ -84,9 +101,7 @@
     }
 
     /// <summary>Built-in families keep a base session named like the program; only its variants are offered.</summary>
-    public static IReadOnlyList<WorkoutSession> VariantsFor(WorkoutProgram program) => ClassicIds.Contains(program.Id) || TargetedIds.Contains(program.Id)
-        ? program.Sessions.Where(session => session.Id != program.Id).ToArray()
-        : program.Sessions;
+    public static IReadOnlyList<WorkoutSession> VariantsFor(WorkoutProgram program) => ProgramFamilies.VisibleSessions(program);
 
     private IEnumerable<(string Key, string Label)> Filters
     {
@@ -101,24 +116,16 @@
         }
     }
 
-    private IEnumerable<(LibraryGroup Group, WorkoutSession[] Sessions)> VisibleGroups()
+    private IEnumerable<(LibraryGroup Group, WorkoutSession[] Sessions)> VisibleGroups(IReadOnlySet<string> favorites)
     {
-        var favorites = State.FavoritePrograms.Select(program => program.Id).ToHashSet(StringComparer.Ordinal);
         var search = WorkoutUi.NormalizeName(_search);
         foreach (var group in Groups(State))
         {
-            if (!MatchesFilter(group, favorites)) continue;
-            var sessions = group.Sessions.Where(session => search.Length == 0 || SearchText(group, session).Contains(search, StringComparison.Ordinal)).ToArray();
+            if (_filter is not (AllFilter or FavoritesFilter) && group.Family != _filter) continue;
+            var sessions = group.Sessions.Where(session => (_filter != FavoritesFilter || favorites.Contains(session.Id)) && (search.Length == 0 || SearchText(group, session).Contains(search, StringComparison.Ordinal))).ToArray();
             if (sessions.Length > 0) yield return (group, sessions);
         }
     }
-
-    private bool MatchesFilter(LibraryGroup group, HashSet<string> favorites) => _filter switch
-    {
-        AllFilter => true,
-        FavoritesFilter => favorites.Contains(group.Program.Id),
-        _ => group.Family == _filter
-    };
 
     private string SearchText(LibraryGroup group, WorkoutSession session) => WorkoutUi.NormalizeName(string.Join(' ',
         new[] { group.Name, session.Name, session.Focus ?? "" }.Concat(Definitions(session).SelectMany(exercise => exercise.Tags.Append(exercise.Name)))));

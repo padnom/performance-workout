@@ -191,7 +191,7 @@
   <data name="Library.FilterLabel" xml:space="preserve"><value>Filter workouts</value></data>
   <data name="Library.GymProgram" xml:space="preserve"><value>{0} program</value></data>
   <data name="Library.MyWorkouts" xml:space="preserve"><value>My workouts</value></data>
-  <data name="Library.NoFavorites" xml:space="preserve"><value>No favorites yet. Tap a program’s star to find it here.</value></data>
+  <data name="Library.NoFavorites" xml:space="preserve"><value>No favorites yet. Tap a workout’s star to find it here.</value></data>
   <data name="Library.NoMatch" xml:space="preserve"><value>No workouts match. Try another word or filter.</value></data>
   <data name="Library.SearchLabel" xml:space="preserve"><value>Search workouts</value></data>
   <data name="Library.SearchPlaceholder" xml:space="preserve"><value>Search: push, back, press…</value></data>
@@ -336,6 +336,10 @@
   <data name="SessionHistory.EmptyHint" xml:space="preserve"><value>Finish a workout or import your backup from the settings to see your history.</value></data>
   <data name="SessionHistory.EmptyTitle" xml:space="preserve"><value>No workouts saved</value></data>
   <data name="SessionHistory.Export" xml:space="preserve"><value>Export workout</value></data>
+  <data name="SessionHistory.FavoriteAdded" xml:space="preserve"><value>Workout added to favorites.</value></data>
+  <data name="SessionHistory.FavoriteFailed" xml:space="preserve"><value>This workout has no exercise to add to favorites.</value></data>
+  <data name="SessionHistory.FavoriteRemoved" xml:space="preserve"><value>Removed from favorites.</value></data>
+  <data name="SessionHistory.FavoriteSaved" xml:space="preserve"><value>Added to My workouts and to favorites.</value></data>
   <data name="SessionHistory.FreeWorkout" xml:space="preserve"><value>Free workout</value></data>
   <data name="SessionHistory.Minutes" xml:space="preserve"><value>{0} min</value></data>
   <data name="SessionHistory.Replay" xml:space="preserve"><value>Repeat this workout</value></data>

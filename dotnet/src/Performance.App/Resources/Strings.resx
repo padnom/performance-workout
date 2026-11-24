@@ -191,7 +191,7 @@
   <data name="Library.FilterLabel" xml:space="preserve"><value>Filtrer les séances</value></data>
   <data name="Library.GymProgram" xml:space="preserve"><value>Programme {0}</value></data>
   <data name="Library.MyWorkouts" xml:space="preserve"><value>Mes séances</value></data>
-  <data name="Library.NoFavorites" xml:space="preserve"><value>Aucun favori pour l’instant. Touche l’étoile d’un programme pour le retrouver ici.</value></data>
+  <data name="Library.NoFavorites" xml:space="preserve"><value>Aucun favori pour l’instant. Touche l’étoile d’une séance pour la retrouver ici.</value></data>
   <data name="Library.NoMatch" xml:space="preserve"><value>Aucune séance ne correspond. Essaie un autre mot ou un autre filtre.</value></data>
   <data name="Library.SearchLabel" xml:space="preserve"><value>Rechercher une séance</value></data>
   <data name="Library.SearchPlaceholder" xml:space="preserve"><value>Rechercher : push, dos, presse…</value></data>
@@ -336,6 +336,10 @@
   <data name="SessionHistory.EmptyHint" xml:space="preserve"><value>Termine une séance ou importe ta sauvegarde depuis les réglages pour retrouver ton historique.</value></data>
   <data name="SessionHistory.EmptyTitle" xml:space="preserve"><value>Aucune séance enregistrée</value></data>
   <data name="SessionHistory.Export" xml:space="preserve"><value>Exporter la séance</value></data>
+  <data name="SessionHistory.FavoriteAdded" xml:space="preserve"><value>Séance ajoutée aux favoris.</value></data>
+  <data name="SessionHistory.FavoriteFailed" xml:space="preserve"><value>Cette séance ne contient aucun exercice à mettre en favori.</value></data>
+  <data name="SessionHistory.FavoriteRemoved" xml:space="preserve"><value>Retirée des favoris.</value></data>
+  <data name="SessionHistory.FavoriteSaved" xml:space="preserve"><value>Ajoutée à Mes séances et aux favoris.</value></data>
   <data name="SessionHistory.FreeWorkout" xml:space="preserve"><value>Séance libre</value></data>
   <data name="SessionHistory.Minutes" xml:space="preserve"><value>{0} min</value></data>
   <data name="SessionHistory.Replay" xml:space="preserve"><value>Refaire cette séance</value></data>

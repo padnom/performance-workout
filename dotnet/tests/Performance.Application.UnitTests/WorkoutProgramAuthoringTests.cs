@@ -31,7 +31,7 @@ public sealed class WorkoutProgramAuthoringTests
         exercises.Clear();
         saved.Sessions.Count.ShouldBe(2);
         saved.Sessions[0].Exercises.Count.ShouldBe(2);
-        service.FavoritePrograms.ShouldBeEmpty();
+        service.FavoriteSessionIds.ShouldBeEmpty();
         service.Data.Settings.ShouldBeEmpty();
     }
 
@@ -118,7 +118,7 @@ public sealed class WorkoutProgramAuthoringTests
         (await service.CreateProgramAsync(Draft, favorite)).IsSuccess.ShouldBeTrue();
 
         repository.Writes.ShouldBe(1);
-        service.IsProgramFavorite(service.Data.Programs.Last().Id).ShouldBe(favorite);
+        service.FavoriteSessionIds.OrderBy(id => id).ShouldBe(favorite ? service.Data.Programs.Last().Sessions.Select(session => session.Id).Order() : []);
         service.Data.Programs[0].ShouldBeSameAs(original.Programs[0]);
         service.Data.ActiveWorkout.ShouldBeSameAs(original.ActiveWorkout);
         service.Data.History.ShouldBeSameAs(original.History);
@@ -142,12 +142,12 @@ public sealed class WorkoutProgramAuthoringTests
         var notifications = 0;
         service.DataChanged += _ => notifications++;
 
-        var result = mutation == "create" ? await service.CreateProgramAsync(Draft, true) : await service.ToggleProgramFavoriteAsync("builtin");
+        var result = mutation == "create" ? await service.CreateProgramAsync(Draft, true) : await service.ToggleSessionFavoriteAsync("draft-session");
 
         result.Error.ShouldBe("PersistenceFailed");
         service.Data.ShouldBeSameAs(original);
         repository.Stored.ShouldBeSameAs(original);
-        service.FavoritePrograms.ShouldBeEmpty();
+        service.FavoriteSessionIds.ShouldBeEmpty();
         notifications.ShouldBe(0);
     }
 
@@ -166,34 +166,34 @@ public sealed class WorkoutProgramAuthoringTests
         var pending = service.CreateProgramAsync(Draft, true);
         await started.Task;
         service.Data.ShouldBeSameAs(original);
-        service.FavoritePrograms.ShouldBeEmpty();
+        service.FavoriteSessionIds.ShouldBeEmpty();
         notifications.ShouldBe(0);
         release.SetResult();
         (await pending).IsSuccess.ShouldBeTrue();
 
-        service.FavoritePrograms.Single().ShouldBeSameAs(service.Data.Programs.Single());
+        service.FavoriteSessionIds.Single().ShouldBe(service.Data.Programs.Single().Sessions.Single().Id);
         repository.Stored.ShouldBeSameAs(service.Data);
         notifications.ShouldBe(1);
     }
 
     [Theory]
-    [InlineData("builtin")]
+    [InlineData("draft-session")]
     [InlineData("custom-existing")]
     [InlineData("imported-existing")]
-    public async Task ToggleProgramFavoriteAsync_ShouldPersistAnyProgramAcrossReopenAndAllowRemoval(string id)
+    public async Task ToggleSessionFavoriteAsync_ShouldPersistAnySessionAcrossReopenAndAllowRemoval(string id)
     {
         var repository = new Repository { Stored = new PerformanceData { Programs =
-        [Draft with { Id = "custom-existing" }, Draft with { Id = "imported-existing" }] } };
+        [Draft with { Id = "p1", Sessions = [Session with { Id = "custom-existing" }] }, Draft with { Id = "p2", Sessions = [Session with { Id = "imported-existing" }] }] } };
         var service = Create(repository);
 
-        (await service.ToggleProgramFavoriteAsync(id)).IsSuccess.ShouldBeTrue();
+        (await service.ToggleSessionFavoriteAsync(id)).IsSuccess.ShouldBeTrue();
         var reopened = Create(repository);
         await reopened.InitializeAsync();
 
-        reopened.IsProgramFavorite(id).ShouldBeTrue();
-        reopened.FavoritePrograms.Single().Id.ShouldBe(id);
-        (await reopened.ToggleProgramFavoriteAsync(id)).IsSuccess.ShouldBeTrue();
-        reopened.FavoritePrograms.ShouldBeEmpty();
+        reopened.IsSessionFavorite(id).ShouldBeTrue();
+        reopened.FavoriteSessionIds.Single().ShouldBe(id);
+        (await reopened.ToggleSessionFavoriteAsync(id)).IsSuccess.ShouldBeTrue();
+        reopened.FavoriteSessionIds.ShouldBeEmpty();
         repository.Writes.ShouldBe(2);
     }
 
@@ -203,7 +203,7 @@ public sealed class WorkoutProgramAuthoringTests
     [InlineData("{}")]
     [InlineData("null")]
     [InlineData("[17]")]
-    public async Task Favorites_WithMissingOrCorruptSetting_ShouldStartEmptyAndRecoverOnToggle(string? json)
+    public async Task SessionFavorites_WithMissingOrCorruptSetting_ShouldStartEmptyAndRecoverOnToggle(string? json)
     {
         var settings = new Dictionary<string, string> { ["theme"] = "dark" };
         if (json is not null) settings[FavoriteSetting] = json;
@@ -211,45 +211,45 @@ public sealed class WorkoutProgramAuthoringTests
         var service = Create(repository);
         await service.InitializeAsync();
 
-        service.FavoritePrograms.ShouldBeEmpty();
-        service.IsProgramFavorite("builtin").ShouldBeFalse();
-        (await service.ToggleProgramFavoriteAsync("builtin")).IsSuccess.ShouldBeTrue();
+        service.FavoriteSessionIds.ShouldBeEmpty();
+        service.IsSessionFavorite("draft-session").ShouldBeFalse();
+        (await service.ToggleSessionFavoriteAsync("draft-session")).IsSuccess.ShouldBeTrue();
 
-        service.IsProgramFavorite("builtin").ShouldBeTrue();
+        service.IsSessionFavorite("draft-session").ShouldBeTrue();
         repository.Stored.Settings["theme"].ShouldBe("dark");
-        repository.Stored.Settings[FavoriteSetting].ShouldBe("[\"builtin\"]");
+        repository.Stored.Settings[FavoriteSetting].ShouldBe("[\"draft-session\"]");
     }
 
     [Fact]
-    public async Task Favorites_ShouldFilterStaleDuplicateAndWeekIdsAndCleanThemOnNextSave()
+    public async Task SessionFavorites_ShouldFilterStaleDuplicateAndWeekIdsAndCleanThemOnNextSave()
     {
         var original = PersonalData() with { Settings = new Dictionary<string, string>
-        { [FavoriteSetting] = "[\"stale\",\"builtin\",\"builtin\",\"react-week-plan\",null]" } };
+        { [FavoriteSetting] = "[\"stale\",\"draft-session\",\"draft-session\",\"week-session\",null]" } };
         var repository = new Repository { Stored = original };
         var service = Create(repository);
         await service.InitializeAsync();
 
-        service.FavoritePrograms.Single().Id.ShouldBe("builtin");
-        service.IsProgramFavorite("stale").ShouldBeFalse();
-        service.IsProgramFavorite("react-week-plan").ShouldBeFalse();
+        service.FavoriteSessionIds.Single().ShouldBe("draft-session");
+        service.IsSessionFavorite("stale").ShouldBeFalse();
+        service.IsSessionFavorite("week-session").ShouldBeFalse();
         repository.Writes.ShouldBe(0);
-        (await service.ToggleProgramFavoriteAsync("builtin")).IsSuccess.ShouldBeTrue();
+        (await service.ToggleSessionFavoriteAsync("draft-session")).IsSuccess.ShouldBeTrue();
 
         repository.Stored.Settings[FavoriteSetting].ShouldBe("[]");
     }
 
     [Theory]
     [InlineData("missing")]
-    [InlineData("react-week-plan")]
-    public async Task ToggleProgramFavoriteAsync_WithUnknownOrWeekProgram_ShouldNotWrite(string id)
+    [InlineData("week-session")]
+    public async Task ToggleSessionFavoriteAsync_WithUnknownOrWeekSession_ShouldNotWrite(string id)
     {
         var repository = new Repository { Stored = PersonalData() };
         var service = Create(repository);
 
-        (await service.ToggleProgramFavoriteAsync(id)).Error.ShouldBe("UnknownProgram");
+        (await service.ToggleSessionFavoriteAsync(id)).Error.ShouldBe("UnknownSession");
 
         repository.Writes.ShouldBe(0);
-        service.FavoritePrograms.ShouldBeEmpty();
+        service.FavoriteSessionIds.ShouldBeEmpty();
     }
 
     [Fact]
@@ -262,7 +262,7 @@ public sealed class WorkoutProgramAuthoringTests
         var first = service.CreateProgramAsync(Draft, true);
         await started.Task;
         var second = service.CreateProgramAsync(Draft, true);
-        var toggle = service.ToggleProgramFavoriteAsync("builtin");
+        var toggle = service.ToggleSessionFavoriteAsync("draft-session");
 
         repository.Writes.ShouldBe(0);
         repository.Stored.Programs.ShouldBeEmpty();
@@ -275,7 +275,7 @@ public sealed class WorkoutProgramAuthoringTests
         repository.Stored.Programs.Count.ShouldBe(2);
         repository.Stored.Programs.Select(program => program.Id).Distinct().Count().ShouldBe(2);
         repository.Stored.Programs.SelectMany(program => program.Sessions).Select(session => session.Id).Distinct().Count().ShouldBe(2);
-        service.FavoritePrograms.Count.ShouldBe(3);
+        service.FavoriteSessionIds.Count.ShouldBe(3);
         repository.Writes.ShouldBe(3);
     }
 
@@ -321,7 +321,7 @@ public sealed class WorkoutProgramAuthoringTests
         cancellation.Cancel();
 
         await Should.ThrowAsync<OperationCanceledException>(() => service.CreateProgramAsync(Draft, true, cancellation.Token));
-        await Should.ThrowAsync<OperationCanceledException>(() => service.ToggleProgramFavoriteAsync("builtin", cancellation.Token));
+        await Should.ThrowAsync<OperationCanceledException>(() => service.ToggleSessionFavoriteAsync("draft-session", cancellation.Token));
 
         repository.Writes.ShouldBe(0);
     }
@@ -375,11 +375,11 @@ public sealed class WorkoutProgramAuthoringTests
     private static readonly WorkoutSession Session = new() { Id = "draft-session", Name = "Push", Exercises = [Plan("press")] };
     private static readonly WorkoutProgram Draft = new() { Id = "draft-program", Name = "Personal", Gym = "One Air", Sessions = [Session] };
     private static readonly Exercise Press = new() { Id = "press", Name = "Press", Sets = 4, RepTarget = "10", Rest = "2:00", Variants = [new GymVariant { Gym = "One Air" }] };
-    private const string FavoriteSetting = "training-favorite-programs";
+    private const string FavoriteSetting = "training-favorite-sessions";
     private static WorkoutStateService Create(Repository repository) => new(repository, new Catalog(), TimeProvider.System);
     private static PerformanceData PersonalData() => new()
     {
-        Programs = [Draft with { Id = "react-week-plan" }], ActiveWorkout = new ActiveWorkout { Session = Session },
+        Programs = [Draft with { Id = "react-week-plan", Sessions = [Session with { Id = "week-session" }] }], ActiveWorkout = new ActiveWorkout { Session = Session },
         History = [new TrainingSessionLog { Id = "history", SessionId = Session.Id }],
         Settings = new Dictionary<string, string> { ["theme"] = "dark" }, HiddenExerciseIds = ["press"],
         ReactLocalStorage = new Dictionary<string, string> { ["original"] = "kept" }

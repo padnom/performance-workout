@@ -7,25 +7,9 @@ namespace Performance.Application;
 
 public sealed partial class WorkoutStateService
 {
-    private const string FavoriteProgramsSetting = "training-favorite-programs";
-
-    public IReadOnlyList<WorkoutProgram> FavoritePrograms
-    {
-        get
-        {
-            var favorites = GetFavoriteProgramIds();
-            return Programs.Where(program => favorites.Contains(program.Id)).ToArray();
-        }
-    }
-
-    public bool IsProgramFavorite(string id) => GetFavoriteProgramIds().Contains(id);
-
     public Task<WorkoutResult> CreateProgramAsync(WorkoutProgram draft, bool favorite = false,
         CancellationToken cancellationToken = default) =>
         MutateAsync(() => CreateProgram(draft, favorite), cancellationToken);
-
-    public Task<WorkoutResult> ToggleProgramFavoriteAsync(string programId, CancellationToken cancellationToken = default) =>
-        MutateAsync(() => ToggleProgramFavorite(programId), cancellationToken);
 
     private Change CreateProgram(WorkoutProgram draft, bool favorite)
     {
@@ -40,9 +24,9 @@ public sealed partial class WorkoutStateService
         var saved = CloneAuthoredProgram(draft, definitions, gym);
         var data = Data with { Programs = [.. Data.Programs, saved] };
         if (!favorite) return new(data);
-        var favorites = GetFavoriteProgramIds();
-        favorites.Add(saved.Id);
-        return new(data with { Settings = WithFavoritePrograms(favorites) });
+        var favorites = GetFavoriteSessionIds();
+        favorites.UnionWith(saved.Sessions.Select(session => session.Id));
+        return new(data with { Settings = WithFavoriteSessions(favorites) });
     }
 
     private static string? ValidateAuthoredSession(WorkoutSession? session, IReadOnlyDictionary<string, Exercise> definitions, string gym)
@@ -103,30 +87,6 @@ public sealed partial class WorkoutStateService
             Exercises = CloneAuthoredPlans(session.Exercises, definitions, gym), OptionalExercises = CloneAuthoredPlans(session.OptionalExercises, definitions, gym)
         }).ToArray()
     };
-
-    private Change ToggleProgramFavorite(string programId)
-    {
-        if (programId == WeekProgramId || !Programs.Any(program => program.Id == programId))
-            return Change.Failure("UnknownProgram");
-        var favorites = GetFavoriteProgramIds();
-        if (!favorites.Remove(programId)) favorites.Add(programId);
-        return new(Data with { Settings = WithFavoritePrograms(favorites) });
-    }
-
-    private HashSet<string> GetFavoriteProgramIds()
-    {
-        if (!Data.Settings.TryGetValue(FavoriteProgramsSetting, out var json) || string.IsNullOrWhiteSpace(json)) return new(StringComparer.Ordinal);
-        try
-        {
-            var ids = JsonSerializer.Deserialize(json, ProgramFavoritesJsonContext.Default.StringArray) ?? [];
-            var existing = Programs.Where(program => program.Id != WeekProgramId).Select(program => program.Id).ToHashSet(StringComparer.Ordinal);
-            return ids.Where(id => id is not null && existing.Contains(id)).ToHashSet(StringComparer.Ordinal);
-        }
-        catch (JsonException) { return new(StringComparer.Ordinal); }
-    }
-
-    private Dictionary<string, string> WithFavoritePrograms(HashSet<string> favorites) =>
-        new(Data.Settings, StringComparer.Ordinal) { [FavoriteProgramsSetting] = JsonSerializer.Serialize(favorites.Order(StringComparer.Ordinal).ToArray(), ProgramFavoritesJsonContext.Default.StringArray) };
 
     private static WorkoutExercise[] CloneAuthoredPlans(IReadOnlyList<WorkoutExercise> plans,
         IReadOnlyDictionary<string, Exercise> definitions, string gym) => plans.Select((plan, index) => plan with

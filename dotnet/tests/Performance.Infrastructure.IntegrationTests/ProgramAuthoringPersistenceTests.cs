@@ -38,8 +38,7 @@ public sealed class ProgramAuthoringPersistenceTests
             await restored.InitializeAsync();
 
             // Assert
-            restored.IsProgramFavorite(created.Id).ShouldBeTrue();
-            restored.FavoritePrograms.Single().Id.ShouldBe(created.Id);
+            restored.FavoriteSessionIds.OrderBy(id => id).ShouldBe(created.Sessions.Select(session => session.Id).Order());
             restored.Programs.Single(program => program.Id == created.Id).Sessions.Select(session => session.Name).ShouldBe(["Push perso", "Upper perso"]);
             restored.WeekSessions.Single().Id.ShouldBe(previous.Programs.Single().Sessions.Single().Id);
             restored.Data.ActiveWorkout!.Session!.Id.ShouldBe(previous.ActiveWorkout!.Session!.Id);
@@ -62,7 +61,7 @@ public sealed class ProgramAuthoringPersistenceTests
         {
             var service = Create(Path.Combine(directory, "source.json"));
             await service.CreateProgramAsync(Draft(), favorite: true);
-            var program = service.FavoritePrograms.Single();
+            var program = service.Data.Programs.Single();
             var codec = new JsonProgramPackageCodec();
             var json = new ExportWorkoutProgramsUseCase(codec).Execute([program], service.AllExercises);
             var destination = Create(Path.Combine(directory, "destination.json"));
@@ -76,9 +75,9 @@ public sealed class ProgramAuthoringPersistenceTests
             await reopened.InitializeAsync();
 
             // Assert
-            json.ShouldNotContain("training-favorite-programs");
+            json.ShouldNotContain("training-favorite-sessions");
             json.ShouldNotContain("settings");
-            destination.FavoritePrograms.ShouldBeEmpty();
+            destination.FavoriteSessionIds.ShouldBeEmpty();
             copy.Id.ShouldNotBe(program.Id);
             copy.Gym.ShouldBe("One Air");
             reopened.WeekSessions.Single().Id.ShouldBe(copy.Sessions[0].Id);

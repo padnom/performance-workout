@@ -5,13 +5,16 @@
 @inject IServiceProvider Services
 
 <div class="card-list">
+    @{ var favorites = State.FavoriteSessionIds; }
     @foreach (var log in Logs)
     {
+        var favorite = favorites.Contains(FavoriteTarget(log));
         var performances = Performances(log).ToArray();
         <section class="panel history-card" @key="log.Id">
             <div class="card-heading">
                 <div><p class="eyebrow">@log.Date.ToLocalTime().ToString(T("SessionHistory.DateTimeFormat"), DisplayLanguage.Culture)</p><h2>@DisplayName(log)</h2></div>
                 <span class="count">@T("SessionHistory.Minutes", log.DurationMinutes)</span>
+                <button type="button" class="secondary-button session-favorite" data-favorite-log="@log.Id" aria-pressed="@(favorite ? "true" : "false")" aria-label="@(favorite ? T("Favorite.Remove", DisplayName(log)) : T("Favorite.Add", DisplayName(log)))" disabled="@_busy" @onclick="() => ToggleFavoriteAsync(log)"><span aria-hidden="true">@(favorite ? "★" : "☆")</span></button>
             </div>
             <p class="muted">@T("SessionHistory.Summary", performances.Length, performances.SelectMany(performance => performance.Sets).Count(set => WorkoutUi.Number(set.Reps) > 0))</p>
             <details>
@@ -92,6 +95,32 @@
         try { session = SessionFromLog(log, SessionName(log)); }
         catch (FormatException) { _message = T("SessionHistory.ReplayFailed"); return; }
         await Replay.InvokeAsync(session);
+    }
+    /// <summary>The session a history card stars: the one it was done from, or a copy in "Mes séances" when that one can't be a favorite (free workout, week plan, deleted).</summary>
+    private string FavoriteTarget(TrainingSessionLog log) => State.CanFavoriteSession(log.SessionId) ? log.SessionId : WorkoutStateService.HistorySessionId(log.Id);
+    private async Task ToggleFavoriteAsync(TrainingSessionLog log)
+    {
+        if (_busy) return;
+        _busy = true; _messageLogId = log.Id; _message = "";
+        try
+        {
+            var target = FavoriteTarget(log);
+            var exists = State.CanFavoriteSession(target);
+            WorkoutResult result;
+            if (exists) result = await State.ToggleSessionFavoriteAsync(target);
+            else
+            {
+                WorkoutSession session;
+                try { session = ExportSession(log) with { Id = target }; }
+                catch (FormatException) { _message = T("SessionHistory.FavoriteFailed"); return; }
+                result = await State.FavoriteHistorySessionAsync(session);
+            }
+            _message = result.IsSuccess
+                ? T(!exists ? "SessionHistory.FavoriteSaved" : State.IsSessionFavorite(target) ? "SessionHistory.FavoriteAdded" : "SessionHistory.FavoriteRemoved")
+                : WorkoutUi.Error(result.Error);
+        }
+        catch { _message = WorkoutUi.Error(null); }
+        finally { _busy = false; }
     }
     private async Task ShareAsync(TrainingSessionLog log, Func<Func<WorkoutSession>, Task<string>> share)
     {
