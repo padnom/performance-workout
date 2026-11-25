@@ -11,6 +11,23 @@
     var selectedSession = State.ResolveSessionForGym(session, _gym);
     <div class="modal-backdrop"><section class="panel confirm-dialog @(_preview ? "start-preview" : "")" role="dialog" aria-modal="true" aria-labelledby="start-title">
         <h2 id="start-title">@(_preview ? session.Name : T("SessionStart.Title"))</h2>
+        @if (_preview && State.CanRenameSession(session.Id))
+        {
+            @if (_renaming)
+            {
+                <div class="rename-session">
+                    <label class="field">@T("SessionStart.RenameLabel")<input class="rename-session-input" maxlength="160" @bind="_newName" @bind:event="oninput" @ref="_nameInput" disabled="@_busy" @onkeydown="RenameKeyAsync" /></label>
+                    <div class="settings-actions">
+                        <button class="primary-button rename-session-save" disabled="@_busy" @onclick="SaveRenameAsync">@T("SessionStart.Save")</button>
+                        <button class="secondary-button rename-session-cancel" disabled="@_busy" @onclick="CancelRename">@T("SessionStart.Cancel")</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <button class="secondary-button rename-session-button" disabled="@_busy" @onclick="StartRename"><span aria-hidden="true">✎</span> @T("SessionStart.Rename")</button>
+            }
+        }
         <p class="muted">@(_preview ? session.Focus : T("SessionStart.Hint", session.Name))</p>
         <label class="field gym-field">@T("SessionStart.GymField")<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
         @if (_preview)
@@ -35,11 +52,16 @@
 }
 
 @code {
+    [Parameter] public EventCallback Renamed { get; set; }
     private WorkoutSession? _pending;
     private bool _preview;
     private bool _busy;
     private string _gym = "One Air";
     private string _message = "";
+    private bool _renaming;
+    private string _newName = "";
+    private ElementReference _nameInput;
+    private bool _focusName;
     private IDisposable? _backRegistration;
     protected override void OnInitialized()
     {
@@ -54,7 +76,7 @@
             && program.Sessions.Any(candidate => candidate.Id == session.Id))?.Gym;
         var selectedGym = programGym ?? (preferPlanGym ? PlanGym(session) : SessionsProgramGym(session)) ?? State.CurrentGym;
         _gym = selectedGym.Trim() == "Basic Fit" ? "Basic-Fit" : selectedGym;
-        _preview = !confirmOnly; _message = "";
+        _preview = !confirmOnly; _message = ""; _renaming = false;
         StateHasChanged();
     }
     private string? SessionsProgramGym(WorkoutSession session) => State.Programs
@@ -90,7 +112,41 @@
         catch { _message = WorkoutUi.Error(null); }
         finally { _busy = false; }
     }
-    private void Close() => _pending = null;
+    private void StartRename()
+    {
+        if (_pending is null) return;
+        _newName = _pending.Name; _renaming = true; _message = ""; _focusName = true;
+    }
+    private void CancelRename() { _renaming = false; _message = ""; }
+    private async Task RenameKeyAsync(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter") await SaveRenameAsync();
+        else if (args.Key == "Escape") CancelRename();
+    }
+    private async Task SaveRenameAsync()
+    {
+        if (_pending is null || _busy) return;
+        _busy = true;
+        try
+        {
+            var name = _newName.Trim();
+            var result = await State.RenameSessionAsync(_pending.Id, name);
+            if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
+            _pending = _pending with { Name = name };
+            _renaming = false;
+            _message = T("SessionStart.Renamed");
+            await Renamed.InvokeAsync();
+        }
+        catch { _message = WorkoutUi.Error(null); }
+        finally { _busy = false; }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_focusName) return;
+        _focusName = false;
+        try { await _nameInput.FocusAsync(); } catch (Exception) { /* focus is a convenience only */ }
+    }
+    private void Close() { _pending = null; _renaming = false; }
     private async Task<bool> HandleBackAsync()
     {
         if (_pending is null) return false;

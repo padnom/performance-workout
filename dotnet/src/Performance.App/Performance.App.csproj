@@ -11,8 +11,8 @@
     <Nullable>enable</Nullable>
     <ApplicationTitle>Performance</ApplicationTitle>
     <ApplicationId>fr.padnom.performance</ApplicationId>
-    <ApplicationDisplayVersion>1.8.0</ApplicationDisplayVersion>
-    <ApplicationVersion>13</ApplicationVersion>
+    <ApplicationDisplayVersion>1.9.0</ApplicationDisplayVersion>
+    <ApplicationVersion>14</ApplicationVersion>
     <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
     <RuntimeIdentifiers Condition="'$(Configuration)' == 'Release'">android-arm64;android-x64</RuntimeIdentifiers>
   </PropertyGroup>

@@ -9,7 +9,7 @@ public sealed class ReleaseNotesTests
     [Fact]
     public void Unseen_NothingRecorded_ShowsVersionsAfterTheLastOneWithoutNotes()
     {
-        ReleaseNotes.Unseen(null, "1.8.0").Select(note => note.Version.ToString()).ShouldBe(["1.8.0", "1.7.0", "1.6.0"]);
+        ReleaseNotes.Unseen(null, "1.9.0").Select(note => note.Version.ToString()).ShouldBe(["1.9.0", "1.8.0", "1.7.0"]);
     }
 
     [Fact]

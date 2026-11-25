@@ -46,6 +46,7 @@
   <data name="Error.InvalidProgramPackage" xml:space="preserve"><value>Invalid programs file. Your data has been kept.</value></data>
   <data name="Error.InvalidProgramSession" xml:space="preserve"><value>Each workout needs a name and at least one exercise.</value></data>
   <data name="Error.InvalidRestDuration" xml:space="preserve"><value>Choose a rest between 15 and 600 seconds.</value></data>
+  <data name="Error.InvalidSessionName" xml:space="preserve"><value>Give the workout a name of 1 to 160 characters.</value></data>
   <data name="Error.InvalidSessionPackage" xml:space="preserve"><value>Invalid workout file. Your data has been kept.</value></data>
   <data name="Error.InvalidSet" xml:space="preserve"><value>Check the values: weight and reps must be positive.</value></data>
   <data name="Error.InvalidSetIndex" xml:space="preserve"><value>This set is no longer available.</value></data>
@@ -357,12 +358,17 @@
   <data name="SessionSharer.Failed" xml:space="preserve"><value>Couldn’t share this workout. Try again.</value></data>
   <data name="SessionSharer.Ready" xml:space="preserve"><value>Workout ready to share.</value></data>
   <data name="SessionStart.Back" xml:space="preserve"><value>Back</value></data>
+  <data name="SessionStart.Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="SessionStart.Confirm" xml:space="preserve"><value>Confirm</value></data>
   <data name="SessionStart.Export" xml:space="preserve"><value>Export this workout</value></data>
   <data name="SessionStart.GymField" xml:space="preserve"><value>Gym for this workout</value></data>
   <data name="SessionStart.Hint" xml:space="preserve"><value>{0}. The timer will start after you confirm.</value></data>
   <data name="SessionStart.OptionalNote" xml:space="preserve"><value>{0} optional exercises to add at the end of the workout.</value></data>
   <data name="SessionStart.PlanLine" xml:space="preserve"><value>{0} sets · {1} · rest {2}</value></data>
+  <data name="SessionStart.Rename" xml:space="preserve"><value>Rename</value></data>
+  <data name="SessionStart.RenameLabel" xml:space="preserve"><value>Workout name</value></data>
+  <data name="SessionStart.Renamed" xml:space="preserve"><value>Workout renamed.</value></data>
+  <data name="SessionStart.Save" xml:space="preserve"><value>Save</value></data>
   <data name="SessionStart.ShareText" xml:space="preserve"><value>Share as text</value></data>
   <data name="SessionStart.StartThis" xml:space="preserve"><value>Start this workout</value></data>
   <data name="SessionStart.Title" xml:space="preserve"><value>Start the workout?</value></data>

@@ -24,6 +24,13 @@ public static class ReleaseNotes
 
     public static IReadOnlyList<ReleaseNote> All { get; } =
     [
+        new(new Version(1, 9, 0),
+        [
+            "Renomme tes séances : ouvre une séance de « Mes séances » ou d’un de tes programmes dans Programmes, puis touche ✎ Renommer.",
+        ],
+        [
+            "Rename your workouts: open a workout from “My workouts” or one of your programs in Programs, then tap ✎ Rename.",
+        ]),
         new(new Version(1, 8, 0),
         [
             "Séances favorites : touche l’étoile d’une séance dans l’Historique ou dans Programmes, puis retrouve-la avec le filtre « ★ Favoris ».",

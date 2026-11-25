@@ -23,7 +23,7 @@
     }
     <ProgramLibrary Snapshot="State.Data" Selected="SelectSession" Started="StartSession" Changed="Refresh" Disabled="_busy" />
     <ProgramSharing @ref="_sharing" Snapshot="State.Data" Changed="Refresh" />
-    <SessionStart @ref="_starter" />
+    <SessionStart @ref="_starter" Renamed="Refresh" />
     <ProgramEditor @ref="_editor" Changed="Refresh" />
 }
 
