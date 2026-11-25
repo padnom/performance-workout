@@ -39,8 +39,9 @@
                         }
                         <small>@Summary(session)</small>
                     </button>
-                    <button type="button" class="secondary-button session-favorite" data-favorite-session="@session.Id" aria-pressed="@Pressed(favorites.Contains(session.Id))" aria-label="@(favorites.Contains(session.Id) ? T("Favorite.Remove", session.Name) : T("Favorite.Add", session.Name))" disabled="@(Disabled || _busy)" @onclick="() => ToggleFavoriteAsync(session.Id)"><span aria-hidden="true">@(favorites.Contains(session.Id) ? "★" : "☆")</span></button>
-                    <button type="button" class="secondary-button library-start" disabled="@Disabled" aria-label="@T("Library.Start", session.Name)" @onclick="() => Started.InvokeAsync(session)"><span aria-hidden="true">▶&#xFE0E;</span></button>
+                    @{ var isFavorite = favorites.Contains(session.Id); var favoriteLabel = isFavorite ? T("Favorite.Remove", session.Name) : T("Favorite.Add", session.Name); var startLabel = T("Library.Start", session.Name); }
+                    <button type="button" class="icon-button session-favorite @(isFavorite ? "is-on" : "")" data-favorite-session="@session.Id" aria-pressed="@Pressed(isFavorite)" aria-label="@favoriteLabel" title="@favoriteLabel" disabled="@(Disabled || _busy)" @onclick="() => ToggleFavoriteAsync(session.Id)"><Icon Name="@(isFavorite ? "star-filled" : "star")" /></button>
+                    <button type="button" class="icon-button is-go library-start" aria-label="@startLabel" title="@startLabel" disabled="@Disabled" @onclick="() => Started.InvokeAsync(session)"><Icon Name="play" /></button>
                 </div>
             }
         </section>

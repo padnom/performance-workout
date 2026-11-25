@@ -99,8 +99,64 @@ public sealed class SessionRenameTests : IDisposable
             var page = _context.Render<Programs>();
             page.Find("[data-session=mine-1] .library-open").Click();
 
-            page.Find(".rename-session-button").TextContent.ShouldContain("Rename");
+            page.Find(".rename-session-button").GetAttribute("aria-label").ShouldBe("Rename");
         }
+    }
+
+    [Fact]
+    public async Task Preview_ShowsLabeledIconToolbar_AndFavoriteToggleFlipsPressedState()
+    {
+        await SaveMineAsync();
+        var page = _context.Render<Programs>();
+        page.Find("[data-session=mine-1] .library-open").Click();
+        var wasFavorite = _state.IsSessionFavorite("mine-1");
+
+        var toolbar = page.Find(".start-preview .icon-toolbar");
+        toolbar.QuerySelectorAll(".icon-tool").Length.ShouldBe(4);
+        toolbar.QuerySelectorAll(".icon-tool > span[aria-hidden=true]").Select(label => label.TextContent).ShouldBe(["Favori", "Renommer", "Exporter", "Texte"]);
+        foreach (var button in toolbar.QuerySelectorAll("button"))
+        {
+            button.GetAttribute("aria-label").ShouldNotBeNullOrWhiteSpace();
+            button.GetAttribute("title").ShouldBe(button.GetAttribute("aria-label"));
+            button.ClassList.ShouldContain("icon-button");
+        }
+        page.Find(".start-preview .session-favorite").GetAttribute("aria-pressed").ShouldBe(wasFavorite ? "true" : "false");
+
+        page.Find(".start-preview .session-favorite").Click();
+
+        page.WaitForAssertion(() => page.Find(".start-preview .session-favorite").GetAttribute("aria-pressed").ShouldBe(wasFavorite ? "false" : "true"));
+        _state.IsSessionFavorite("mine-1").ShouldBe(!wasFavorite);
+        page.Find(".start-preview .session-favorite").ClassList.Contains("is-on").ShouldBe(!wasFavorite);
+    }
+
+    [Fact]
+    public async Task Preview_CloseButton_ClosesDialog()
+    {
+        await SaveMineAsync();
+        var page = _context.Render<Programs>();
+        page.Find("[data-session=mine-1] .library-open").Click();
+
+        page.Find(".start-preview .start-close").GetAttribute("aria-label").ShouldBe("Retour");
+        page.Find(".start-preview .start-close").Click();
+
+        page.FindAll("[role=dialog]").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task Library_RowButtons_AreIconButtons()
+    {
+        await SaveMineAsync();
+        var page = _context.Render<Programs>();
+
+        var row = page.Find("[data-session=mine-1]");
+        foreach (var selector in new[] { ".session-favorite", ".library-start" })
+        {
+            var button = row.QuerySelector(selector)!;
+            button.ClassList.ShouldContain("icon-button");
+            button.GetAttribute("title").ShouldBe(button.GetAttribute("aria-label"));
+            button.QuerySelector("svg[aria-hidden=true]").ShouldNotBeNull();
+        }
+        row.QuerySelector(".library-start")!.ClassList.ShouldContain("is-go");
     }
 
     public void Dispose() => _context.Dispose();

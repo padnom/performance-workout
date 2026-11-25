@@ -10,25 +10,46 @@
 {
     var selectedSession = State.ResolveSessionForGym(session, _gym);
     <div class="modal-backdrop"><section class="panel confirm-dialog @(_preview ? "start-preview" : "")" role="dialog" aria-modal="true" aria-labelledby="start-title">
-        <h2 id="start-title">@(_preview ? session.Name : T("SessionStart.Title"))</h2>
-        @if (_preview && State.CanRenameSession(session.Id))
-        {
-            @if (_renaming)
-            {
-                <div class="rename-session">
-                    <label class="field">@T("SessionStart.RenameLabel")<input class="rename-session-input" maxlength="160" @bind="_newName" @bind:event="oninput" @ref="_nameInput" disabled="@_busy" @onkeydown="RenameKeyAsync" /></label>
-                    <div class="settings-actions">
-                        <button class="primary-button rename-session-save" disabled="@_busy" @onclick="SaveRenameAsync">@T("SessionStart.Save")</button>
-                        <button class="secondary-button rename-session-cancel" disabled="@_busy" @onclick="CancelRename">@T("SessionStart.Cancel")</button>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <button class="secondary-button rename-session-button" disabled="@_busy" @onclick="StartRename"><span aria-hidden="true">✎</span> @T("SessionStart.Rename")</button>
-            }
-        }
+        <div class="card-heading">
+            <h2 id="start-title">@(_preview ? session.Name : T("SessionStart.Title"))</h2>
+            <button type="button" class="icon-button start-close" aria-label="@T("SessionStart.Back")" title="@T("SessionStart.Back")" disabled="@_busy" @onclick="Close"><Icon Name="close" /></button>
+        </div>
         <p class="muted">@(_preview ? session.Focus : T("SessionStart.Hint", session.Name))</p>
+        @{
+            var canFavorite = _preview && State.CanFavoriteSession(session.Id);
+            var canRename = _preview && State.CanRenameSession(session.Id) && !_renaming;
+            var canShare = session.Id != "free";
+        }
+        @if (canFavorite || canRename || canShare)
+        {
+            var favorite = canFavorite && State.IsSessionFavorite(session.Id);
+            var favoriteLabel = favorite ? T("Favorite.Remove", session.Name) : T("Favorite.Add", session.Name);
+            <div class="icon-toolbar">
+                @if (canFavorite)
+                {
+                    <div class="icon-tool"><button type="button" class="icon-button session-favorite @(favorite ? "is-on" : "")" aria-pressed="@(favorite ? "true" : "false")" aria-label="@favoriteLabel" title="@favoriteLabel" disabled="@_busy" @onclick="() => ToggleFavoriteAsync(session)"><Icon Name="@(favorite ? "star-filled" : "star")" /></button><span aria-hidden="true">@T("Toolbar.Favorite")</span></div>
+                }
+                @if (canRename)
+                {
+                    <div class="icon-tool"><button type="button" class="icon-button rename-session-button" aria-label="@T("SessionStart.Rename")" title="@T("SessionStart.Rename")" disabled="@_busy" @onclick="StartRename"><Icon Name="pencil" /></button><span aria-hidden="true">@T("Toolbar.Rename")</span></div>
+                }
+                @if (canShare)
+                {
+                    <div class="icon-tool"><button type="button" class="icon-button export-pending-session" aria-label="@T("SessionStart.Export")" title="@T("SessionStart.Export")" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareFileAsync)"><Icon Name="export" /></button><span aria-hidden="true">@T("Toolbar.Export")</span></div>
+                    <div class="icon-tool"><button type="button" class="icon-button share-pending-session-text" aria-label="@T("SessionStart.ShareText")" title="@T("SessionStart.ShareText")" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareTextAsync)"><Icon Name="text" /></button><span aria-hidden="true">@T("Toolbar.Text")</span></div>
+                }
+            </div>
+        }
+        @if (_preview && _renaming && State.CanRenameSession(session.Id))
+        {
+            <div class="rename-session">
+                <label class="field">@T("SessionStart.RenameLabel")<input class="rename-session-input" maxlength="160" @bind="_newName" @bind:event="oninput" @ref="_nameInput" disabled="@_busy" @onkeydown="RenameKeyAsync" /></label>
+                <div class="settings-actions">
+                    <button class="primary-button rename-session-save" disabled="@_busy" @onclick="SaveRenameAsync">@T("SessionStart.Save")</button>
+                    <button class="secondary-button rename-session-cancel" disabled="@_busy" @onclick="CancelRename">@T("SessionStart.Cancel")</button>
+                </div>
+            </div>
+        }
         <label class="field gym-field">@T("SessionStart.GymField")<select @bind="_gym" disabled="@_busy">@foreach (var gym in WorkoutUi.Gyms) { <option value="@gym">@WorkoutUi.GymName(gym)</option> }</select></label>
         @if (_preview)
         {
@@ -36,23 +57,16 @@
             { <li>@(State.AllExercises.FirstOrDefault(item => item.Id == plan.ExerciseId)?.Name ?? plan.ExerciseId)<span class="muted">@T("SessionStart.PlanLine", plan.Sets ?? 4, plan.RepTarget, plan.Rest)</span></li> }</ol>
             @if (selectedSession.OptionalExercises is { Count: > 0 } optionalExercises) { <p class="muted">@T("SessionStart.OptionalNote", optionalExercises.Count)</p> }
         }
-        @if (session.Id != "free")
-        {
-            <div class="settings-actions">
-                <button class="secondary-button export-pending-session" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareFileAsync)">@T("SessionStart.Export")</button>
-                <button class="secondary-button share-pending-session-text" disabled="@_busy" @onclick="() => ShareAsync(selectedSession, Sharer.ShareTextAsync)">@T("SessionStart.ShareText")</button>
-            </div>
-        }
         @if (_message.Length > 0) { <p class="notice" role="alert">@_message</p> }
         <div class="settings-actions">
             <button class="primary-button" disabled="@_busy" @onclick="ConfirmAsync">@(_preview ? T("SessionStart.StartThis") : T("SessionStart.Confirm"))</button>
-            <button class="secondary-button" disabled="@_busy" @onclick="Close">@T("SessionStart.Back")</button>
         </div>
     </section></div>
 }
 
 @code {
     [Parameter] public EventCallback Renamed { get; set; }
+    [Parameter] public EventCallback FavoriteChanged { get; set; }
     private WorkoutSession? _pending;
     private bool _preview;
     private bool _busy;
@@ -108,6 +122,19 @@
             var free = _pending.Id == "free";
             _pending = null;
             Navigation.NavigateTo(free ? "/seance?ajouter=1" : "/seance");
+        }
+        catch { _message = WorkoutUi.Error(null); }
+        finally { _busy = false; }
+    }
+    private async Task ToggleFavoriteAsync(WorkoutSession session)
+    {
+        if (_busy) return;
+        _busy = true; _message = "";
+        try
+        {
+            var result = await State.ToggleSessionFavoriteAsync(session.Id);
+            if (!result.IsSuccess) { _message = WorkoutUi.Error(result.Error); return; }
+            await FavoriteChanged.InvokeAsync();
         }
         catch { _message = WorkoutUi.Error(null); }
         finally { _busy = false; }

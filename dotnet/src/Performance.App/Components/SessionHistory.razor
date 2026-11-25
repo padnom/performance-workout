@@ -11,40 +11,39 @@
         var favorite = favorites.Contains(FavoriteTarget(log));
         var performances = Performances(log).ToArray();
         <section class="panel history-card" @key="log.Id">
+            @{ var name = DisplayName(log); var favoriteLabel = favorite ? T("Favorite.Remove", name) : T("Favorite.Add", name); var replayLabel = T("SessionHistory.Replay"); var exportLabel = T("SessionHistory.Export"); var textLabel = T("SessionHistory.ShareText"); }
             <div class="card-heading">
-                <div><p class="eyebrow">@log.Date.ToLocalTime().ToString(T("SessionHistory.DateTimeFormat"), DisplayLanguage.Culture)</p><h2>@DisplayName(log)</h2></div>
-                <span class="count">@T("SessionHistory.Minutes", log.DurationMinutes)</span>
-                <button type="button" class="secondary-button session-favorite" data-favorite-log="@log.Id" aria-pressed="@(favorite ? "true" : "false")" aria-label="@(favorite ? T("Favorite.Remove", DisplayName(log)) : T("Favorite.Add", DisplayName(log)))" disabled="@_busy" @onclick="() => ToggleFavoriteAsync(log)"><span aria-hidden="true">@(favorite ? "★" : "☆")</span></button>
-            </div>
-            <p class="muted">@T("SessionHistory.Summary", performances.Length, performances.SelectMany(performance => performance.Sets).Count(set => WorkoutUi.Number(set.Reps) > 0))</p>
-            <details>
-                <summary>@T("SessionHistory.ShowSets")</summary>
-                @foreach (var performance in performances)
-                {
-                    <div class="history-exercise">
-                        <h3>@ExerciseName(performance.ExerciseId) <small>· @WorkoutUi.GymName(WorkoutUi.Gym(performance))</small></h3>
-                        <div class="history-set-header"><span>@T("SessionHistory.SetColumn")</span><span>@T("SessionHistory.Weight")</span><span>@T("SessionHistory.Reps")</span></div>
-                        @foreach (var item in performance.Sets.Select((set, index) => new { Set = set, Index = index }).Where(item => HasData(item.Set)))
-                        {
-                            <div class="history-set">
-                                <b>@(item.Index + 1)</b>
-                                <span>@Value(item.Set.Weight)</span>
-                                <span>@Value(item.Set.Reps)</span>
-                            </div>
-                        }
-                    </div>
-                }
-            </details>
-            @if (Replay.HasDelegate)
-            {
-                <div class="settings-actions">
-                    <button class="primary-button replay-session" data-log="@log.Id" disabled="@(_busy || State.Data.ActiveWorkout is not null)" @onclick="() => ReplayAsync(log)">@T("SessionHistory.Replay")</button>
+                <div class="card-heading-text"><p class="eyebrow">@log.Date.ToLocalTime().ToString(T("SessionHistory.DateTimeFormat"), DisplayLanguage.Culture) · @T("SessionHistory.Minutes", log.DurationMinutes)</p><h2>@name</h2><p class="muted">@T("SessionHistory.Summary", performances.Length, performances.SelectMany(performance => performance.Sets).Count(set => WorkoutUi.Number(set.Reps) > 0))</p></div>
+                <div class="card-heading-actions">
+                    <button type="button" class="icon-button session-favorite @(favorite ? "is-on" : "")" data-favorite-log="@log.Id" aria-pressed="@(favorite ? "true" : "false")" aria-label="@favoriteLabel" title="@favoriteLabel" disabled="@_busy" @onclick="() => ToggleFavoriteAsync(log)"><Icon Name="@(favorite ? "star-filled" : "star")" /></button>
+                    @if (Replay.HasDelegate)
+                    {
+                        <button type="button" class="icon-button is-go replay-session" data-log="@log.Id" aria-label="@replayLabel" title="@replayLabel" disabled="@(_busy || State.Data.ActiveWorkout is not null)" @onclick="() => ReplayAsync(log)"><Icon Name="play" /></button>
+                    }
                 </div>
-                @if (State.Data.ActiveWorkout is not null) { <p class="muted replay-blocked">@T("SessionHistory.ReplayBlocked")</p> }
-            }
-            <div class="settings-actions">
-                <button class="secondary-button export-session" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareFileAsync)">@T("SessionHistory.Export")</button>
-                <button class="secondary-button share-session-text" data-log="@log.Id" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareTextAsync)">@T("SessionHistory.ShareText")</button>
+            </div>
+            @if (Replay.HasDelegate && State.Data.ActiveWorkout is not null) { <p class="muted replay-blocked">@T("SessionHistory.ReplayBlocked")</p> }
+            <div class="history-card-footer">
+                <details class="history-details">
+                    <summary>@T("SessionHistory.ShowSets")</summary>
+                    @foreach (var performance in performances)
+                    {
+                        <div class="history-exercise">
+                            <h3>@ExerciseName(performance.ExerciseId) <small>· @WorkoutUi.GymName(WorkoutUi.Gym(performance))</small></h3>
+                            <div class="history-set-header"><span>@T("SessionHistory.SetColumn")</span><span>@T("SessionHistory.Weight")</span><span>@T("SessionHistory.Reps")</span></div>
+                            @foreach (var item in performance.Sets.Select((set, index) => new { Set = set, Index = index }).Where(item => HasData(item.Set)))
+                            {
+                                <div class="history-set">
+                                    <b>@(item.Index + 1)</b>
+                                    <span>@Value(item.Set.Weight)</span>
+                                    <span>@Value(item.Set.Reps)</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </details>
+                <button type="button" class="icon-button export-session" data-log="@log.Id" aria-label="@exportLabel" title="@exportLabel" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareFileAsync)"><Icon Name="export" /></button>
+                <button type="button" class="icon-button share-session-text" data-log="@log.Id" aria-label="@textLabel" title="@textLabel" disabled="@_busy" @onclick="() => ShareAsync(log, Sharer.ShareTextAsync)"><Icon Name="text" /></button>
             </div>
             @if (_messageLogId == log.Id && _message.Length > 0) { <p class="notice" role="status">@_message</p> }
         </section>

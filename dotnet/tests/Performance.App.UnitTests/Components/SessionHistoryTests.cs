@@ -46,7 +46,7 @@ public sealed class SessionHistoryTests : IDisposable
         var component = _context.Render<SessionHistory>();
 
         component.Find("h2").TextContent.ShouldBe("Séance libre");
-        component.Find(".count").TextContent.ShouldBe("35 min");
+        component.Find(".eyebrow").TextContent.ShouldEndWith(" · 35 min");
         component.Markup.ShouldNotContain("kg de volume");
         component.FindAll(".history-exercise").Count.ShouldBe(2);
         component.FindAll(".history-exercise h3").ShouldAllBe(heading => heading.TextContent.Contains(exercise.Name));
@@ -92,7 +92,7 @@ public sealed class SessionHistoryTests : IDisposable
         var component = _context.Render<SessionHistory>(parameters => parameters.Add(value => value.RecentLimit, 10));
 
         component.FindAll(".history-card").Count.ShouldBe(10);
-        component.FindAll(".history-card .count").Select(count => count.TextContent).ShouldBe(
+        component.FindAll(".history-card .eyebrow").Select(eyebrow => eyebrow.TextContent[(eyebrow.TextContent.LastIndexOf('·') + 2)..]).ShouldBe(
             Enumerable.Range(2, 10).Reverse().Select(index => $"{index} min"));
     }
 
@@ -185,6 +185,26 @@ public sealed class SessionHistoryTests : IDisposable
 
         component.Find(".replay-session").HasAttribute("disabled").ShouldBeTrue();
         component.Find(".replay-blocked").TextContent.ShouldContain("séance en cours");
+    }
+
+    [Fact]
+    public async Task Card_ReplayExportAndText_AreIconButtonsWithLabelAndTitle()
+    {
+        await _state.ReplaceDataAsync(new PerformanceData { History = [ReplayLog(_state.AllExercises.First().Id)] });
+
+        var component = _context.Render<SessionHistory>(parameters => parameters.Add(value => value.Replay, (WorkoutSession _) => { }));
+
+        foreach (var selector in new[] { ".replay-session", ".export-session", ".share-session-text", ".session-favorite" })
+        {
+            var button = component.Find(selector);
+            button.ClassList.ShouldContain("icon-button");
+            button.GetAttribute("aria-label").ShouldNotBeNullOrWhiteSpace();
+            button.GetAttribute("title").ShouldBe(button.GetAttribute("aria-label"));
+            button.QuerySelector("svg[aria-hidden=true]").ShouldNotBeNull();
+        }
+        component.Find(".replay-session").ClassList.ShouldContain("is-go");
+        component.Find(".replay-session").GetAttribute("aria-label").ShouldBe("Refaire cette séance");
+        component.FindAll(".history-card .secondary-button, .history-card .primary-button").ShouldBeEmpty();
     }
 
     private static TrainingSessionLog ReplayLog(string exerciseId) => new()

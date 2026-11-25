@@ -1,0 +1,34 @@
+@* Inline stroke icons for the compact icon buttons. Decorative: the button carries the aria-label. *@
+@if (Name == "play")
+{
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor" stroke="none"><path d="M8 5l11 7-11 7z" /></svg>
+}
+else
+{
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="@(Name == "star-filled" ? "currentColor" : "none")" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        @switch (Name)
+        {
+            case "star":
+            case "star-filled":
+                <path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.1 1 5.8L12 16.9l-5.25 2.7 1-5.8L3.5 9.7l5.9-.9z" />
+                break;
+            case "pencil":
+                <path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" />
+                break;
+            case "export":
+                <path d="M12 15V3" /><path d="M7 8l5-5 5 5" /><path d="M5 13v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6" />
+                break;
+            case "text":
+                <path d="M4 5h16v11H9l-5 4z" /><path d="M8 9h8M8 12h5" />
+                break;
+            case "close":
+                <path d="M6 6l12 12M18 6L6 18" />
+                break;
+        }
+    </svg>
+}
+
+@code {
+    /// <summary>One of star, star-filled, pencil, export, text, play, close.</summary>
+    [Parameter] public string Name { get; set; } = "";
+}

@@ -488,6 +488,10 @@
   <data name="Update.Later" xml:space="preserve"><value>Later</value></data>
   <data name="Update.NewVersion" xml:space="preserve"><value>New version {0}</value></data>
   <data name="Update.Retry" xml:space="preserve"><value>Retry</value></data>
+  <data name="Toolbar.Favorite" xml:space="preserve"><value>Favorite</value></data>
+  <data name="Toolbar.Rename" xml:space="preserve"><value>Rename</value></data>
+  <data name="Toolbar.Export" xml:space="preserve"><value>Export</value></data>
+  <data name="Toolbar.Text" xml:space="preserve"><value>Text</value></data>
   <data name="Workout.Abandon" xml:space="preserve"><value>Abandon workout</value></data>
   <data name="Workout.AbandonMessage" xml:space="preserve"><value>The sets of the current workout will be deleted. Your history is kept.</value></data>
   <data name="Workout.AbandonTitle" xml:space="preserve"><value>Abandon the workout?</value></data>

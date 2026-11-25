@@ -24,6 +24,17 @@ public static class ReleaseNotes
 
     public static IReadOnlyList<ReleaseNote> All { get; } =
     [
+        new(new Version(1, 10, 0),
+        [
+            "Boutons plus compacts et cohérents : favori, renommer, exporter et partager deviennent de petites icônes, et seul « Démarrer » reste en grand.",
+            "Historique plus lisible : chaque séance tient sur une carte courte, avec ★ et ▶ (refaire) à droite comme dans la bibliothèque.",
+            "Tu peux mettre une séance en favori directement depuis son aperçu.",
+        ],
+        [
+            "Smaller, consistent buttons: favorite, rename, export and share are now compact icons, and only “Start” stays large.",
+            "Cleaner history: each workout fits on a short card, with ★ and ▶ (redo) on the right, like in the library.",
+            "You can favorite a workout straight from its preview.",
+        ]),
         new(new Version(1, 9, 0),
         [
             "Renomme tes séances : ouvre une séance de « Mes séances » ou d’un de tes programmes dans Programmes, puis touche ✎ Renommer.",
