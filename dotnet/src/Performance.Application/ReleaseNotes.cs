@@ -24,6 +24,13 @@ public static class ReleaseNotes
 
     public static IReadOnlyList<ReleaseNote> All { get; } =
     [
+        new(new Version(1, 10, 1),
+        [
+            "Une séance reçue sur WhatsApp (ou depuis une autre app) s’ouvre maintenant dans Performance elle-même : tu peux revenir à WhatsApp normalement.",
+        ],
+        [
+            "A workout received on WhatsApp (or from another app) now opens in Performance itself: you can go back to WhatsApp normally.",
+        ]),
         new(new Version(1, 10, 0),
         [
             "Boutons plus compacts et cohérents : favori, renommer, exporter et partager deviennent de petites icônes, et seul « Démarrer » reste en grand.",

@@ -8,8 +8,10 @@ using static Performance.App.Resources.Text;
 
 namespace Performance.App;
 
+// SingleTask: a file opened from another app (WhatsApp, Files…) is delivered to the app's own task
+// instead of stacking a second copy of the app inside the other app's task.
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, Exported = true,
-    LaunchMode = LaunchMode.SingleTop, WindowSoftInputMode = SoftInput.AdjustResize,
+    LaunchMode = LaunchMode.SingleTask, WindowSoftInputMode = SoftInput.AdjustResize,
     ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation |
                            ConfigChanges.UiMode | ConfigChanges.ScreenLayout |
                            ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]

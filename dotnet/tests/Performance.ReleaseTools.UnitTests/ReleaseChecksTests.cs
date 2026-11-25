@@ -152,6 +152,11 @@ public sealed class ReleaseChecksTests
     public void Tracked_project_declares_a_valid_version() =>
         ReleaseChecks.ParseProjectVersion(File.ReadAllText(Path.Combine(RepositoryRoot(), ReleaseChecks.Project))).Code.ShouldBeGreaterThan(0);
 
+    [Fact]
+    public void Main_activity_opens_shared_files_in_its_own_task() =>
+        File.ReadAllText(Path.Combine(RepositoryRoot(), "dotnet/src/Performance.App/Platforms/Android/MainActivity.cs"))
+            .ShouldContain("LaunchMode = LaunchMode.SingleTask");
+
     private static string RepositoryRoot()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
